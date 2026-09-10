@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspeccion Diagnostico</title>
+</head>
+<body>
+<div>
+    <h2>Inspección y Diagnóstico en Campo</h2>
+    
+    <fieldset>
+        <legend>Registro de inspecciones (RF14)</legend>
+        <label for="fecha_inspeccion">Fecha:</label>
+        <input type="date" id="fecha_inspeccion" name="fecha_inspeccion"><br><br>
+
+        <label for="ubicacion_inspeccion">Ubicación:</label>
+        <input type="text" id="ubicacion_inspeccion" name="ubicacion_inspeccion"><br><br>
+
+        <label for="observaciones_insp">Observaciones:</label>
+        <textarea id="observaciones_insp" name="observaciones_insp"></textarea>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>Registro de diagnóstico (RF15)</legend>
+        <label for="plaga_encontrada">Plaga encontrada:</label>
+        <input type="text" id="plaga_encontrada" name="plaga_encontrada"><br><br>
+
+        <label for="nivel_problema">Nivel o situación observada:</label>
+        <input type="text" id="nivel_problema" name="nivel_problema"><br><br>
+
+        <label for="caracteristicas">Características relevantes:</label>
+        <textarea id="caracteristicas" name="caracteristicas"></textarea>
+    </fieldset>
+    <br>
+    <button type="submit">Guardar Inspección y Diagnóstico</button>
+</div>
+<br><br>
+<a href="index.html">← Regresar al menú principal</a>    
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tratamentos</title>
+</head>
+<body>
+    <div>
+    <h2>Aplicación de Tratamientos</h2>
+    
+    <fieldset>
+        <legend>Registro de aplicación de tratamiento (RF16)</legend>
+        <label for="zona_tratamiento">Zona atendida:</label>
+        <input type="text" id="zona_tratamiento" name="zona_tratamiento"><br><br>
+
+        <label for="fecha_tratamiento">Fecha:</label>
+        <input type="date" id="fecha_tratamiento" name="fecha_tratamiento"><br><br>
+
+        <label for="personal_resp">Personal responsable:</label>
+        <input type="text" id="personal_resp" name="personal_resp"><br><br>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>Asociación de productos con aplicaciones (RF18)</legend>
+        <label for="producto_usado">Producto utilizado:</label>
+        <select id="producto_usado" name="producto_usado">
+            <option value="prod1">Producto A</option>
+            <option value="prod2">Producto B</option>
+        </select><br><br>
+
+        <label for="cantidad_prod">Cantidad aplicada:</label>
+        <input type="number" id="cantidad_prod" name="cantidad_prod"><br><br>
+    </fieldset>
+    <br>
+    <button type="submit">Guardar Tratamiento</button>
+</div>
+<br><br>
+<a href="index.html">← Regresar al menú principal</a>
+    
+</body>
+</html>

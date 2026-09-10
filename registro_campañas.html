@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de campañas</title>
+</head>
+<body>
+    <h2>Gestión y Registro de Campañas (RF12)</h2>
+    <form>
+        <label for="nombre_campana">Nombre de la campaña:</label>
+        <input type="text" id="nombre_campana" name="nombre_campana"><br><br>
+
+        <label for="zona_atendida">Zona atendida:</label>
+        <input type="text" id="zona_atendida" name="zona_atendida"><br><br>
+
+        <label for="fecha_campana">Fecha:</label>
+        <input type="date" id="fecha_campana" name="fecha_campana"><br><br>
+
+        <h3>Asignación de personal (RF13)</h3>
+        <label for="tecnicos">Técnicos responsables:</label>
+        <select id="tecnicos" name="tecnicos" multiple>
+            <option value="tecnico1">Técnico 1</option>
+            <option value="tecnico2">Técnico 2</option>
+        </select><br><br>
+
+        <button type="submit">Crear Campaña</button>
+    </form>
+<br><br>
+<a href="index.html">← Regresar al menú principal</a>
+    
+</body>
+</html>
