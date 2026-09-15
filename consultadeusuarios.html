@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Usuarios</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Consulta de Usuarios Registrados</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Número de Contacto</th>
+                <th>Correo Electrónico</th>
+                <th>CURP</th>
+                <th>RFC</th>
+                <th>Rol Asignado</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ejemplo de registro 1 -->
+            <tr>
+                <td>Juan</td>
+                <td>Pérez López</td>
+                <td>9931234567</td>
+                <td>juan.perez@email.com</td>
+                <td>PELJ850101HMXRRA01</td>
+                <td>PELJ850101ABC</td>
+                <td>Administrador</td>
+                <td>Activo</td>
+                <td>
+                    <button>Ver detalles</button>
+                    <button>Editar</button>
+                </td>
+            </tr>
+            
+            <!-- Ejemplo de registro 2 -->
+            <tr>
+                <td>María</td>
+                <td>Gómez Sánchez</td>
+                <td>9937654321</td>
+                <td>maria.gomez@email.com</td>
+                <td>GOSM921015MMXSRB02</td>
+                <td>GOSM921015DEF</td>
+                <td>Técnico</td>
+                <td>Inactivo</td>
+                <td>
+                    <button>Ver detalles</button>
+                    <button>Editar</button>
+                </td>
+            </tr>
+
+            <!-- Ejemplo de registro 3 -->
+            <tr>
+                <td>Carlos</td>
+                <td>Ramírez Díaz</td>
+                <td>9935558899</td>
+                <td>carlos.ramirez@email.com</td>
+                <td>RADC880808HMXXYZ03</td>
+                <td>RADC880808GHI</td>
+                <td>Supervisor</td>
+                <td>Activo</td>
+                <td>
+                    <button>Ver detalles</button>
+                    <button>Editar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
