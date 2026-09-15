@@ -6,6 +6,30 @@
     <title>Seguimiento</title>
 </head>
 <body>
+    <div>
+    <h2>Registro de seguimiento posterior (RF20)</h2>
+    <form>
+        <label for="fecha_seguimiento">Fecha de seguimiento:</label>
+        <input type="date" id="fecha_seguimiento" name="fecha_seguimiento"><br><br>
+
+        <label for="presencia_plaga">Presencia o ausencia de la plaga:</label>
+        <select id="presencia_plaga" name="presencia_plaga">
+            <option value="ausente">Ausente</option>
+            <option value="presente">Presente</option>
+            <option value="reincidente">Reincidente</option>
+        </select><br><br>
+
+        <label for="resultados_seg">Resultados obtenidos:</label>
+        <textarea id="resultados_seg" name="resultados_seg"></textarea><br><br>
+
+        <label for="incidencias">Incidencias detectadas:</label>
+        <textarea id="incidencias" name="incidencias"></textarea><br><br>
+
+        <button type="submit">Guardar Seguimiento</button>
+    </form>
+</div>
+
+
 
 <br><br>
 <a href="index.html">← Regresar al menú principal</a>
