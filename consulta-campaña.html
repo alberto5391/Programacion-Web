@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta integral de campaña</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <nav>
+        <a href="#">Panel Principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Consulta integral de una campaña (RF-46)</h2>
+
+    <p>
+        Esta consulta permite visualizar en un solo lugar toda la información
+        relacionada con una campaña, incluyendo datos generales, inspecciones,
+        diagnósticos, tratamientos, evidencias, coordenadas, seguimientos e
+        incidencias.
+    </p>
+
+    <fieldset>
+        <legend>Seleccionar campaña</legend>
+
+        <form>
+
+            <label for="campana">Campaña:</label>
+            <select id="campana" name="campana">
+                <option value="">Seleccione una campaña</option>
+                <option value="001">Campaña #001 - Prevención Chontalpa</option>
+                <option value="002">Campaña #002 - Control Centro</option>
+                <option value="003">Campaña #003 - Atención Pantanos</option>
+                <option value="004">Campaña #004 - Control Sierra</option>
+            </select>
+
+            <br><br>
+
+            <button type="submit">Consultar campaña</button>
+
+        </form>
+    </fieldset>
+
+    <br>
+
+    <h3>Datos generales de la campaña</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID de campaña</th>
+            <td>CAM-003</td>
+        </tr>
+
+        <tr>
+            <th>Nombre</th>
+            <td>Campaña de Atención y Control de Plagas</td>
+        </tr>
+
+        <tr>
+            <th>Zona</th>
+            <td>Zona Pantanos</td>
+        </tr>
+
+        <tr>
+            <th>Fecha de inicio</th>
+            <td>01/08/2026</td>
+        </tr>
+
+        <tr>
+            <th>Fecha de finalización</th>
+            <td>25/08/2026</td>
+        </tr>
+
+        <tr>
+            <th>Responsable</th>
+            <td>María López</td>
+        </tr>
+
+        <tr>
+            <th>Estado</th>
+            <td>Finalizada</td>
+        </tr>
+
+        <tr>
+            <th>Objetivo</th>
+            <td>Reducir la incidencia de plagas en la zona Pantanos.</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <h3>Inspecciones realizadas</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Ubicación</th>
+                <th>Responsable</th>
+                <th>Tipo de inspección</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>INS-101</td>
+                <td>03/08/2026</td>
+                <td>Centla</td>
+                <td>Juan Pérez</td>
+                <td>Inspección inicial</td>
+                <td>Presencia de plagas</td>
+            </tr>
+
+            <tr>
+                <td>INS-102</td>
+                <td>08/08/2026</td>
+                <td>Jonuta</td>
+                <td>Juan Pérez</td>
+                <td>Inspección inicial</td>
+                <td>Incidencia alta</td>
+            </tr>
+
+            <tr>
+                <td>INS-103</td>
+                <td>20/08/2026</td>
+                <td>Macuspana</td>
+                <td>Laura Gómez</td>
+                <td>Inspección de seguimiento</td>
+                <td>Incidencia reducida</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Diagnósticos</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Inspección</th>
+                <th>Plaga detectada</th>
+                <th>Nivel de incidencia</th>
+                <th>Diagnóstico</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>DIA-201</td>
+                <td>03/08/2026</td>
+                <td>INS-101</td>
+                <td>Mosquito</td>
+                <td>Alta</td>
+                <td>Presencia considerable de criaderos.</td>
+            </tr>
+
+            <tr>
+                <td>DIA-202</td>
+                <td>08/08/2026</td>
+                <td>INS-102</td>
+                <td>Mosquito</td>
+                <td>Crítica</td>
+                <td>Alta concentración de plaga.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Tratamientos aplicados</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Ubicación</th>
+                <th>Producto</th>
+                <th>Dosis</th>
+                <th>Responsable</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>TRA-301</td>
+                <td>05/08/2026</td>
+                <td>Centla</td>
+                <td>Producto A</td>
+                <td>10 ml/L</td>
+                <td>Carlos Ramírez</td>
+                <td>Aplicación realizada correctamente.</td>
+            </tr>
+
+            <tr>
+                <td>TRA-302</td>
+                <td>10/08/2026</td>
+                <td>Jonuta</td>
+                <td>Producto B</td>
+                <td>15 ml/L</td>
+                <td>Carlos Ramírez</td>
+                <td>Se reforzó el tratamiento por alta incidencia.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Evidencias</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Archivo</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>EVI-401</td>
+                <td>03/08/2026</td>
+                <td>Fotografía</td>
+                <td>Evidencia de presencia de plaga.</td>
+                <td><a href="#">Ver evidencia</a></td>
+            </tr>
+
+            <tr>
+                <td>EVI-402</td>
+                <td>10/08/2026</td>
+                <td>Fotografía</td>
+                <td>Evidencia posterior al tratamiento.</td>
+                <td><a href="#">Ver evidencia</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Coordenadas geográficas</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ubicación</th>
+                <th>Latitud</th>
+                <th>Longitud</th>
+                <th>Fecha de registro</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>COO-501</td>
+                <td>Centla</td>
+                <td>17.987654</td>
+                <td>-92.945321</td>
+                <td>03/08/2026</td>
+            </tr>
+
+            <tr>
+                <td>COO-502</td>
+                <td>Jonuta</td>
+                <td>17.991234</td>
+                <td>-92.951234</td>
+                <td>08/08/2026</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Seguimientos</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Inspección relacionada</th>
+                <th>Responsable</th>
+                <th>Resultado</th>
+                <th>Acción recomendada</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>SEG-601</td>
+                <td>15/08/2026</td>
+                <td>INS-101</td>
+                <td>Laura Gómez</td>
+                <td>Disminución de incidencia</td>
+                <td>Continuar monitoreo.</td>
+            </tr>
+
+            <tr>
+                <td>SEG-602</td>
+                <td>20/08/2026</td>
+                <td>INS-102</td>
+                <td>Laura Gómez</td>
+                <td>Control satisfactorio</td>
+                <td>Realizar inspección final.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Incidencias</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Tipo de incidencia</th>
+                <th>Descripción</th>
+                <th>Nivel</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>INC-701</td>
+                <td>08/08/2026</td>
+                <td>Alta presencia de plaga</td>
+                <td>Se detectó una concentración elevada.</td>
+                <td>Alta</td>
+                <td>Atendida</td>
+            </tr>
+
+            <tr>
+                <td>INC-702</td>
+                <td>12/08/2026</td>
+                <td>Reaparición</td>
+                <td>Se detectó nuevamente presencia de plaga.</td>
+                <td>Media</td>
+                <td>Atendida</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <fieldset>
+        <legend>Resumen integral de la campaña</legend>
+
+        <p>
+            <strong>Inspecciones:</strong> 3
+        </p>
+
+        <p>
+            <strong>Diagnósticos:</strong> 2
+        </p>
+
+        <p>
+            <strong>Tratamientos:</strong> 2
+        </p>
+
+        <p>
+            <strong>Evidencias:</strong> 2
+        </p>
+
+        <p>
+            <strong>Coordenadas registradas:</strong> 2
+        </p>
+
+        <p>
+            <strong>Seguimientos:</strong> 2
+        </p>
+
+        <p>
+            <strong>Incidencias:</strong> 2
+        </p>
+
+        <p>
+            <strong>Resultado general:</strong>
+            La campaña logró reducir la incidencia de plagas en las zonas
+            intervenidas y se recomienda mantener el monitoreo.
+        </p>
+
+    </fieldset>
+
+    <br>
+
+    <form>
+        <button type="button">Actualizar información</button>
+        <button type="button">Generar reporte PDF</button>
+        <button type="button">Exportar campaña a Excel</button>
+    </form>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

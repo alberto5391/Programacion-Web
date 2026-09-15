@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de aplicaciones</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+    <p>Reporte de aplicaciones</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Reporte de aplicaciones (RF-41)</h2>
+
+    <p>
+        Selecciona los criterios para consultar las aplicaciones
+        realizadas y generar un reporte con la información registrada.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Filtros del reporte</legend>
+
+            <p>
+                <label for="zona">
+                    <strong>Zona:</strong>
+                </label>
+                <br>
+
+               <select id="zona" name="zona">
+                    <option value="">-- Selecciona una zona --</option>
+                    <option value="norte">Zona Centro</option>
+                    <option value="centro">Zona Chontalpa</option>
+                    <option value="sur">Zona Sierra</option>
+                    <option value="oriente">Zona Pantanos</option>
+                    <option value="poniente">Zona Rios</option>
+                    <option value="todas">Todas las zonas</option>
+                </select>
+            </p>
+
+            <p>
+                <label for="fecha_inicio">
+                    <strong>Fecha de inicio:</strong>
+                </label>
+                <br>
+
+                <input
+                    type="date"
+                    id="fecha_inicio"
+                    name="fecha_inicio"
+                >
+            </p>
+
+            <p>
+                <label for="fecha_fin">
+                    <strong>Fecha de finalización:</strong>
+                </label>
+                <br>
+
+                <input
+                    type="date"
+                    id="fecha_fin"
+                    name="fecha_fin"
+                >
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Consultar aplicaciones"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Aplicaciones realizadas</h3>
+
+    <table border="1" cellpadding="6">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Ubicación</th>
+                <th>Responsable</th>
+                <th>Producto utilizado</th>
+                <th>Observaciones</th>
+                <th>Evidencias</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>001</td>
+                <td>05/02/2026</td>
+                <td>Zona Rios - Sector 1</td>
+                <td>Juan Pérez</td>
+                <td>Producto A</td>
+                <td>Aplicación realizada correctamente</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>002</td>
+                <td>10/02/2026</td>
+                <td>Zona Centro - Sector 3</td>
+                <td>María González</td>
+                <td>Producto B</td>
+                <td>Se realizó aplicación preventiva</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>003</td>
+                <td>15/02/2026</td>
+                <td>Zona Sierra - Sector 2</td>
+                <td>Carlos Hernández</td>
+                <td>Producto C</td>
+                <td>Se recomienda seguimiento</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>004</td>
+                <td>20/02/2026</td>
+                <td>Zona Pantanos - Sector 4</td>
+                <td>Ana López</td>
+                <td>Producto A</td>
+                <td>Aplicación completada</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <h3>Información incluida en el reporte</h3>
+
+    <ul>
+        <li>Fecha de la aplicación</li>
+        <li>Ubicación donde se realizó</li>
+        <li>Zona correspondiente</li>
+        <li>Responsable de la aplicación</li>
+        <li>Productos utilizados</li>
+        <li>Observaciones registradas</li>
+        <li>Evidencias disponibles</li>
+    </ul>
+
+    <h3>Generar reporte</h3>
+
+    <p>
+        El sistema generará un documento PDF con la información
+        de las aplicaciones seleccionadas.
+    </p>
+
+    <form action="#" method="post">
+
+        <input
+            type="hidden"
+            name="formato"
+            value="pdf"
+        >
+
+        <input
+            type="submit"
+            value="Generar reporte PDF"
+        >
+
+    </form>
+
+    <br>
+
+    <p>
+        <a href="#">← Regresar al panel principal</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

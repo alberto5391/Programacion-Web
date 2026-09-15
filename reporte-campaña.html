@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de campaña</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Reporte de campaña</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Reporte de una campaña (RF-39)</h2>
+
+    <p>
+        Selecciona una campaña para consultar y generar un reporte
+        con toda la información relacionada.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Selección de campaña</legend>
+
+            <p>
+                <label for="campana">
+                    <strong>Campaña:</strong>
+                </label>
+
+                <select id="campana" name="campana">
+                    <option value="">-- Selecciona una campaña --</option>
+                    <option value="001">
+                        Campaña de Prevención 2026 - Zona Sierra
+                    </option>
+                    <option value="002">
+                        Campaña de Inspección 2026 - Zona Centro
+                    </option>
+                    <option value="003">
+                        Campaña de Seguimiento 2026 - Zona Chontalpa
+                    </option>
+                </select>
+            </p>
+
+            <p>
+                <input type="submit" value="Consultar campaña">
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Información general de la campaña</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID de campaña</th>
+            <td>001</td>
+        </tr>
+
+        <tr>
+            <th>Nombre de campaña</th>
+            <td>Campaña de Prevención 2026</td>
+        </tr>
+
+        <tr>
+            <th>Zona</th>
+            <td>Zona Sierra</td>
+        </tr>
+
+        <tr>
+            <th>Fecha de inicio</th>
+            <td>01/02/2026</td>
+        </tr>
+
+        <tr>
+            <th>Fecha de finalización</th>
+            <td>28/02/2026</td>
+        </tr>
+
+        <tr>
+            <th>Responsables</th>
+            <td>Juan Pérez / María González</td>
+        </tr>
+
+        <tr>
+            <th>Estado</th>
+            <td>Finalizada</td>
+        </tr>
+    </table>
+
+    <h3>Inspección</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Fecha</th>
+            <th>Lugar</th>
+            <th>Responsable</th>
+            <th>Resultado</th>
+        </tr>
+
+        <tr>
+            <td>05/02/2026</td>
+            <td>Sector Sierra</td>
+            <td>Juan Pérez</td>
+            <td>Realizada</td>
+        </tr>
+    </table>
+
+    <h3>Diagnóstico</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Diagnóstico</th>
+            <th>Descripción</th>
+        </tr>
+
+        <tr>
+            <td>Incidencia detectada</td>
+            <td>
+                Se identificaron condiciones que requieren atención
+                y seguimiento.
+            </td>
+        </tr>
+    </table>
+
+    <h3>Tratamiento</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Tratamiento aplicado</th>
+            <th>Fecha</th>
+            <th>Responsable</th>
+        </tr>
+
+        <tr>
+            <td>Tratamiento preventivo</td>
+            <td>08/02/2026</td>
+            <td>María González</td>
+        </tr>
+    </table>
+
+    <h3>Evidencias</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Archivo</th>
+        </tr>
+
+        <tr>
+            <td>Fotografía</td>
+            <td>Evidencia de la inspección realizada</td>
+            <td>
+                <a href="#">Ver evidencia</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Documento</td>
+            <td>Acta de inspección</td>
+            <td>
+                <a href="#">Ver documento</a>
+            </td>
+        </tr>
+    </table>
+
+    <h3>Seguimiento</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Fecha</th>
+            <th>Actividad</th>
+            <th>Responsable</th>
+            <th>Estado</th>
+        </tr>
+
+        <tr>
+            <td>15/02/2026</td>
+            <td>Verificación de resultados</td>
+            <td>Juan Pérez</td>
+            <td>Completado</td>
+        </tr>
+
+        <tr>
+            <td>25/02/2026</td>
+            <td>Inspección de seguimiento</td>
+            <td>María González</td>
+            <td>Completado</td>
+        </tr>
+    </table>
+
+    <h3>Resultados obtenidos</h3>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>Indicador</th>
+            <th>Resultado</th>
+        </tr>
+
+        <tr>
+            <td>Inspecciones realizadas</td>
+            <td>25</td>
+        </tr>
+
+        <tr>
+            <td>Casos detectados</td>
+            <td>8</td>
+        </tr>
+
+        <tr>
+            <td>Casos atendidos</td>
+            <td>8</td>
+        </tr>
+
+        <tr>
+            <td>Seguimientos completados</td>
+            <td>8</td>
+        </tr>
+
+        <tr>
+            <td>Porcentaje de atención</td>
+            <td>100%</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <h3>Generar reporte</h3>
+
+    <p>
+        La siguiente opción permite generar un documento con toda
+        la información de la campaña seleccionada.
+    </p>
+
+    <form action="#" method="post">
+
+        <input type="hidden" name="campana_id" value="001">
+
+        <input type="submit" value="Generar reporte PDF">
+
+        <input type="submit" value="Exportar campaña a Excel">
+
+    </form>
+
+    <br>
+
+    <p>
+        <a href="#">← Regresar al listado de campañas</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

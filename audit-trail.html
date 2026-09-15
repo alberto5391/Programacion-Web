@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bitácora de auditoría</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <nav>
+        <a href="#">Panel Principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Bitácora de auditoría y seguridad (RF-45)</h2>
+
+    <p>
+        El sistema registra de forma automática y transparente todas las
+        acciones realizadas en los módulos y catálogos, permitiendo conocer
+        qué usuario realizó la acción, cuándo se realizó y qué información
+        fue modificada.
+    </p>
+
+    <fieldset>
+        <legend>Filtros de consulta</legend>
+
+        <form>
+
+            <label for="usuario">Usuario responsable:</label>
+            <select id="usuario" name="usuario">
+                <option value="">Todos los usuarios</option>
+                <option value="admin">Administrador</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="tecnico">Técnico</option>
+            </select>
+
+            <br><br>
+
+            <label for="modulo">Módulo:</label>
+            <select id="modulo" name="modulo">
+                <option value="">Todos los módulos</option>
+                <option value="usuarios">Usuarios</option>
+                <option value="campanas">Campañas</option>
+                <option value="inspecciones">Inspecciones</option>
+                <option value="aplicaciones">Aplicaciones</option>
+                <option value="seguimientos">Seguimientos</option>
+                <option value="catalogos">Catálogos</option>
+            </select>
+
+            <br><br>
+
+            <label for="accion">Tipo de acción:</label>
+            <select id="accion" name="accion">
+                <option value="">Todas las acciones</option>
+                <option value="creacion">Creación</option>
+                <option value="modificacion">Modificación</option>
+                <option value="desactivacion">Desactivación</option>
+                <option value="eliminacion">Eliminación lógica</option>
+            </select>
+
+            <br><br>
+
+            <label for="fechaInicio">Fecha inicial:</label>
+            <input type="date" id="fechaInicio" name="fechaInicio">
+
+            <label for="fechaFin">Fecha final:</label>
+            <input type="date" id="fechaFin" name="fechaFin">
+
+            <br><br>
+
+            <button type="submit">Consultar bitácora</button>
+
+        </form>
+    </fieldset>
+
+    <br>
+
+    <h3>Registro de acciones</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Módulo</th>
+                <th>Acción</th>
+                <th>Registro afectado</th>
+                <th>Detalle del cambio</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>0001</td>
+                <td>Administrador</td>
+                <td>15/09/2026</td>
+                <td>08:15:32</td>
+                <td>Usuarios</td>
+                <td>Creación</td>
+                <td>Usuario #105</td>
+                <td>Se creó un nuevo usuario con rol de Supervisor.</td>
+            </tr>
+
+            <tr>
+                <td>0002</td>
+                <td>Supervisor</td>
+                <td>15/09/2026</td>
+                <td>09:20:18</td>
+                <td>Campañas</td>
+                <td>Modificación</td>
+                <td>Campaña #024</td>
+                <td>Se modificó la fecha de inicio de la campaña.</td>
+            </tr>
+
+            <tr>
+                <td>0003</td>
+                <td>Administrador</td>
+                <td>15/09/2026</td>
+                <td>10:05:41</td>
+                <td>Catálogos</td>
+                <td>Desactivación</td>
+                <td>Producto #018</td>
+                <td>El producto fue desactivado del catálogo.</td>
+            </tr>
+
+            <tr>
+                <td>0004</td>
+                <td>Administrador</td>
+                <td>15/09/2026</td>
+                <td>11:32:07</td>
+                <td>Inspecciones</td>
+                <td>Eliminación lógica</td>
+                <td>Inspección #458</td>
+                <td>La inspección fue marcada como eliminada lógicamente.</td>
+            </tr>
+
+            <tr>
+                <td>0005</td>
+                <td>Supervisor</td>
+                <td>15/09/2026</td>
+                <td>12:10:55</td>
+                <td>Aplicaciones</td>
+                <td>Modificación</td>
+                <td>Aplicación #327</td>
+                <td>Se modificaron las observaciones y el responsable.</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <br>
+
+    <fieldset>
+        <legend>Detalle de una acción</legend>
+
+        <p>
+            <strong>ID de registro:</strong> 0002
+        </p>
+
+        <p>
+            <strong>Usuario responsable:</strong> Supervisor
+        </p>
+
+        <p>
+            <strong>Fecha:</strong> 15/09/2026
+        </p>
+
+        <p>
+            <strong>Hora:</strong> 09:20:18
+        </p>
+
+        <p>
+            <strong>Módulo:</strong> Campañas
+        </p>
+
+        <p>
+            <strong>Acción:</strong> Modificación
+        </p>
+
+        <p>
+            <strong>Registro afectado:</strong> Campaña #024
+        </p>
+
+        <p>
+            <strong>Valor anterior:</strong>
+            Fecha de inicio: 10/09/2026
+        </p>
+
+        <p>
+            <strong>Valor nuevo:</strong>
+            Fecha de inicio: 12/09/2026
+        </p>
+
+        <p>
+            <strong>Detalle:</strong>
+            Se modificó la fecha de inicio de la campaña.
+        </p>
+
+    </fieldset>
+
+    <br>
+
+    <h3>Acciones registradas automáticamente</h3>
+
+    <ul>
+        <li>Creación de registros.</li>
+        <li>Modificación de información.</li>
+        <li>Desactivación de usuarios, registros o catálogos.</li>
+        <li>Eliminación lógica de información.</li>
+        <li>Identificación del usuario responsable.</li>
+        <li>Registro automático de fecha y hora.</li>
+        <li>Almacenamiento del detalle de los cambios realizados.</li>
+    </ul>
+
+    <br>
+
+    <fieldset>
+        <legend>Seguridad de la bitácora</legend>
+
+        <p>
+            Los registros de auditoría son generados automáticamente por el
+            sistema y no pueden ser modificados por los usuarios desde los
+            módulos operativos.
+        </p>
+
+        <p>
+            La bitácora permite consultar el historial de acciones para fines
+            de seguridad, supervisión y seguimiento de cambios realizados en
+            el sistema.
+        </p>
+
+    </fieldset>
+
+    <br>
+
+    <form>
+        <button type="button">Actualizar bitácora</button>
+        <button type="button">Exportar bitácora</button>
+        <button type="button">Generar reporte de auditoría</button>
+    </form>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

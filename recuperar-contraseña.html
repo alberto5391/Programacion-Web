@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recuperación de contraseña</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Recuperación de acceso al sistema</p>
+
+    <hr>
+
+    <h2>Recuperación de contraseña (RF-47)</h2>
+
+    <p>
+        Ingresa el correo electrónico registrado en el sistema
+        para recuperar el acceso a tu cuenta.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Solicitar recuperación</legend>
+
+            <p>
+                <label for="correo">
+                    <strong>Correo electrónico:</strong>
+                </label>
+                <br>
+                <input
+                    type="email"
+                    id="correo"
+                    name="correo"
+                    placeholder="ejemplo@correo.com"
+                    required
+                >
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Enviar código de recuperación"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Verificación de código</h3>
+
+    <p>
+        Se ha enviado un código de recuperación al correo electrónico
+        registrado. Ingresa el código recibido para continuar.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Verificar código</legend>
+
+            <p>
+                <label for="codigo">
+                    <strong>Código de recuperación:</strong>
+                </label>
+                <br>
+                <input
+                    type="text"
+                    id="codigo"
+                    name="codigo"
+                    placeholder="Ingresa el código"
+                    maxlength="6"
+                    required
+                >
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Verificar código"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Restablecer contraseña</h3>
+
+    <p>
+        Después de verificar el código, establece una nueva contraseña
+        para recuperar el acceso a tu cuenta.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Nueva contraseña</legend>
+
+            <p>
+                <label for="nueva_contrasena">
+                    <strong>Nueva contraseña:</strong>
+                </label>
+                <br>
+                <input
+                    type="password"
+                    id="nueva_contrasena"
+                    name="nueva_contrasena"
+                    required
+                >
+            </p>
+
+            <p>
+                <label for="confirmar_contraseña">
+                    <strong>Confirmar nueva contraseña:</strong>
+                </label>
+                <br>
+                <input
+                    type="password"
+                    id="confirmar_contraseña"
+                    name="confirmar_contraseña"
+                    required
+                >
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Restablecer contraseña"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <p>
+        ¿Recordaste tu contraseña?
+        <a href="#">Iniciar sesión</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

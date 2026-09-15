@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Control de acceso a información</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Control de acceso</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Control de acceso a información (RF-43)</h2>
+
+    <p>
+        El sistema controla las operaciones que puede realizar cada
+        usuario de acuerdo con el rol y los permisos asignados.
+    </p>
+
+    <fieldset>
+        <legend>Usuario autenticado</legend>
+
+        <p>
+            <strong>Usuario:</strong> administrador01
+        </p>
+
+        <p>
+            <strong>Nombre:</strong> Juan Pérez
+        </p>
+
+        <p>
+            <strong>Rol:</strong> Administrador
+        </p>
+
+        <p>
+            <strong>Estado:</strong> Activo
+        </p>
+
+    </fieldset>
+
+    <br>
+
+    <h3>Permisos del usuario</h3>
+
+    <table border="1" cellpadding="6">
+
+        <thead>
+            <tr>
+                <th>Módulo</th>
+                <th>Consultar</th>
+                <th>Registrar</th>
+                <th>Modificar</th>
+                <th>Eliminar lógicamente</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Usuarios</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>Campañas</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>Inspecciones</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>Aplicaciones</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>Seguimientos</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>Reportes</td>
+                <td>Permitido</td>
+                <td>No aplica</td>
+                <td>No aplica</td>
+                <td>No aplica</td>
+            </tr>
+
+            <tr>
+                <td>Estadísticas</td>
+                <td>Permitido</td>
+                <td>No aplica</td>
+                <td>No aplica</td>
+                <td>No aplica</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <h3>Gestión de roles y permisos</h3>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Asignación de permisos</legend>
+
+            <p>
+                <label for="rol">
+                    <strong>Rol:</strong>
+                </label>
+                <br>
+
+                <select id="rol" name="rol">
+                    <option value="">-- Selecciona un rol --</option>
+                    <option value="administrador">Administrador</option>
+                    <option value="supervisor">Supervisor</option>
+                    <option value="inspector">Inspector</option>
+                    <option value="consulta">Usuario de consulta</option>
+                </select>
+            </p>
+
+            <p>
+                <strong>Permisos:</strong>
+            </p>
+
+            <p>
+                <input
+                    type="checkbox"
+                    id="consultar"
+                    name="permisos"
+                    value="consultar"
+                >
+                <label for="consultar">
+                    Consultar información
+                </label>
+            </p>
+
+            <p>
+                <input
+                    type="checkbox"
+                    id="registrar"
+                    name="permisos"
+                    value="registrar"
+                >
+                <label for="registrar">
+                    Registrar información
+                </label>
+            </p>
+
+            <p>
+                <input
+                    type="checkbox"
+                    id="modificar"
+                    name="permisos"
+                    value="modificar"
+                >
+                <label for="modificar">
+                    Modificar información
+                </label>
+            </p>
+
+            <p>
+                <input
+                    type="checkbox"
+                    id="eliminar"
+                    name="permisos"
+                    value="eliminar"
+                >
+                <label for="eliminar">
+                    Eliminar lógicamente información
+                </label>
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Guardar permisos"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Ejemplo de acceso restringido</h3>
+
+    <table border="1" cellpadding="6">
+
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Operación</th>
+                <th>Módulo</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Juan Pérez</td>
+                <td>Administrador</td>
+                <td>Modificar</td>
+                <td>Campañas</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>María González</td>
+                <td>Supervisor</td>
+                <td>Modificar</td>
+                <td>Campañas</td>
+                <td>Permitido</td>
+            </tr>
+
+            <tr>
+                <td>Carlos Hernández</td>
+                <td>Inspector</td>
+                <td>Eliminar</td>
+                <td>Campañas</td>
+                <td>Acceso denegado</td>
+            </tr>
+
+            <tr>
+                <td>Ana López</td>
+                <td>Usuario de consulta</td>
+                <td>Registrar</td>
+                <td>Inspecciones</td>
+                <td>Acceso denegado</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <h3>Operaciones controladas</h3>
+
+    <ul>
+        <li>
+            <strong>Consultar:</strong>
+            permite visualizar información de acuerdo con los permisos.
+        </li>
+
+        <li>
+            <strong>Registrar:</strong>
+            permite agregar nuevos registros cuando el usuario tiene
+            autorización.
+        </li>
+
+        <li>
+            <strong>Modificar:</strong>
+            permite actualizar información cuando el rol lo permite.
+        </li>
+
+        <li>
+            <strong>Eliminar lógicamente:</strong>
+            permite desactivar registros sin eliminarlos físicamente
+            de la base de datos.
+        </li>
+    </ul>
+
+    <h3>Seguridad de acceso</h3>
+
+    <p>
+        Las operaciones no autorizadas deberán ser bloqueadas por el
+        sistema y se deberá mostrar un mensaje indicando que el usuario
+        no cuenta con los permisos necesarios.
+    </p>
+
+    <p>
+        <strong>Ejemplo:</strong>
+        "Acceso denegado. No tienes permisos para realizar esta operación."
+    </p>
+
+    <br>
+
+    <p>
+        <a href="#">← Regresar al panel principal</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>
