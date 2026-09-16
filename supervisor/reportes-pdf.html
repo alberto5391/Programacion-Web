@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generación de reportes en PDF</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Generación de reportes</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Generación de reportes en PDF (RF-37)</h2>
+
+    <p>
+        Selecciona el tipo de información y el periodo para generar
+        un reporte en formato PDF.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Configuración del reporte</legend>
+
+            <p>
+                <label for="tipo_reporte"><strong>Tipo de reporte:</strong></label>
+                <select id="tipo_reporte" name="tipo_reporte">
+                    <option value="">-- Selecciona un reporte --</option>
+                    <option value="inspecciones">Reporte de inspecciones</option>
+                    <option value="aplicaciones">Reporte de aplicaciones</option>
+                    <option value="seguimientos">Reporte de seguimientos</option>
+                    <option value="historial_campanas">Historial de campañas</option>
+                    <option value="general">Reporte general</option>
+                </select>
+            </p>
+
+            <p>
+                <label for="fecha_inicio"><strong>Fecha de inicio:</strong></label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio">
+            </p>
+
+            <p>
+                <label for="fecha_fin"><strong>Fecha de fin:</strong></label>
+                <input type="date" id="fecha_fin" name="fecha_fin">
+            </p>
+
+            <p>
+                <label for="estado"><strong>Estado:</strong></label>
+                <select id="estado" name="estado">
+                    <option value="todos">Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="completado">Completado</option>
+                </select>
+            </p>
+
+            <p>
+                <strong>Formato:</strong>
+                <input type="radio" id="pdf" name="formato" value="pdf" checked>
+                <label for="pdf">PDF</label>
+            </p>
+
+        </fieldset>
+
+        <br>
+
+        <input type="submit" value="Generar reporte PDF">
+
+    </form>
+
+
+    <br>
+
+    <hr>
+
+    <p>
+        <a href="#">← Regresar al panel principal</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

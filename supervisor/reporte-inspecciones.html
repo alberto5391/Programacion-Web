@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de inspecciones</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Reporte de inspecciones</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Reporte de inspecciones (RF-40)</h2>
+
+    <p>
+        Selecciona los criterios para generar un documento PDF
+        con la información registrada durante las inspecciones
+        realizadas en las diferentes zonas.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Filtros del reporte</legend>
+
+            <p>
+                <label for="zona">
+                    <strong>Zona:</strong>
+                </label>
+                <br>
+
+                <select id="zona" name="zona">
+                    <option value="">-- Selecciona una zona --</option>
+                    <option value="norte">Zona Centro</option>
+                    <option value="centro">Zona Chontalpa</option>
+                    <option value="sur">Zona Sierra</option>
+                    <option value="oriente">Zona Pantanos</option>
+                    <option value="poniente">Zona Rios</option>
+                    <option value="todas">Todas las zonas</option>
+                </select>
+            </p>
+
+            <p>
+                <label for="fecha_inicio">
+                    <strong>Fecha de inicio:</strong>
+                </label>
+                <br>
+
+                <input
+                    type="date"
+                    id="fecha_inicio"
+                    name="fecha_inicio"
+                >
+            </p>
+
+            <p>
+                <label for="fecha_fin">
+                    <strong>Fecha de finalización:</strong>
+                </label>
+                <br>
+
+                <input
+                    type="date"
+                    id="fecha_fin"
+                    name="fecha_fin"
+                >
+            </p>
+
+            <p>
+                <label for="estado">
+                    <strong>Estado de inspección:</strong>
+                </label>
+                <br>
+
+                <select id="estado" name="estado">
+                    <option value="todos">Todos</option>
+                    <option value="realizada">Realizada</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="cancelada">Cancelada</option>
+                </select>
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Consultar inspecciones"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Inspecciones registradas</h3>
+
+    <table border="1" cellpadding="6">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Zona</th>
+                <th>Responsable</th>
+                <th>Tipo de inspección</th>
+                <th>Diagnóstico</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>001</td>
+                <td>05/02/2026</td>
+                <td>Zona Chontalpa</td>
+                <td>Juan Pérez</td>
+                <td>Inspección preventiva</td>
+                <td>Sin incidencias</td>
+                <td>Realizada</td>
+            </tr>
+
+            <tr>
+                <td>002</td>
+                <td>08/02/2026</td>
+                <td>Zona Centro</td>
+                <td>María González</td>
+                <td>Inspección general</td>
+                <td>Incidencias detectadas</td>
+                <td>Realizada</td>
+            </tr>
+
+            <tr>
+                <td>003</td>
+                <td>12/02/2026</td>
+                <td>Zona Rios</td>
+                <td>Carlos Hernández</td>
+                <td>Inspección preventiva</td>
+                <td>Requiere seguimiento</td>
+                <td>Realizada</td>
+            </tr>
+
+            <tr>
+                <td>004</td>
+                <td>18/02/2026</td>
+                <td>Zona Pantanos</td>
+                <td>Ana López</td>
+                <td>Inspección de seguimiento</td>
+                <td>Situación controlada</td>
+                <td>Realizada</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <h3>Información incluida en el reporte</h3>
+
+    <ul>
+        <li>Fecha de la inspección</li>
+        <li>Zona inspeccionada</li>
+        <li>Responsable de la inspección</li>
+        <li>Tipo de inspección</li>
+        <li>Diagnóstico</li>
+        <li>Observaciones</li>
+        <li>Estado de la inspección</li>
+        <li>Resultados obtenidos</li>
+    </ul>
+
+    <h3>Generar documento</h3>
+
+    <p>
+        El sistema generará un documento PDF con la información
+        correspondiente a las inspecciones seleccionadas.
+    </p>
+
+    <form action="#" method="post">
+
+        <input
+            type="hidden"
+            name="formato"
+            value="pdf"
+        >
+
+        <input
+            type="submit"
+            value="Generar reporte PDF"
+        >
+
+    </form>
+
+    <br>
+
+    <p>
+        <a href="#">← Regresar al panel principal</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

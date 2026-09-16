@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Exportación de datos</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Exportación de datos</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Exportación de datos (Excel/CSV) (RF-38)</h2>
+
+    <p>
+        Selecciona la información que deseas exportar y el formato
+        de archivo para realizar un análisis externo de los datos.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Datos a exportar</legend>
+
+            <p>
+                <strong>Selecciona el módulo:</strong>
+            </p>
+
+            <p>
+                <input type="radio" id="usuarios" name="modulo" value="usuarios">
+                <label for="usuarios">Usuarios</label>
+            </p>
+
+            <p>
+                <input type="radio" id="inspecciones" name="modulo" value="inspecciones">
+                <label for="inspecciones">Inspecciones</label>
+            </p>
+
+            <p>
+                <input type="radio" id="aplicaciones" name="modulo" value="aplicaciones">
+                <label for="aplicaciones">Aplicaciones</label>
+            </p>
+
+            <p>
+                <input type="radio" id="seguimientos" name="modulo" value="seguimientos">
+                <label for="seguimientos">Seguimientos</label>
+            </p>
+
+            <p>
+                <input type="radio" id="campanas" name="modulo" value="campanas">
+                <label for="campanas">Historial de campañas</label>
+            </p>
+
+            <p>
+                <input type="radio" id="estadisticas" name="modulo" value="estadisticas">
+                <label for="estadisticas">Módulo de estadísticas</label>
+            </p>
+
+        </fieldset>
+
+        <br>
+
+        <fieldset>
+            <legend>Filtros de exportación</legend>
+
+            <p>
+                <label for="fecha_inicio">
+                    <strong>Fecha de inicio:</strong>
+                </label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio">
+            </p>
+
+            <p>
+                <label for="fecha_fin">
+                    <strong>Fecha de fin:</strong>
+                </label>
+                <input type="date" id="fecha_fin" name="fecha_fin">
+            </p>
+
+            <p>
+                <label for="estado">
+                    <strong>Estado:</strong>
+                </label>
+
+                <select id="estado" name="estado">
+                    <option value="todos">Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="completado">Completado</option>
+                </select>
+            </p>
+
+        </fieldset>
+
+        <br>
+
+        <fieldset>
+            <legend>Formato de exportación</legend>
+
+            <p>
+                <input type="radio" id="excel" name="formato" value="excel" checked>
+                <label for="excel">Excel (.xlsx)</label>
+            </p>
+
+            <p>
+                <input type="radio" id="csv" name="formato" value="csv">
+                <label for="csv">CSV (.csv)</label>
+            </p>
+
+        </fieldset>
+
+        <br>
+
+        <input type="submit" value="Exportar datos">
+
+    </form>
+
+
+    <br>
+
+    <p>
+        Los archivos exportados contienen los datos seleccionados
+        para facilitar el análisis externo, cruce de información y
+        manipulación de datos.
+    </p>
+
+    <hr>
+
+    <p>
+        <a href="#">← Regresar al panel principal</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>
