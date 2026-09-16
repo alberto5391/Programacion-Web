@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de información histórica</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <p>Consulta de información histórica</p>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Consulta de información histórica (RF-42)</h2>
+
+    <p>
+        Consulta los registros históricos de campañas realizadas
+        en diferentes periodos. Los registros se conservan aunque
+        los usuarios o catálogos relacionados hayan sido desactivados.
+    </p>
+
+    <form action="#" method="post">
+
+        <fieldset>
+            <legend>Filtros de búsqueda</legend>
+
+            <p>
+                <label for="campana">
+                    <strong>Campaña:</strong>
+                </label>
+                <br>
+
+                <select id="campana" name="campana">
+                    <option value="">-- Todas las campañas --</option>
+                    <option value="campana1">
+                        Campaña de Prevención 2024
+                    </option>
+                    <option value="campana2">
+                        Campaña de Inspección 2025
+                    </option>
+                    <option value="campana3">
+                        Campaña de Prevención 2026
+                    </option>
+                </select>
+            </p>
+
+            <p>
+                <label for="zona">
+                    <strong>Zona:</strong>
+                </label>
+                <br>
+
+                 <select id="zona" name="zona">
+                    <option value="">-- Selecciona una zona --</option>
+                    <option value="norte">Zona Centro</option>
+                    <option value="centro">Zona Chontalpa</option>
+                    <option value="sur">Zona Sierra</option>
+                    <option value="oriente">Zona Pantanos</option>
+                    <option value="poniente">Zona Rios</option>
+                    <option value="todas">Todas las zonas</option>
+                </select>
+            </p>
+
+            <p>
+                <label for="fecha_inicio">
+                    <strong>Desde:</strong>
+                </label>
+                <br>
+
+                <input
+                    type="date"
+                    id="fecha_inicio"
+                    name="fecha_inicio"
+                >
+            </p>
+
+            <p>
+                <label for="fecha_fin">
+                    <strong>Hasta:</strong>
+                </label>
+                <br>
+
+                <input
+                    type="date"
+                    id="fecha_fin"
+                    name="fecha_fin"
+                >
+            </p>
+
+            <p>
+                <label for="responsable">
+                    <strong>Responsable:</strong>
+                </label>
+                <br>
+
+                <select id="responsable" name="responsable">
+                    <option value="">-- Todos los responsables --</option>
+                    <option value="juan">
+                        Juan Pérez — Activo
+                    </option>
+                    <option value="maria">
+                        María González — Activa
+                    </option>
+                    <option value="carlos">
+                        Carlos Hernández — Desactivado
+                    </option>
+                    <option value="ana">
+                        Ana López — Desactivada
+                    </option>
+                </select>
+            </p>
+
+            <p>
+                <input
+                    type="submit"
+                    value="Consultar historial"
+                >
+            </p>
+
+        </fieldset>
+
+    </form>
+
+    <br>
+
+    <h3>Registros históricos</h3>
+
+    <table border="1" cellpadding="6">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Campaña</th>
+                <th>Periodo</th>
+                <th>Zona</th>
+                <th>Responsable</th>
+                <th>Estado actual</th>
+                <th>Registros</th>
+                <th>Consultar</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>001</td>
+                <td>Campaña de Prevención 2024</td>
+                <td>01/02/2024 - 28/02/2024</td>
+                <td>Zona Rios</td>
+                <td>Juan Pérez</td>
+                <td>Activo</td>
+                <td>35</td>
+                <td>
+                    <a href="#">Ver historial</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>002</td>
+                <td>Campaña de Inspección 2025</td>
+                <td>05/03/2025 - 30/03/2025</td>
+                <td>Zona Centro</td>
+                <td>Carlos Hernández</td>
+                <td>Desactivado</td>
+                <td>48</td>
+                <td>
+                    <a href="#">Ver historial</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>003</td>
+                <td>Campaña de Prevención 2026</td>
+                <td>01/02/2026 - 28/02/2026</td>
+                <td>Zona Chontalpa</td>
+                <td>María González</td>
+                <td>Activo</td>
+                <td>52</td>
+                <td>
+                    <a href="#">Ver historial</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>004</td>
+                <td>Campaña de Inspección 2025</td>
+                <td>10/04/2025 - 25/04/2025</td>
+                <td>Zona Sierra</td>
+                <td>Ana López</td>
+                <td>Desactivado</td>
+                <td>27</td>
+                <td>
+                    <a href="#">Ver historial</a>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <h3>Detalle del registro histórico</h3>
+
+    <table border="1" cellpadding="6">
+
+        <tr>
+            <th>Campaña</th>
+            <td>Campaña de Inspección 2025</td>
+        </tr>
+
+        <tr>
+            <th>Periodo</th>
+            <td>05/03/2025 - 30/03/2025</td>
+        </tr>
+
+        <tr>
+            <th>Zona</th>
+            <td>Zona Centro</td>
+        </tr>
+
+        <tr>
+            <th>Responsable</th>
+            <td>Carlos Hernández</td>
+        </tr>
+
+        <tr>
+            <th>Estado del responsable</th>
+            <td>Desactivado</td>
+        </tr>
+
+        <tr>
+            <th>Inspecciones realizadas</th>
+            <td>48</td>
+        </tr>
+
+        <tr>
+            <th>Aplicaciones realizadas</th>
+            <td>32</td>
+        </tr>
+
+        <tr>
+            <th>Seguimientos realizados</th>
+            <td>41</td>
+        </tr>
+
+        <tr>
+            <th>Resultados</th>
+            <td>Campaña finalizada</td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <h3>Conservación de registros</h3>
+
+    <p>
+        Los registros históricos permanecen disponibles para consulta
+        aunque los usuarios responsables o los catálogos relacionados
+        hayan sido desactivados posteriormente.
+    </p>
+
+    <ul>
+        <li>
+            Los registros de campañas anteriores se conservan.
+        </li>
+
+        <li>
+            Los usuarios desactivados continúan apareciendo
+            como responsables de registros históricos.
+        </li>
+
+        <li>
+            Los catálogos desactivados no eliminan la información
+            histórica relacionada.
+        </li>
+
+        <li>
+            La información puede consultarse por diferentes periodos.
+        </li>
+    </ul>
+
+    <br>
+
+    <h3>Acciones</h3>
+
+    <p>
+        <button type="button">
+            Ver información completa
+        </button>
+
+        <button type="button">
+            Generar reporte PDF
+        </button>
+    </p>
+
+    <br>
+
+    <p>
+        <a href="#">← Regresar al panel principal</a>
+    </p>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

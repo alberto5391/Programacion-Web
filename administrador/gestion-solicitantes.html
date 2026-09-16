@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de solicitantes y origen de campañas</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <nav>
+        <a href="#">Panel Principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Gestión de solicitantes y origen de la campaña (RF-48)</h2>
+
+    <p>
+        El sistema permite registrar y catalogar la procedencia o el
+        solicitante de una campaña, vinculando esta información con el
+        registro general de la campaña.
+    </p>
+
+    <fieldset>
+        <legend>Registrar origen o solicitante</legend>
+
+        <form>
+
+            <label for="tipoOrigen">Tipo de origen:</label>
+            <select id="tipoOrigen" name="tipoOrigen">
+                <option value="">Seleccione un tipo</option>
+                <option value="ciudadano">Reporte ciudadano</option>
+                <option value="privado">Cliente privado</option>
+                <option value="salud">Programa de salud pública</option>
+                <option value="institucion">Institución</option>
+                <option value="interno">Solicitud interna</option>
+                <option value="otro">Otro</option>
+            </select>
+
+            <br><br>
+
+            <label for="nombreSolicitante">Nombre del solicitante:</label>
+            <input
+                type="text"
+                id="nombreSolicitante"
+                name="nombreSolicitante"
+                placeholder="Nombre o razón social"
+            >
+
+            <br><br>
+
+            <label for="contacto">Medio de contacto:</label>
+            <input
+                type="text"
+                id="contacto"
+                name="contacto"
+                placeholder="Teléfono o correo electrónico"
+            >
+
+            <br><br>
+
+            <label for="descripcion">Descripción de la solicitud:</label>
+            <br>
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                rows="4"
+                cols="50"
+                placeholder="Descripción del motivo de la solicitud"
+            ></textarea>
+
+            <br><br>
+
+            <label for="estado">Estado:</label>
+            <select id="estado" name="estado">
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+            </select>
+
+            <br><br>
+
+            <button type="submit">Registrar solicitante</button>
+
+        </form>
+    </fieldset>
+
+    <br>
+
+    <h3>Catálogo de orígenes y solicitantes</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipo de origen</th>
+                <th>Solicitante</th>
+                <th>Contacto</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>ORI-001</td>
+                <td>Reporte ciudadano</td>
+                <td>Ciudadanía de Zona Sierra</td>
+                <td>555-123-4567</td>
+                <td>Reporte de presencia de plagas.</td>
+                <td>Activo</td>
+                <td>
+                    <button type="button">Modificar</button>
+                    <button type="button">Desactivar</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>ORI-002</td>
+                <td>Cliente privado</td>
+                <td>Empresa ABC S.A. de C.V.</td>
+                <td>contacto@empresa.com</td>
+                <td>Solicitud de servicio de control.</td>
+                <td>Activo</td>
+                <td>
+                    <button type="button">Modificar</button>
+                    <button type="button">Desactivar</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>ORI-003</td>
+                <td>Programa de salud pública</td>
+                <td>Programa Estatal de Salud</td>
+                <td>555-987-6543</td>
+                <td>Campaña preventiva de salud pública.</td>
+                <td>Activo</td>
+                <td>
+                    <button type="button">Modificar</button>
+                    <button type="button">Desactivar</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>ORI-004</td>
+                <td>Institución</td>
+                <td>Instituto Educativo Regional</td>
+                <td>institucion@ejemplo.com</td>
+                <td>Solicitud de inspección institucional.</td>
+                <td>Activo</td>
+                <td>
+                    <button type="button">Modificar</button>
+                    <button type="button">Desactivar</button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <br>
+
+    <fieldset>
+        <legend>Vincular origen con campaña</legend>
+
+        <form>
+
+            <label for="campana">Campaña:</label>
+            <select id="campana" name="campana">
+                <option value="">Seleccione una campaña</option>
+                <option value="cam001">
+                    CAM-001 - Campaña Zona Norte
+                </option>
+                <option value="cam002">
+                    CAM-002 - Control de Plagas Centro
+                </option>
+                <option value="cam003">
+                    CAM-003 - Atención Zona Oriente
+                </option>
+                <option value="cam004">
+                    CAM-004 - Programa Preventivo
+                </option>
+            </select>
+
+            <br><br>
+
+            <label for="origen">Origen o solicitante:</label>
+            <select id="origen" name="origen">
+                <option value="">Seleccione un origen</option>
+                <option value="ori001">
+                    ORI-001 - Reporte ciudadano
+                </option>
+                <option value="ori002">
+                    ORI-002 - Cliente privado
+                </option>
+                <option value="ori003">
+                    ORI-003 - Programa de salud pública
+                </option>
+                <option value="ori004">
+                    ORI-004 - Institución
+                </option>
+            </select>
+
+            <br><br>
+
+            <label for="fechaSolicitud">Fecha de solicitud:</label>
+            <input
+                type="date"
+                id="fechaSolicitud"
+                name="fechaSolicitud"
+            >
+
+            <br><br>
+
+            <button type="submit">
+                Vincular a campaña
+            </button>
+
+        </form>
+    </fieldset>
+
+    <br>
+
+    <h3>Campañas y origen de la solicitud</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID Campaña</th>
+                <th>Nombre de campaña</th>
+                <th>Zona</th>
+                <th>Fecha de inicio</th>
+                <th>Tipo de origen</th>
+                <th>Solicitante</th>
+                <th>Fecha de solicitud</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>CAM-001</td>
+                <td>Campaña Zona Sierra</td>
+                <td>Zona Sierra</td>
+                <td>05/08/2026</td>
+                <td>Reporte ciudadano</td>
+                <td>Ciudadanía de Zona Sierra</td>
+                <td>01/08/2026</td>
+            </tr>
+
+            <tr>
+                <td>CAM-002</td>
+                <td>Control de Plagas Centro</td>
+                <td>Zona Centro</td>
+                <td>10/08/2026</td>
+                <td>Cliente privado</td>
+                <td>Empresa ABC S.A. de C.V.</td>
+                <td>06/08/2026</td>
+            </tr>
+
+            <tr>
+                <td>CAM-003</td>
+                <td>Atención Zona Chontalpa</td>
+                <td>Zona Chontalpa</td>
+                <td>15/08/2026</td>
+                <td>Programa de salud pública</td>
+                <td>Programa Estatal de Salud</td>
+                <td>10/08/2026</td>
+            </tr>
+
+            <tr>
+                <td>CAM-004</td>
+                <td>Programa Preventivo</td>
+                <td>Zona Pantanos</td>
+                <td>20/08/2026</td>
+                <td>Institución</td>
+                <td>Instituto Educativo Regional</td>
+                <td>15/08/2026</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <br>
+
+    <fieldset>
+        <legend>Información de la campaña seleccionada</legend>
+
+        <p>
+            <strong>Campaña:</strong>
+            CAM-003 - Atención Zona Chontalpa
+        </p>
+
+        <p>
+            <strong>Zona:</strong>
+            Zona Chontalpa
+        </p>
+
+        <p>
+            <strong>Origen:</strong>
+            Programa de salud pública
+        </p>
+
+        <p>
+            <strong>Solicitante:</strong>
+            Programa Estatal de Salud
+        </p>
+
+        <p>
+            <strong>Fecha de solicitud:</strong>
+            10/08/2026
+        </p>
+
+        <p>
+            <strong>Motivo:</strong>
+            Campaña preventiva para disminuir la incidencia de plagas
+            detectada en la zona.
+        </p>
+
+    </fieldset>
+
+    <br>
+
+    <h3>Opciones de gestión</h3>
+
+    <ul>
+        <li>Registrar nuevos tipos de origen o solicitantes.</li>
+        <li>Modificar los datos de un solicitante.</li>
+        <li>Desactivar registros sin eliminarlos físicamente.</li>
+        <li>Vincular un solicitante con una campaña.</li>
+        <li>Consultar el origen de una campaña.</li>
+        <li>Conservar el historial de solicitudes realizadas.</li>
+    </ul>
+
+    <br>
+
+    <form>
+        <button type="button">Actualizar catálogo</button>
+        <button type="button">Consultar campañas por origen</button>
+        <button type="button">Generar reporte</button>
+    </form>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>

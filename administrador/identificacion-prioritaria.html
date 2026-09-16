@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Identificación de zonas prioritarias</title>
+</head>
+
+<body>
+
+    <h1>PLAGUE</h1>
+
+    <nav>
+        <a href="#">Panel principal</a> |
+        <a href="#">Cerrar sesión</a>
+    </nav>
+
+    <hr>
+
+    <h2>Identificación de zonas prioritarias (RF-36)</h2>
+
+    <p>
+        El sistema permite identificar las zonas que presentan una mayor
+        incidencia de plagas o que requieren mayor atención, utilizando
+        información geográfica y estadística obtenida de las campañas.
+    </p>
+
+    <fieldset>
+        <legend>Filtros de búsqueda</legend>
+
+        <form>
+
+            <label for="zona">Zona:</label>
+            <select id="zona" name="zona">
+                    <option value="">-- Selecciona una zona --</option>
+                    <option value="norte">Zona Centro</option>
+                    <option value="centro">Zona Chontalpa</option>
+                    <option value="sur">Zona Sierra</option>
+                    <option value="oriente">Zona Pantanos</option>
+                    <option value="poniente">Zona Rios</option>
+                    <option value="todas">Todas las zonas</option>
+                </select>
+
+            <br><br>
+
+            <label for="fechaInicio">Fecha inicial:</label>
+            <input type="date" id="fechaInicio" name="fechaInicio">
+
+            <label for="fechaFin">Fecha final:</label>
+            <input type="date" id="fechaFin" name="fechaFin">
+
+            <br><br>
+
+            <label for="plaga">Tipo de plaga:</label>
+            <select id="plaga" name="plaga">
+                <option value="">Todas</option>
+                <option value="mosquito">Mosquito</option>
+                <option value="roedor">Roedores</option>
+                <option value="cucaracha">Cucaracha</option>
+                <option value="hormiga">Hormiga</option>
+                <option value="otra">Otra</option>
+            </select>
+
+            <br><br>
+
+            <button type="submit">Consultar zonas</button>
+
+        </form>
+    </fieldset>
+
+    <br>
+
+    <h3>Resultados de identificación</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Zona</th>
+                <th>Campañas realizadas</th>
+                <th>Inspecciones</th>
+                <th>Incidencias detectadas</th>
+                <th>Índice de incidencia</th>
+                <th>Nivel de prioridad</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Zona Chontalpa</td>
+                <td>8</td>
+                <td>35</td>
+                <td>24</td>
+                <td>68.6%</td>
+                <td>Alta</td>
+            </tr>
+
+            <tr>
+                <td>Zona Centro</td>
+                <td>10</td>
+                <td>42</td>
+                <td>18</td>
+                <td>42.8%</td>
+                <td>Media</td>
+            </tr>
+
+            <tr>
+                <td>Zona Rios</td>
+                <td>6</td>
+                <td>27</td>
+                <td>8</td>
+                <td>29.6%</td>
+                <td>Baja</td>
+            </tr>
+
+            <tr>
+                <td>Zona Sierra</td>
+                <td>9</td>
+                <td>38</td>
+                <td>30</td>
+                <td>78.9%</td>
+                <td>Crítica</td>
+            </tr>
+
+            <tr>
+                <td>Zona Pantanos</td>
+                <td>7</td>
+                <td>31</td>
+                <td>15</td>
+                <td>48.3%</td>
+                <td>Media</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <fieldset>
+        <legend>Resumen de zonas prioritarias</legend>
+
+        <p>
+            <strong>Zona con mayor incidencia:</strong>
+            Zona Sierra
+        </p>
+
+        <p>
+            <strong>Índice de incidencia:</strong>
+            78.9%
+        </p>
+
+        <p>
+            <strong>Nivel de prioridad:</strong>
+            Crítica
+        </p>
+
+        <p>
+            <strong>Acción recomendada:</strong>
+            Programar una nueva inspección y considerar una campaña de
+            atención prioritaria.
+        </p>
+
+    </fieldset>
+
+    <br>
+
+    <h3>Información geográfica y estadística</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Zona</th>
+                <th>Ubicación</th>
+                <th>Incidencias históricas</th>
+                <th>Última campaña</th>
+                <th>Tendencia</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Zona Chontalpa</td>
+                <td>Cardenas</td>
+                <td>24</td>
+                <td>15/08/2026</td>
+                <td>En aumento</td>
+            </tr>
+
+            <tr>
+                <td>Zona Centro</td>
+                <td>Nacajuca</td>
+                <td>18</td>
+                <td>20/08/2026</td>
+                <td>Estable</td>
+            </tr>
+
+            <tr>
+                <td>Zona Rios</td>
+                <td>Balancan</td>
+                <td>8</td>
+                <td>18/08/2026</td>
+                <td>En disminución</td>
+            </tr>
+
+            <tr>
+                <td>Zona Sierra</td>
+                <td>Tacotalpa</td>
+                <td>30</td>
+                <td>25/08/2026</td>
+                <td>En aumento</td>
+            </tr>
+
+            <tr>
+                <td>Zona Pantanos</td>
+                <td>Jonuta</td>
+                <td>15</td>
+                <td>22/08/2026</td>
+                <td>Estable</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h3>Criterios para determinar la prioridad</h3>
+
+    <ul>
+        <li>Frecuencia de incidencias de plagas.</li>
+        <li>Número de inspecciones realizadas.</li>
+        <li>Resultados históricos de las campañas.</li>
+        <li>Tendencia de aumento o disminución de las incidencias.</li>
+        <li>Ubicación geográfica de las zonas afectadas.</li>
+        <li>Necesidad de nuevas inspecciones o tratamientos.</li>
+    </ul>
+
+    <br>
+
+    <form>
+        <button type="button">Actualizar análisis</button>
+        <button type="button">Generar reporte de zonas prioritarias</button>
+    </form>
+
+    <hr>
+
+    <footer>
+        <p>Prototipo 1 — AEB-1055 Programación Web</p>
+    </footer>
+
+</body>
+</html>
