@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte de inspecciones</title>
+    <title>Reporte de aplicaciones</title>
 </head>
 
 <body>
 
     <h1>PLAGUE</h1>
-
-    <p>Reporte de inspecciones</p>
+    <p>Reporte de aplicaciones</p>
 
     <nav>
         <a href="#">Panel principal</a> |
@@ -18,12 +17,11 @@
 
     <hr>
 
-    <h2>Reporte de inspecciones (RF-40)</h2>
+    <h2>Reporte de aplicaciones (RF-41)</h2>
 
     <p>
-        Selecciona los criterios para generar un documento PDF
-        con la información registrada durante las inspecciones
-        realizadas en las diferentes zonas.
+        Selecciona los criterios para consultar las aplicaciones
+        realizadas y generar un reporte con la información registrada.
     </p>
 
     <form action="#" method="post">
@@ -37,7 +35,7 @@
                 </label>
                 <br>
 
-                <select id="zona" name="zona">
+               <select id="zona" name="zona">
                     <option value="">-- Selecciona una zona --</option>
                     <option value="norte">Zona Centro</option>
                     <option value="centro">Zona Chontalpa</option>
@@ -75,23 +73,9 @@
             </p>
 
             <p>
-                <label for="estado">
-                    <strong>Estado de inspección:</strong>
-                </label>
-                <br>
-
-                <select id="estado" name="estado">
-                    <option value="todos">Todos</option>
-                    <option value="realizada">Realizada</option>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="cancelada">Cancelada</option>
-                </select>
-            </p>
-
-            <p>
                 <input
                     type="submit"
-                    value="Consultar inspecciones"
+                    value="Consultar aplicaciones"
                 >
             </p>
 
@@ -101,7 +85,7 @@
 
     <br>
 
-    <h3>Inspecciones registradas</h3>
+    <h3>Aplicaciones realizadas</h3>
 
     <table border="1" cellpadding="6">
 
@@ -109,11 +93,11 @@
             <tr>
                 <th>ID</th>
                 <th>Fecha</th>
-                <th>Zona</th>
+                <th>Ubicación</th>
                 <th>Responsable</th>
-                <th>Tipo de inspección</th>
-                <th>Diagnóstico</th>
-                <th>Estado</th>
+                <th>Producto utilizado</th>
+                <th>Observaciones</th>
+                <th>Evidencias</th>
             </tr>
         </thead>
 
@@ -122,41 +106,49 @@
             <tr>
                 <td>001</td>
                 <td>05/02/2026</td>
-                <td>Zona Chontalpa</td>
+                <td>Zona Rios - Sector 1</td>
                 <td>Juan Pérez</td>
-                <td>Inspección preventiva</td>
-                <td>Sin incidencias</td>
-                <td>Realizada</td>
+                <td>Producto A</td>
+                <td>Aplicación realizada correctamente</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
             </tr>
 
             <tr>
                 <td>002</td>
-                <td>08/02/2026</td>
-                <td>Zona Centro</td>
+                <td>10/02/2026</td>
+                <td>Zona Centro - Sector 3</td>
                 <td>María González</td>
-                <td>Inspección general</td>
-                <td>Incidencias detectadas</td>
-                <td>Realizada</td>
+                <td>Producto B</td>
+                <td>Se realizó aplicación preventiva</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
             </tr>
 
             <tr>
                 <td>003</td>
-                <td>12/02/2026</td>
-                <td>Zona Rios</td>
+                <td>15/02/2026</td>
+                <td>Zona Sierra - Sector 2</td>
                 <td>Carlos Hernández</td>
-                <td>Inspección preventiva</td>
-                <td>Requiere seguimiento</td>
-                <td>Realizada</td>
+                <td>Producto C</td>
+                <td>Se recomienda seguimiento</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
             </tr>
 
             <tr>
                 <td>004</td>
-                <td>18/02/2026</td>
-                <td>Zona Pantanos</td>
+                <td>20/02/2026</td>
+                <td>Zona Pantanos - Sector 4</td>
                 <td>Ana López</td>
-                <td>Inspección de seguimiento</td>
-                <td>Situación controlada</td>
-                <td>Realizada</td>
+                <td>Producto A</td>
+                <td>Aplicación completada</td>
+                <td>
+                    <a href="#">Ver evidencia</a>
+                </td>
             </tr>
 
         </tbody>
@@ -168,21 +160,20 @@
     <h3>Información incluida en el reporte</h3>
 
     <ul>
-        <li>Fecha de la inspección</li>
-        <li>Zona inspeccionada</li>
-        <li>Responsable de la inspección</li>
-        <li>Tipo de inspección</li>
-        <li>Diagnóstico</li>
-        <li>Observaciones</li>
-        <li>Estado de la inspección</li>
-        <li>Resultados obtenidos</li>
+        <li>Fecha de la aplicación</li>
+        <li>Ubicación donde se realizó</li>
+        <li>Zona correspondiente</li>
+        <li>Responsable de la aplicación</li>
+        <li>Productos utilizados</li>
+        <li>Observaciones registradas</li>
+        <li>Evidencias disponibles</li>
     </ul>
 
-    <h3>Generar documento</h3>
+    <h3>Generar reporte</h3>
 
     <p>
         El sistema generará un documento PDF con la información
-        correspondiente a las inspecciones seleccionadas.
+        de las aplicaciones seleccionadas.
     </p>
 
     <form action="#" method="post">
