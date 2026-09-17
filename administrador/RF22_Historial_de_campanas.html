@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Campañas</title>
+</head>
+<body>
+
+    <center>
+        <h1><font face="Arial, sans-serif" color="#333333">Historial de Campañas</font></h1>
+    </center>
+    <p><font face="Arial, sans-serif">Módulo para consultar de manera cronológica todas las acciones realizadas (inspecciones, diagnósticos, aplicaciones y seguimientos) asociadas a cada campaña.</font></p>
+    <hr>
+    <br>
+
+    <h2>Filtros de Búsqueda</h2>
+    
+    <form action="#" method="GET">
+        <div>
+            <label for="id_campana">ID de la Campaña:</label>
+            <input type="text" id="id_campana" name="id_campana" placeholder="Ej. CAMP-2023-01">
+            
+            &nbsp;&nbsp;&nbsp;
+
+            <label for="tipo_accion">Tipo de Acción:</label>
+            <select id="tipo_accion" name="tipo_accion">
+                <option value="todas" selected>Todas las acciones</option>
+                <option value="inspeccion">Inspección</option>
+                <option value="diagnostico">Diagnóstico</option>
+                <option value="aplicacion">Aplicación (Fumigación)</option>
+                <option value="seguimiento">Seguimiento</option>
+            </select>
+        </div>
+        <br>
+        
+        <div>
+            <label for="fecha_inicio">Desde:</label>
+            <input type="date" id="fecha_inicio" name="fecha_inicio">
+            
+            &nbsp;&nbsp;&nbsp;
+
+            <label for="fecha_fin">Hasta:</label>
+            <input type="date" id="fecha_fin" name="fecha_fin">
+        </div>
+        <br>
+
+        <div>
+            <button type="submit">Buscar en Historial</button>
+            <button type="reset">Limpiar Filtros</button>
+        </div>
+    </form>
+
+    <br><br>
+    <hr>
+    <br>
+
+    <h2>Línea de Tiempo / Historial Cronológico</h2>
+    
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th align="left" bgcolor="#f2f2f2">Fecha y Hora</th>
+                <th align="left" bgcolor="#f2f2f2">Campaña / Zona</th>
+                <th align="left" bgcolor="#f2f2f2">Tipo de Acción</th>
+                <th align="left" bgcolor="#f2f2f2">Técnico Responsable</th>
+                <th align="left" bgcolor="#f2f2f2">Detalles / Resultados</th>
+                <th align="left" bgcolor="#f2f2f2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Registro más reciente -->
+            <tr>
+                <td>16/10/2026 - 10:30 AM</td>
+                <td>CAMP-2026-10<br><small>Zona: ZN-001 Centro</small></td>
+                <td>Seguimiento</td>
+                <td>TEC-045 Roberto Domínguez</td>
+                <td>Se verificó la reducción del 90% de la plaga. Sin riesgos actuales.</td>
+                <td>
+                    <button>Ver Reporte</button>
+                </td>
+            </tr>
+            
+            <!-- Registro anterior -->
+            <tr>
+                <td>10/10/2026 - 08:00 AM</td>
+                <td>CAMP-2026-10<br><small>Zona: ZN-001 Centro</small></td>
+                <td>Aplicación</td>
+                <td>TEC-046 Luis Méndez</td>
+                <td>Aplicación de Biothrine WG 250 (3 Litros) en alcantarillas y patios.</td>
+                <td>
+                    <button>Ver Reporte</button>
+                    <button>Ver Insumos Usados</button>
+                </td>
+            </tr>
+
+            <!-- Registro más antiguo -->
+            <tr>
+                <td>08/10/2026 - 11:15 AM</td>
+                <td>CAMP-2026-10<br><small>Zona: ZN-001 Centro</small></td>
+                <td>Diagnóstico</td>
+                <td>TEC-047 Ana Martínez</td>
+                <td>Identificación de Mosquito del Dengue en etapa larvaria y adulta.</td>
+                <td>
+                    <button>Ver Reporte</button>
+                </td>
+            </tr>
+
+            <!-- Primer registro de la campaña -->
+            <tr>
+                <td>05/10/2026 - 09:00 AM</td>
+                <td>CAMP-2026-10<br><small>Zona: ZN-001 Centro</small></td>
+                <td>Inspección</td>
+                <td>TEC-047 Ana Martínez</td>
+                <td>Recorrido inicial en las manzanas principales. Toma de muestras de agua.</td>
+                <td>
+                    <button>Ver Reporte</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
