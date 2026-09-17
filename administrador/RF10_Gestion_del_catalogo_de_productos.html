@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Catálogo de Productos</title>
+</head>
+<body>
+
+    <center>
+        <h1><font face="Arial, sans-serif" color="#333333">Gestión del Catálogo de Productos</font></h1>
+    </center>
+    <p><font face="Arial, sans-serif">Módulo para registrar, administrar y consultar los productos químicos y materiales utilizados en los tratamientos de fumigación y campañas.</font></p>
+    <hr>
+    <br>
+
+    <h2>Registrar / Modificar Producto</h2>
+    
+    <form action="#" method="POST">
+        
+        <div>
+            <label for="codigo_producto">Código de Producto:</label><br>
+            <input type="text" id="codigo_producto" name="codigo_producto" placeholder="Ej. PRD-001" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="nombre_comercial">Nombre Comercial:</label><br>
+            <input type="text" id="nombre_comercial" name="nombre_comercial" placeholder="Ej. Biothrine WG 250" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="ingrediente_activo">Ingrediente Activo:</label><br>
+            <input type="text" id="ingrediente_activo" name="ingrediente_activo" placeholder="Ej. Deltametrina al 25%">
+        </div>
+        <br>
+
+        <div>
+            <label for="tipo_producto">Tipo de Producto:</label><br>
+            <select id="tipo_producto" name="tipo_producto" required>
+                <option value="" disabled selected>Selecciona una categoría</option>
+                <option value="insecticida">Insecticida</option>
+                <option value="rodenticida">Rodenticida (Raticida)</option>
+                <option value="larvicida">Larvicida</option>
+                <option value="repelente">Repelente</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>
+        <br>
+
+        <div>
+            <label for="presentacion">Presentación y Dosis Recomendada:</label><br>
+            <textarea id="presentacion" name="presentacion" rows="3" cols="50" placeholder="Ej. Bote de 1 Litro. Dosis: 10ml por litro de agua."></textarea>
+        </div>
+        <br>
+
+        <div>
+            <button type="submit">Guardar Producto</button>
+            <button type="reset">Limpiar Datos</button>
+        </div>
+    </form>
+
+    <br><br>
+    <hr>
+    <br>
+
+    <h2>Consulta y Administración de Productos</h2>
+    
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th align="left" bgcolor="#f2f2f2">Código</th>
+                <th align="left" bgcolor="#f2f2f2">Nombre Comercial</th>
+                <th align="left" bgcolor="#f2f2f2">Tipo</th>
+                <th align="left" bgcolor="#f2f2f2">Ingrediente Activo</th>
+                <th align="left" bgcolor="#f2f2f2">Estado (Stock)</th>
+                <th align="left" bgcolor="#f2f2f2">Acciones de Campaña</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>PRD-001</td>
+                <td>Biothrine WG 250</td>
+                <td>Insecticida</td>
+                <td>Deltametrina 25%</td>
+                <td>
+                    <select name="estado_prod1">
+                        <option value="activo" selected>Activo (Disponible)</option>
+                        <option value="inactivo">Inactivo (Agotado/Descontinuado)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver historial de uso</button>
+                    <button>Editar</button>
+                </td>
+            </tr>
+            
+            <tr>
+                <td>PRD-002</td>
+                <td>Storm Cebos</td>
+                <td>Rodenticida</td>
+                <td>Flocoumafen 0.005%</td>
+                <td>
+                    <select name="estado_prod2">
+                        <option value="activo" selected>Activo (Disponible)</option>
+                        <option value="inactivo">Inactivo (Agotado/Descontinuado)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver historial de uso</button>
+                    <button>Editar</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>PRD-003</td>
+                <td>Abate 1 SG</td>
+                <td>Larvicida</td>
+                <td>Temephos 1%</td>
+                <td>
+                    <select name="estado_prod3">
+                        <option value="activo">Activo (Disponible)</option>
+                        <option value="inactivo" selected>Inactivo (Agotado/Descontinuado)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver historial de uso</button>
+                    <button>Editar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
