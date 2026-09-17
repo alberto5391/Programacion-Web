@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Catálogo de Zonas</title>
+</head>
+<body>
+
+    <center>
+        <h1><font face="Arial, sans-serif" color="#333333">Gestión del Catálogo de Zonas</font></h1>
+    </center>
+    <p><font face="Arial, sans-serif">Módulo para registrar, modificar y desactivar zonas urbanas para inspecciones y campañas de fumigación.</font></p>
+    <hr>
+    <br>
+
+    <h2>Registrar / Modificar Zona</h2>
+    
+    <form action="#" method="POST">
+        
+        <div>
+            <label for="codigo_zona">Código de Zona:</label><br>
+            <input type="text" id="codigo_zona" name="codigo_zona" placeholder="Ej. ZN-001" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="nombre_zona">Nombre de la Zona o Colonia:</label><br>
+            <input type="text" id="nombre_zona" name="nombre_zona" placeholder="Nombre de la zona urbana" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="municipio">Municipio / Localidad:</label><br>
+            <input type="text" id="municipio" name="municipio" placeholder="Ej. Centro" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="referencias">Referencias de Ubicación:</label><br>
+            <textarea id="referencias" name="referencias" rows="4" cols="40" placeholder="Descripción para ubicar la zona, colindancias, etc." required></textarea>
+        </div>
+        <br>
+
+        <div>
+            <button type="submit">Guardar Zona</button>
+            <button type="reset">Limpiar Datos</button>
+        </div>
+    </form>
+
+    <br><br>
+    <hr>
+    <br>
+
+    <h2>Zonas Registradas</h2>
+    
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th align="left" bgcolor="#f2f2f2">Código</th>
+                <th align="left" bgcolor="#f2f2f2">Nombre de la Zona</th>
+                <th align="left" bgcolor="#f2f2f2">Municipio</th>
+                <th align="left" bgcolor="#f2f2f2">Referencias</th>
+                <th align="left" bgcolor="#f2f2f2">Estado (Activar/Desactivar)</th>
+                <th align="left" bgcolor="#f2f2f2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ejemplo de Zona 1 -->
+            <tr>
+                <td>ZN-001</td>
+                <td>Colonia Centro</td>
+                <td>Centro</td>
+                <td>Zona comercial, colinda con el río.</td>
+                <td>
+                    <select name="estado_zona1">
+                        <option value="activa" selected>Activa</option>
+                        <option value="inactiva">Inactiva (Desactivada)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Editar / Modificar</button>
+                </td>
+            </tr>
+            
+            <!-- Ejemplo de Zona 2 -->
+            <tr>
+                <td>ZN-002</td>
+                <td>Fraccionamiento Las Rosas</td>
+                <td>Centro</td>
+                <td>A espaldas del parque principal.</td>
+                <td>
+                    <select name="estado_zona2">
+                        <option value="activa">Activa</option>
+                        <option value="inactiva" selected>Inactiva (Desactivada)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Editar / Modificar</button>
+                </td>
+            </tr>
+
+            <!-- Ejemplo de Zona 3 -->
+            <tr>
+                <td>ZN-003</td>
+                <td>Villa Macultepec</td>
+                <td>Macultepec</td>
+                <td>Entrada principal por la carretera.</td>
+                <td>
+                    <select name="estado_zona3">
+                        <option value="activa" selected>Activa</option>
+                        <option value="inactiva">Inactiva (Desactivada)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Editar / Modificar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
