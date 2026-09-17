@@ -3,41 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>PLAGUE - Panel de Estadísticas</title>
-    <style>
-        /* Estilos puros para crear la gráfica sin usar librerías externas */
-        .contenedor-grafica {
-            display: flex;
-            align-items: flex-end;
-            height: 150px;
-            gap: 20px;
-            margin-top: 15px;
-            border-bottom: 2px solid #333;
-            border-left: 2px solid #333;
-            padding-left: 10px;
-            padding-bottom: 5px;
-        }
-        .barra-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            height: 100%;
-        }
-        .barra {
-            width: 40px;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
-            padding-top: 5px;
-            border-radius: 3px 3px 0 0;
-        }
-        .etiqueta-barra {
-            margin-top: 8px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
     <h1>Panel Estadístico y Consultas</h1>
@@ -51,8 +16,8 @@
 
     <!-- Bloque para RF29, RF30, RF31, RF32 y RF33: Generación de diversas estadísticas -->
     <h2>Reportes Estadísticos</h2>
-    <table border="1" cellpadding="8" style="border-collapse: collapse;">
-        <tr style="background-color: #f2f2f2;">
+    <table border="1">
+        <tr>
             <th>Top Plagas (RF30)</th>
             <th>Zonas Críticas (RF31)</th>
             <th>Productos Usados (RF32)</th>
@@ -72,35 +37,24 @@
     <h2>Gráficos y Mapas</h2>
     
     <!-- ESPACIO PARA GRÁFICO (RF34) -->
-    <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 320px; display: inline-block; vertical-align: top; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-        <p style="margin-top: 0;"><strong>Incidencia de Plagas (RF34)</strong></p>
-        
-        <!-- Gráfica hecha con CSS -->
-        <div class="contenedor-grafica">
-            <div class="barra-wrapper">
-                <div class="barra" style="height: 120px; background-color: #e74c3c;">45</div>
-                <div class="etiqueta-barra">Cucarachas</div>
-            </div>
-            <div class="barra-wrapper">
-                <div class="barra" style="height: 80px; background-color: #f39c12;">28</div>
-                <div class="etiqueta-barra">Roedores</div>
-            </div>
-            <div class="barra-wrapper">
-                <div class="barra" style="height: 40px; background-color: #3498db;">15</div>
-                <div class="etiqueta-barra">Mosquitos</div>
-            </div>
-        </div>
+    <div>
+        <p><strong>Incidencia de Plagas (RF34)</strong></p>
+        <ul>
+            <li>Cucarachas: 45 casos</li>
+            <li>Roedores: 28 casos</li>
+            <li>Mosquitos: 15 casos</li>
+        </ul>
     </div>
     
     <!-- ESPACIO PARA MAPA DE CALOR (RF35) -->
-    <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 350px; display: inline-block; vertical-align: top; margin-left: 20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-        <p style="margin-top: 0;"><strong>Mapa de Zonas Atendidas (RF35)</strong></p>
-        
-        <!-- Mapa incrustado de OpenStreetMap (Villahermosa) -->
-        <iframe width="100%" height="180" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=-92.98%2C17.96%2C-92.90%2C18.02&amp;layer=mapnik&amp;marker=17.99%2C-92.94" style="border: 1px solid black; border-radius: 4px;"></iframe>
-        <br/><small><a href="https://www.openstreetmap.org/?mlat=17.99&mlon=-92.94#map=13/17.9900/-92.9400" target="_blank">Ver mapa completo</a></small>
+    <div>
+        <p><strong>Mapa de Zonas Atendidas (RF35)</strong></p>
+        <iframe width="300" height="180" src="https://www.openstreetmap.org/export/embed.html?bbox=-92.98%2C17.96%2C-92.90%2C18.02&amp;layer=mapnik&amp;marker=17.99%2C-92.94"></iframe>
+        <br>
+        <a href="https://www.openstreetmap.org/?mlat=17.99&mlon=-92.94#map=13/17.9900/-92.9400" target="_blank">Ver mapa completo</a>
     </div>
 
     <br><br><br>
-    <a href="index.html">Volver al inicio</a></body>
+    <a href="supervisor/supervisor-dashboard.html">Volver al menu</a>
+</body>
 </html>

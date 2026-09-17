@@ -11,18 +11,19 @@
     
     <div>
         <center>
-            <h1><font face="Arial, sans-serif" color="#333333">RF01 y RF06 Autenticacion de Usuario</font></h1>
+            <h1>RF01 y RF06 Autenticacion de Usuario</h1>
         </center>
         <br>
         <h2>Iniciar Sesión</h2>
         
         <!-- Formulario de inicio de sesión -->
+        <!-- Se removió el atributo 'required' de los inputs y del select para que no obliguen a llenar los campos -->
         <form action="#" method="POST">
             
             <!-- Selección de Rol -->
             <div>
                 <label for="rol">Tipo de Usuario:</label><br>
-                <select id="rol" name="rol" required>
+                <select id="rol" name="rol">
                     <option value="" disabled selected>Selecciona una opción</option>
                     <option value="administrador">Administrador</option>
                     <option value="supervisor">Supervisor</option>
@@ -34,21 +35,39 @@
             <!-- Campo de Usuario -->
             <div>
                 <label for="usuario">Usuario:</label><br>
-                <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu usuario" required>
+                <!-- Se quitó el atributo required -->
+                <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu usuario">
             </div>
             <br>
 
             <!-- Campo de Contraseña -->
             <div>
                 <label for="password">Contraseña:</label><br>
-                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+                <!-- Se quitó el atributo required y se cambió type="password" por type="text" opcionalmente, o se deja en password pero sin validación -->
+                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña">
             </div>
             <br>
 
             <!-- Botón de Envío -->
             <div>
-                <button type="submit">Ingresar</button>
+                <!-- Se cambió el tipo del botón principal a "button" para que no intente enviar el formulario y valide campos -->
+                <button type="button">Ingresar</button>
             </div>
+
+            <h2>Todavia no se puede iniciar con los respectivos roles, pero aqui pude inicair para ver las paginas:</h2>
+
+            <!-- Enlace directo corregido sin la barra diagonal inicial para que cargue bien la ruta -->
+            <a href="admin-dashboard.html">
+                <button type="button" id="Boton">Administrador</button>
+            </a> 
+
+            <a href="../supervisor/supervisor-dashboard.html">
+                <button type="button" id="Boton">Supervisor</button>
+            </a>  
+
+            <a href="../tecnico/tecnico_dashboard.html">
+                <button type="button" id="Boton">Tecnico</button>
+            </a>  
             <br>
 
             <!-- Enlace de recuperación de contraseña -->
