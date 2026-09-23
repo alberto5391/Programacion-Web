@@ -6,55 +6,121 @@
 </head>
 <body>
     <h1>Panel Estadístico y Consultas</h1>
-
-    <!-- Bloque para RF28: Consulta de campañas -->
     <h2>Buscador de Campañas</h2>
-    <input type="text" placeholder="Buscar por zona o responsable...">
-    <button>Buscar</button>
-    
+    <form action="#" method="GET">
+        <label for="busqueda">Buscar por zona o responsable:</label>
+        <input type="text" id="busqueda" name="busqueda" placeholder="Ej. Centro">
+        <button type="submit">Buscar</button>
+    </form>
     <hr>
-
-    <!-- Bloque para RF29, RF30, RF31, RF32 y RF33: Generación de diversas estadísticas -->
     <h2>Reportes Estadísticos</h2>
-    <table border="1">
+    <h3>Estadísticas Globales por Periodo</h3>
+    <table border="1" cellpadding="5">
         <tr>
-            <th>Top Plagas (RF30)</th>
-            <th>Zonas Críticas (RF31)</th>
-            <th>Productos Usados (RF32)</th>
-            <th>Efectividad (RF33)</th>
+            <th>Periodo</th>
+            <th>Total de Campañas</th>
+            <th>Campañas Finalizadas</th>
         </tr>
         <tr>
-            <td>Cucarachas (45 casos)</td>
-            <td>Zona Centro (Alta)</td>
-            <td>Deltametrina</td>
-            <td>85% de éxito</td>
+            <td>Agosto 2026</td>
+            <td>120</td>
+            <td>115</td>
+        </tr>
+    </table>
+    <h3>Plagas Frecuentes</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Plaga</th>
+            <th>Incidencias Detectadas</th>
+        </tr>
+        <tr>
+            <td>Cucarachas</td>
+            <td>45</td>
+        </tr>
+        <tr>
+            <td>Roedores</td>
+            <td>28</td>
+        </tr>
+        <tr>
+            <td>Mosquitos</td>
+            <td>15</td>
+        </tr>
+    </table>
+    <h3>Zonas Críticas</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Zona</th>
+            <th>Campañas Realizadas</th>
+            <th>Nivel de Incidencia</th>
+        </tr>
+        <tr>
+            <td>Zona Centro</td>
+            <td>35</td>
+            <td>Alta</td>
+        </tr>
+        <tr>
+            <td>Mercado Municipal</td>
+            <td>22</td>
+            <td>Alta</td>
+        </tr>
+    </table>
+    <h3>Productos Más Utilizados</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Producto</th>
+            <th>Aplicaciones</th>
+        </tr>
+        <tr>
+            <td>Deltametrina 5%</td>
+            <td>60</td>
+        </tr>
+        <tr>
+            <td>Brodifacoum</td>
+            <td>30</td>
+        </tr>
+    </table>
+    <h3>Efectividad de Tratamientos</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Tratamiento</th>
+            <th>Efectividad Global</th>
+            <th>Reincidencias Reportadas</th>
+        </tr>
+        <tr>
+            <td>Nebulización espacial</td>
+            <td>85%</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Cebos rodenticidas</td>
+            <td>90%</td>
+            <td>1</td>
+        </tr>
+    </table>
+    <hr>
+    <h2>Gráficos y Mapas</h2>
+    <h3>Representación Gráfica</h3>
+    <p><em>Estadística de plagas, zonas, productos e incidencias.</em></p>
+    <table border="1" cellpadding="10">
+        <tr>
+            <td align="center">
+                <img src="img/Estadisticas.png" alt="Gráfica Estadística de PLAGUE" width="500" height="300">
+            </td>
+        </tr>
+    </table>
+    <br>
+    <h3>Mapa de Zonas Atendidas</h3>
+    <table border="1" cellpadding="10">
+        <tr>
+            <td>
+                <iframe width="500" height="300" src="https://www.openstreetmap.org/export/embed.html?bbox=-92.98%2C17.96%2C-92.90%2C18.02&amp;layer=mapnik&amp;marker=17.99%2C-92.94"></iframe>
+                <br>
+                <a href="https://www.openstreetmap.org/?mlat=17.99&mlon=-92.94#map=13/17.9900/-92.9400" target="_blank">Ver mapa completo</a>
+            </td>
         </tr>
     </table>
 
-    <hr>
-
-    <!-- Bloque para RF34 (Generación de gráficos) y RF35 (Mapa de concentración de fumigaciones) -->
-    <h2>Gráficos y Mapas</h2>
-    
-    <!-- ESPACIO PARA GRÁFICO (RF34) -->
-    <div>
-        <p><strong>Incidencia de Plagas (RF34)</strong></p>
-        <ul>
-            <li>Cucarachas: 45 casos</li>
-            <li>Roedores: 28 casos</li>
-            <li>Mosquitos: 15 casos</li>
-        </ul>
-    </div>
-    
-    <!-- ESPACIO PARA MAPA DE CALOR (RF35) -->
-    <div>
-        <p><strong>Mapa de Zonas Atendidas (RF35)</strong></p>
-        <iframe width="300" height="180" src="https://www.openstreetmap.org/export/embed.html?bbox=-92.98%2C17.96%2C-92.90%2C18.02&amp;layer=mapnik&amp;marker=17.99%2C-92.94"></iframe>
-        <br>
-        <a href="https://www.openstreetmap.org/?mlat=17.99&mlon=-92.94#map=13/17.9900/-92.9400" target="_blank">Ver mapa completo</a>
-    </div>
-
     <br><br><br>
-    <a href="supervisor/supervisor-dashboard.html">Volver al menu</a>
+    <a href="supervisor/supervisor-dashboard.html">← Volver al menu</a>
 </body>
 </html>
