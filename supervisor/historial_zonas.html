@@ -1,37 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/supervisor.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial_Zonas</title>
 </head>
 <body>
-        <div>
-    <h2>Consulta del historial de una zona (RF23)</h2>
-    <form>
-        <label for="buscar_zona">Seleccione o escriba la zona:</label>
-        <input type="text" id="buscar_zona" name="buscar_zona">
-        <button type="submit">Consultar Historial</button>
-    </form>
-    <br>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Campaña</th>
-                <th>Fecha</th>
-                <th>Antecedentes / Incidencias</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Campaña Centro</td>
-                <td>01/08/2026</td>
-                <td>Sin incidencias reportadas.</td>
-            </tr>
-        </tbody>
-    </table>
+
+
+        <!-- Barra Superior de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Historial de zonas</a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="../index.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
+                <a href="notificaciones.html" class="btn btn-primary btn-sm position-relative">
+                    <i class="bi bi-bell"></i> Notificaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+<!--     <div class="titulo-pagina">
+         <h2 class="text-center">Historial de zonas</h2>
+    </div>
+ -->
+<div class="container">
+            <div>
+
+
+            <h6>Consulta del historial de una zona (RF23)</h6>
+            <form>
+                <label for="buscar_zona">Escriba la zona:</label>
+
+                <input type="text" id="buscar_zona" name="buscar_zona"
+                    class="form-control w-50">
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary mt-4">
+                            Consultar Historial
+                        </button>
+                    </div>
+
+            </form>
+                </div>
+
+
+            <div class="mb-3">
+                <table class="table mb-3">
+                    <thead class="table-dark">
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Campaña</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Antecedentes / incidencias</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                        <th scope="row">1</th>     
+                        <td>Campaña centro</td>
+                        <td>03/12/2022</td>
+                        <td>Sin incidencias reportadas</td>
+                        </tr>
+                        <tr>
+                        <th scope="row">2</th>
+                        <td>Campaña Genesis</td>
+                        <td>03/11/2022</td>
+                        <td>Sin incidencias reportadas</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        <br><br>
+        <a href="supervisor-dashboard.html">← Regresar al menú</a>
 </div>
-<br><br>
-<a href="supervisor-dashboard.html">← Regresar al menú</a>
+        
 </body>
 </html>

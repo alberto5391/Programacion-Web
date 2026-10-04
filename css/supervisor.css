@@ -1,0 +1,58 @@
+
+.btn-bd-primary {
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--bs-white);
+  --bs-btn-bg: var(--bd-violet-bg);
+  --bs-btn-border-color: var(--bd-violet-bg);
+  --bs-btn-hover-color: var(--bs-white);
+  --bs-btn-hover-bg: #{shade-color($bd-violet, 10%)};
+  --bs-btn-hover-border-color: #{shade-color($bd-violet, 10%)};
+  --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+  --bs-btn-active-color: var(--bs-btn-hover-color);
+  --bs-btn-active-bg: #{shade-color($bd-violet, 20%)};
+  --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)};
+}
+
+.titulo-pagina {
+    background-color: #0d6efd;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.titulo-pagina h2 {
+    margin: 0;
+}
+
+.container {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+  body {
+            background-color: #f8f9fa;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+        .nav-card {
+            transition: all 0.2s ease-in-out;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .nav-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
+            border-color: #0d6efd;
+        }
+        .nav-card:hover .icon-box {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+        }
+        .icon-box {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }

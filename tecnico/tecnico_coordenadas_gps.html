@@ -1,31 +1,58 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/tecnico.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coordenadas</title>
 </head>
 <body>
-    <div>
+
+       <!-- Barra Superior de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Coordenadas</a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="../index.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
+                <a href="notificaciones.html" class="btn btn-primary btn-sm position-relative">
+                    <i class="bi bi-bell"></i> Notificaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
     <h2>Registro de Coordenadas GPS (RF08)</h2>
-    <form>
-        <label for="zona">Zona urbana:</label>
-        <input type="text" id="zona" name="zona"><br><br>
-
-        <label for="latitud">Latitud:</label>
-        <input type="text" id="latitud" name="latitud"><br><br>
-
-        <label for="longitud">Longitud:</label>
-        <input type="text" id="longitud" name="longitud"><br><br>
         <form>
-    <!-- Tus campos del formulario --> 
-    <button type="submit" formaction="tecnico_dashboard.html">Guardar Coordenadas</button>
-</form>
-    </form>
-</div>
-<br><br>
-<a href="tecnico_dashboard.html">← Regresar al menú</a>
+
+
+        <div class="mb-3">
+            <label for="zona" class="form-label">Zona urbana</label>
+            <input type="text" class="form-control" id="zona" name="zona" placeholder="Centro">
+        </div>
+
+        <div class="mb-3">
+            <label for="latitud" class="form-label">Latitud</label>
+            <input type="text" class="form-control" id="latitud" name="latitud" placeholder="40° 24’ 59” N ">
+        </div>
+
+        <div class="mb-3">
+            <label for="longitud" class="form-label">Longitud</label>
+            <input type="text" class="form-control" id="longitud" name="longitud" placeholder="3° 42’ 09” O">
+        </div>
+
+        <!-- Tus campos del formulario --> 
+        <button type="submit" formaction="tecnico_dashboard.html" class=" btn btn-primary mt-5">Guardar</button>
+            </form>
+        </form>
+        <br><br>
+            <a href="tecnico_dashboard.html">← Regresar al menú</a>
+    </div>
 </body>
 </html>

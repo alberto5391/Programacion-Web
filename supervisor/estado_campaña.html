@@ -1,39 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/supervisor.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estados_Campaña</title>
 </head>
 <body>
-    <div>
-    <h2>Actualización del estado de una campaña (RF27)</h2>
-    <form>
-        <label for="select_campana">Seleccionar Campaña:</label>
-        <select id="select_campana" name="select_campana">
-            <option value="c1">Campaña #01</option>
-            <option value="c2">Campaña #02</option>
-        </select><br><br>
 
-        <label for="estado_campana">Nuevo Estado:</label>
-        <select id="estado_campana" name="estado_campana">
-            <option value="pendiente">Pendiente</option>
-            <option value="proceso">En proceso</option>
-            <option value="inspeccionada">Inspeccionada</option>
-            <option value="tratada">Tratada</option>
-            <option value="seguimiento">En seguimiento</option>
-            <option value="finalizada">Finalizada</option>
-        </select><br><br>
+
+        <!-- Barra Superior de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Actualizar campaña</a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="../index.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
+                <a href="notificaciones.html" class="btn btn-primary btn-sm position-relative">
+                    <i class="bi bi-bell"></i> Notificaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+<!--     <div class="titulo-pagina">
+                <h2 class="text-center"> Actualizar campaña</h2>
+    </div> -->
+    
+    <div class="container">
+
+    <h5>Actualización del estado de una campaña (RF27)</h5>
+    <form>
+
+        <div class="mb-3">
+
+            <label for="select_campana">Seleccionar Campaña:</label>
+            <select class="form-select mt-4" aria-label="Default select example" id="select_campana" name="select_campana">
+                <option selected>Seleccionar campaña</option>
+                <option value="c1">Campaña #01</option>
+                <option value="c2">Campaña #02</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="estado_campana">Nuevo Estado:</label>
+            <select class="form-select mt-4" aria-label="Default select example" id="estado_campana" name="estado_campana">
+                <option selected>Estado de la campaña</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="proceso">En proceso</option>
+                <option value="inspeccionada">Inspeccionada</option>
+                <option value="tratada">Tratada</option>
+                <option value="seguimiento">En seguimiento</option>
+                <option value="finalizada">Finalizada</option>
+            </select>
+
+        </div>
 
         <form>
     <!-- Tus campos del formulario --> 
-    <button type="submit" formaction="supervisor-dashboard.html">Actualizar Estado</button>
+    <button type="submit" formaction="supervisor-dashboard.html"class="btn btn-primary mt-4">Actualizar Estado</button>
 </form>
     </form>
+
+    <br><br>
+<a href="supervisor-dashboard.html">← Regresar al menú</a>
+
+
 </div>
 
-<br><br>
-<a href="supervisor-dashboard.html">← Regresar al menú</a>
+
     
 </body>
 </html>

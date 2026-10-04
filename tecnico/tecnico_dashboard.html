@@ -1,47 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tecnico_Home</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/tecnico.css">
 </head>
 <body>
-    <h2>Menu Principal (Tecnico)</h2>
 
-    <hr>
-    
-            <a href="../index.html">←Inicio</a>
-            
-            <a href="notificaciones.html">
-                <button id="Boton">Notificaciones</button>
-            </a>
-    <hr>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Menu/tecnico</a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="../index.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
+                <a href="notificaciones.html" class="btn btn-primary btn-sm position-relative">
+                    <i class="bi bi-bell"></i> Notificaciones
+                </a>
+            </div>
+        </div>
+    </nav>
 
-    <h3>Registrar:</h3>
+    <!-- Contenedor Principal -->
+    <main class="container pb-5">
 
-        <a href="tecnico_coordenadas_gps.html">
-    <button id="Boton">Coordenadas Gps</button>
-        <a href="inspeccion_diagnostico.html">
-    <button id="Boton">Inspección y Diagnóstico en Campo</button>
-        <a href="tratamientos.html">
-    <button id="Boton">Aplicacion de tratamientos</button>
-        <a href="seguimiento_posterior.html">
-    <button id="Boton">Seguimineto</button>
-        <a href="responsables.html">
-    <button id="Boton">Resposable de la actividad</button>
-        <a href="tec-recuperar-contraseña.html">
-    <button id="Boton">Recuperar Contraseña</button>
+        <!-- Sección: Registrar / Acciones Principales -->
+        <section class="mb-4">
+            <h6 class="text-uppercase text-muted fw-bold fs-7 mb-3">Registrar y Acciones en Campo</h6>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                
+                <div class="col">
+                    <a href="tecnico_coordenadas_gps.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-success-subtle text-success fs-5"><i class="bi bi-geo"></i></div>
+                            <span class="text-dark fw-medium small">Coordenadas Gps</span>
+                        </div>
+                    </a>
+                </div>
 
+                <div class="col">
+                    <a href="inspeccion_diagnostico.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-clipboard2-pulse"></i></div>
+                            <span class="text-dark fw-medium small">Inspección y Diagnóstico en Campo</span>
+                        </div>
+                    </a>
+                </div>
 
+                <div class="col">
+                    <a href="tratamientos.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-capsule"></i></div>
+                            <span class="text-dark fw-medium small">Aplicacion de tratamientos</span>
+                        </div>
+                    </a>
+                </div>
 
+                <div class="col">
+                    <a href="seguimiento_posterior.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-person-lines-fill"></i></div>
+                            <span class="text-dark fw-medium small">Seguimiento</span>
+                        </div>
+                    </a>
+                </div>
 
-            
-</a>
+                <div class="col">
+                    <a href="responsables.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-person-badge"></i></div>
+                            <span class="text-dark fw-medium small">Resposable de la actividad</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="tec-recuperar-contraseña.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-key"></i></div>
+                            <span class="text-dark fw-medium small">Recuperar Contraseña</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="../incidencias.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-warning-subtle text-warning fs-5"><i class="bi bi-wifi-off"></i></div>
+                            <span class="text-dark fw-medium small">Incidencias y Offline <span class="text-muted fs-8 d-block">RF21, RF26</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="../evidencias.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-warning-subtle text-warning fs-5"><i class="bi bi-images"></i></div>
+                            <span class="text-dark fw-medium small">Evidencias <span class="text-muted fs-8 d-block">RF24, RF25</span></span>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-            <br><br>
-    <!-- Aquí están mis links de los html para acomodarlos luego -->
-    <a href="../incidencias.html"><button id="Boton">Incidencias y Offline (RF21, RF26)</button></a>
-    <a href="../evidencias.html"><button id="Boton">Evidencias (RF24, RF25)</button></a>
-            
 </html>

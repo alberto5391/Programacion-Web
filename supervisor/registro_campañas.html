@@ -1,36 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/supervisor.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Registro de campañas</title>
 </head>
+
 <body>
-    <h2>Gestión y Registro de Campañas (RF12)</h2>
+        <!-- Barra Superior de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Gestion de campañas</a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="../index.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
+                <a href="notificaciones.html" class="btn btn-primary btn-sm position-relative">
+                    <i class="bi bi-bell"></i> Notificaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+
+<!-- 
+    <div class="titulo-pagina">
+            <h2 class="text-center">Gestion de campañas</h2>
+    </div>
+ -->
+
+    <div class="container">
+    <h6>Gestión y Registro de Campañas (RF12)</h6>
+
     <form>
-        <label for="nombre_campana">Nombre de la campaña:</label>
-        <input type="text" id="nombre_campana" name="nombre_campana"><br><br>
 
-        <label for="zona_atendida">Zona atendida:</label>
-        <input type="text" id="zona_atendida" name="zona_atendida"><br><br>
+        <div class="mb-3">
+            <label for="nombre_camapaña" class="form-label">Nombre de la campaña</label>
+            <input type="text" class="form-control" id="nombre_camapaña" placeholder="Ej: Genesis">
+        </div>
+        <div class="mb-3">
+            <label for="zona_atendida" class="form-label">Zona atendida</label>
+            <input type="text" class="form-control" id="zona_atendida" placeholder="Ej: Zona norte">
+        </div>
 
-        <label for="fecha_campana">Fecha:</label>
-        <input type="date" id="fecha_campana" name="fecha_campana"><br><br>
+        <div class="form-floating mb-3">
+    <input type="date"
+           class="form-control"
+           id="fecha_campana"
+           name="fecha_campana">
 
-        <h3>Asignación de personal (RF13)</h3>
-        <label for="tecnicos">Técnicos responsables:</label>
-        <select id="tecnicos" name="tecnicos" multiple>
-            <option value="tecnico1">Técnico 1</option>
-            <option value="tecnico2">Técnico 2</option>
-        </select><br><br>
+    <label for="fecha_campana">Fecha de la campaña</label>
+        </div>
 
-        <form>
-    <!-- Tus campos del formulario --> 
-    <button type="submit" formaction="supervisor-dashboard.html">Crear Campaña</button>
-</form>
+        <h6>Asignación de personal (RF13)</h6>
+
+        <div class="mb-3">
+            <label for="tecnicos" class="form-label">Técnicos responsables:</label>
+            <select class="form-select" aria-label="Default select example" id="tecnicos" name="tecnicos" >
+                <option selected>Seleccionar tecnico</option>
+                <option value="1">Tecnico 1</option>
+                <option value="2">Tecnico 2</option>
+                <option value="3">Tecnico 3</option>
+            </select>
+        </div>
+
+
+
+
+        <button type="submit" 
+                formaction="supervisor-dashboard.html"
+                class="btn btn-primary mt-5">
+            Crear Campaña
+        </button>
+
     </form>
-<br><br>
-<a href="supervisor-dashboard.html">← Regresar al menú</a>  
+
+    <br><br>
+
+    <a href="supervisor-dashboard.html">← Regresar al menú</a>
+</div>
     
 </body>
+
 </html>
