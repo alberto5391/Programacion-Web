@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gestión de solicitantes y origen de la campaña - PLAGUE</title>
+
+    <!-- Bootstrap 4.6.2 -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            padding-top: 70px;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .encabezado {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        .encabezado h1 {
+            font-weight: 500;
+        }
+
+        .card-header {
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+
+        <a class="navbar-brand" href="#">
+            PLAGUE - ADMINISTRADOR
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarPrincipal"
+                aria-controls="navbarPrincipal"
+                aria-expanded="false"
+                aria-label="Mostrar navegación">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarPrincipal">
+
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="menu_administrador.html">
+                        Panel Principal
+                    </a>
+                </li>
+
+            </ul>
+
+            <a class="btn btn-outline-light" href="../../index.html">
+                Cerrar sesión
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- CONTENIDO -->
+    <div class="container">
+
+        <!-- ENCABEZADO -->
+        <div class="encabezado">
+
+            <h1>
+                Gestión de solicitantes y origen de la campaña
+            </h1>
+
+            <p class="text-muted">
+                RF-48 — Registrar y catalogar la procedencia o solicitante de una campaña
+            </p>
+
+            <hr>
+
+            <p>
+                El sistema permite registrar y catalogar la procedencia o el
+                solicitante de una campaña, vinculando esta información con el
+                registro general de la campaña.
+            </p>
+
+        </div>
+
+
+        <!-- REGISTRAR ORIGEN O SOLICITANTE -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-white">
+                Registrar origen o solicitante
+            </div>
+
+            <div class="card-body">
+
+                <form action="#" method="post">
+
+                    <div class="form-group">
+
+                        <label for="tipoOrigen">
+                            Tipo de origen:
+                        </label>
+
+                        <select class="form-control"
+                                id="tipoOrigen"
+                                name="tipoOrigen"
+                                required>
+
+                            <option value="">
+                                Seleccione un tipo
+                            </option>
+
+                            <option value="ciudadano">
+                                Reporte ciudadano
+                            </option>
+
+                            <option value="privado">
+                                Cliente privado
+                            </option>
+
+                            <option value="salud">
+                                Programa de salud pública
+                            </option>
+
+                            <option value="institucion">
+                                Institución
+                            </option>
+
+                            <option value="interno">
+                                Solicitud interna
+                            </option>
+
+                            <option value="otro">
+                                Otro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="nombreSolicitante">
+                            Nombre del solicitante:
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="nombreSolicitante"
+                               name="nombreSolicitante"
+                               placeholder="Nombre o razón social"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contacto">
+                            Medio de contacto:
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="contacto"
+                               name="contacto"
+                               placeholder="Teléfono o correo electrónico"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="descripcion">
+                            Descripción de la solicitud:
+                        </label>
+
+                        <textarea class="form-control"
+                                  id="descripcion"
+                                  name="descripcion"
+                                  rows="4"
+                                  placeholder="Descripción del motivo de la solicitud"></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="estado">
+                            Estado:
+                        </label>
+
+                        <select class="form-control"
+                                id="estado"
+                                name="estado">
+
+                            <option value="activo">
+                                Activo
+                            </option>
+
+                            <option value="inactivo">
+                                Inactivo
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">
+                        Registrar solicitante
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- CATÁLOGO -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-white">
+                Catálogo de orígenes y solicitantes
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="thead-light">
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo de origen</th>
+                                <th>Solicitante</th>
+                                <th>Contacto</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>ORI-001</td>
+
+                                <td>
+                                    Reporte ciudadano
+                                </td>
+
+                                <td>
+                                    Ciudadanía de Zona Sierra
+                                </td>
+
+                                <td>
+                                    555-123-4567
+                                </td>
+
+                                <td>
+                                    Reporte de presencia de plagas.
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-success">
+                                        Activo
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary">
+                                        Modificar
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger">
+                                        Desactivar
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>ORI-002</td>
+
+                                <td>
+                                    Cliente privado
+                                </td>
+
+                                <td>
+                                    Empresa ABC S.A. de C.V.
+                                </td>
+
+                                <td>
+                                    contacto@empresa.com
+                                </td>
+
+                                <td>
+                                    Solicitud de servicio de control.
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-success">
+                                        Activo
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary">
+                                        Modificar
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger">
+                                        Desactivar
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>ORI-003</td>
+
+                                <td>
+                                    Programa de salud pública
+                                </td>
+
+                                <td>
+                                    Programa Estatal de Salud
+                                </td>
+
+                                <td>
+                                    555-987-6543
+                                </td>
+
+                                <td>
+                                    Campaña preventiva de salud pública.
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-success">
+                                        Activo
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary">
+                                        Modificar
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger">
+                                        Desactivar
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>ORI-004</td>
+
+                                <td>
+                                    Institución
+                                </td>
+
+                                <td>
+                                    Instituto Educativo Regional
+                                </td>
+
+                                <td>
+                                    institucion@ejemplo.com
+                                </td>
+
+                                <td>
+                                    Solicitud de inspección institucional.
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-success">
+                                        Activo
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary">
+                                        Modificar
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger">
+                                        Desactivar
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- VINCULAR ORIGEN CON CAMPAÑA -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-white">
+                Vincular origen con campaña
+            </div>
+
+            <div class="card-body">
+
+                <form action="#" method="post">
+
+                    <div class="form-group">
+
+                        <label for="campana">
+                            Campaña:
+                        </label>
+
+                        <select class="form-control"
+                                id="campana"
+                                name="campana"
+                                required>
+
+                            <option value="">
+                                Seleccione una campaña
+                            </option>
+
+                            <option value="cam001">
+                                CAM-001 - Campaña Zona Norte
+                            </option>
+
+                            <option value="cam002">
+                                CAM-002 - Control de Plagas Centro
+                            </option>
+
+                            <option value="cam003">
+                                CAM-003 - Atención Zona Oriente
+                            </option>
+
+                            <option value="cam004">
+                                CAM-004 - Programa Preventivo
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="origen">
+                            Origen o solicitante:
+                        </label>
+
+                        <select class="form-control"
+                                id="origen"
+                                name="origen"
+                                required>
+
+                            <option value="">
+                                Seleccione un origen
+                            </option>
+
+                            <option value="ori001">
+                                ORI-001 - Reporte ciudadano
+                            </option>
+
+                            <option value="ori002">
+                                ORI-002 - Cliente privado
+                            </option>
+
+                            <option value="ori003">
+                                ORI-003 - Programa de salud pública
+                            </option>
+
+                            <option value="ori004">
+                                ORI-004 - Institución
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="fechaSolicitud">
+                            Fecha de solicitud:
+                        </label>
+
+                        <input type="date"
+                               class="form-control"
+                               id="fechaSolicitud"
+                               name="fechaSolicitud"
+                               required>
+
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">
+                        Vincular a campaña
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- CAMPAÑAS Y ORIGEN -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-white">
+                Campañas y origen de la solicitud
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="thead-light">
+
+                            <tr>
+                                <th>ID Campaña</th>
+                                <th>Nombre de campaña</th>
+                                <th>Zona</th>
+                                <th>Fecha de inicio</th>
+                                <th>Tipo de origen</th>
+                                <th>Solicitante</th>
+                                <th>Fecha de solicitud</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    CAM-001
+                                </td>
+
+                                <td>
+                                    Campaña Zona Sierra
+                                </td>
+
+                                <td>
+                                    Zona Sierra
+                                </td>
+
+                                <td>
+                                    05/08/2026
+                                </td>
+
+                                <td>
+                                    Reporte ciudadano
+                                </td>
+
+                                <td>
+                                    Ciudadanía de Zona Sierra
+                                </td>
+
+                                <td>
+                                    01/08/2026
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    CAM-002
+                                </td>
+
+                                <td>
+                                    Control de Plagas Centro
+                                </td>
+
+                                <td>
+                                    Zona Centro
+                                </td>
+
+                                <td>
+                                    10/08/2026
+                                </td>
+
+                                <td>
+                                    Cliente privado
+                                </td>
+
+                                <td>
+                                    Empresa ABC S.A. de C.V.
+                                </td>
+
+                                <td>
+                                    06/08/2026
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    CAM-003
+                                </td>
+
+                                <td>
+                                    Atención Zona Chontalpa
+                                </td>
+
+                                <td>
+                                    Zona Chontalpa
+                                </td>
+
+                                <td>
+                                    15/08/2026
+                                </td>
+
+                                <td>
+                                    Programa de salud pública
+                                </td>
+
+                                <td>
+                                    Programa Estatal de Salud
+                                </td>
+
+                                <td>
+                                    10/08/2026
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    CAM-004
+                                </td>
+
+                                <td>
+                                    Programa Preventivo
+                                </td>
+
+                                <td>
+                                    Zona Pantanos
+                                </td>
+
+                                <td>
+                                    20/08/2026
+                                </td>
+
+                                <td>
+                                    Institución
+                                </td>
+
+                                <td>
+                                    Instituto Educativo Regional
+                                </td>
+
+                                <td>
+                                    15/08/2026
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACCIONES -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                Acciones del catálogo
+            </div>
+
+                <button type="button"
+                        class="btn btn-success">
+                    Generar reporte
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <p class="mb-0">
+            Prototipo css — AEB-1055 Programación Web
+        </p>
+
+    </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
