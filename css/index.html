@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description"
+          content="Sistema PLAGUE para el control y seguimiento de campañas">
+
+    <title>PLAGUE - Sistema de control y seguimiento</title>
+
+    <!-- Bootstrap 4.6.2 -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .fondo {
+            background-color: #343a40;
+            color: white;
+            margin-bottom: 0;
+        }
+
+        .fondo h1 {
+            font-weight: 500;
+        }
+
+        .rol-card {
+            height: 100%;
+        }
+
+        .rol-icono {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            padding: 40px 0;
+        }
+
+        footer {
+            margin-top: 50px;
+            background-color: #343a40;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+
+
+    <!-- NAVBAR -->
+
+    <header>
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+
+            <a class="navbar-brand" href="index.html">
+                PLAGUE
+            </a>
+
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarPrincipal"
+                    aria-controls="navbarPrincipal"
+                    aria-expanded="false"
+                    aria-label="Mostrar navegación">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+
+            <div class="collapse navbar-collapse"
+                 id="navbarPrincipal">
+
+                <!-- FORMULARIO DE INICIO DE SESIÓN -->
+
+                <form class="form-inline ml-auto">
+
+                    <!-- USUARIO -->
+
+                    <input type="text"
+                           class="form-control form-control-sm mr-2"
+                           placeholder="Usuario"
+                           name="usuario">
+
+
+                    <!-- CONTRASEÑA -->
+
+                    <input type="password"
+                           class="form-control form-control-sm mr-2"
+                           placeholder="Contraseña"
+                           name="password">
+
+
+                    <!-- BOTÓN -->
+
+                    <button type="submit"
+                            class="btn btn-light btn-sm mr-3">
+
+                        Iniciar sesión
+
+                    </button>
+
+
+                    <!-- RECUPERAR CONTRASEÑA -->
+
+                    <a href="recuperar_contraseña.html"
+                       class="text-white">
+
+                        ¿Olvidaste tu contraseña?
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- CONTENIDO PRINCIPAL -->
+
+    <main role="main" class="flex-shrink-0">
+
+        <!-- ENCABEZADO -->
+
+        <div class="jumbotron fondo">
+
+            <div class="container">
+
+                <h1 class="display-4">
+                    Bienvenido a PLAGUE
+                </h1>
+
+                <p class="lead">
+                    Sistema de control y seguimiento de campañas,
+                    inspecciones y aplicaciones para la gestión de
+                    control de plagas.
+                </p>
+
+                <hr class="my-4">
+
+                <p>
+                    Selecciona el perfil con el que deseas ingresar
+                    al sistema.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACCESO POR ROLES -->
+
+        <div class="container info">
+
+            <h2 class="text-center mb-5">
+                Acceso al sistema
+            </h2>
+
+
+            <div class="row">
+
+
+                <!-- ADMINISTRADOR -->
+
+                <div class="col-lg-4 mb-4">
+
+                    <div class="card shadow-sm text-center rol-card">
+
+                        <div class="card-body">
+
+                            <div class="rol-icono text-primary">
+
+                                <i class="fas fa-user-shield"></i>
+
+                            </div>
+
+
+                            <h3>
+                                Administrador
+                            </h3>
+
+
+                            <p class="text-muted">
+
+                                Administración general del sistema,
+                                usuarios, roles, permisos, zonas,
+                                campañas y configuración.
+
+                            </p>
+
+
+                            <a href="user/administrador/menu-administrador.html"
+                               class="btn btn-primary">
+
+                                <i class="fas fa-sign-in-alt"></i>
+                                Ingresar como Administrador
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUPERVISOR -->
+
+                <div class="col-lg-4 mb-4">
+
+                    <div class="card shadow-sm text-center rol-card">
+
+                        <div class="card-body">
+
+                            <div class="rol-icono text-success">
+
+                                <i class="fas fa-user-tie"></i>
+
+                            </div>
+
+
+                            <h3>
+                                Supervisor
+                            </h3>
+
+
+                            <p class="text-muted">
+
+                                Supervisión de campañas, inspecciones,
+                                aplicaciones, reportes y seguimiento
+                                de las actividades realizadas.
+
+                            </p>
+
+
+                            <a href="users/supervisor/menu_supervisor.html"
+                               class="btn btn-success">
+
+                                <i class="fas fa-sign-in-alt"></i>
+                                Ingresar como Supervisor
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TÉCNICO -->
+
+                <div class="col-lg-4 mb-4">
+
+                    <div class="card shadow-sm text-center rol-card">
+
+                        <div class="card-body">
+
+                            <div class="rol-icono text-secondary">
+
+                                <i class="fas fa-user-cog"></i>
+
+                            </div>
+
+
+                            <h3>
+                                Técnico
+                            </h3>
+
+
+                            <p class="text-muted">
+
+                                Registro de inspecciones, aplicaciones,
+                                incidencias y actividades realizadas
+                                durante las campañas.
+
+                            </p>
+
+
+                            <a href="user/tecnico/menu-tecnico.html"
+                               class="btn btn-secondary">
+
+                                <i class="fas fa-sign-in-alt"></i>
+                                Ingresar como Técnico
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMACIÓN DEL SISTEMA -->
+
+        <div class="container mb-5">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h4>
+                        <i class="fas fa-info-circle"></i>
+                        Acerca de PLAGUE
+                    </h4>
+
+                    <p class="mb-0">
+
+                        PLAGUE es un sistema diseñado para facilitar
+                        el control y seguimiento de campañas de
+                        prevención y control de plagas, permitiendo
+                        gestionar información de usuarios, zonas,
+                        inspecciones, aplicaciones y reportes.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer class="mt-auto py-3">
+
+        <div class="container text-center">
+
+            <span class="text-white">
+
+                Prototipo css — AEB-1055 Programación Web
+
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JavaScript -->
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
+
