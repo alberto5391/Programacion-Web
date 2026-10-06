@@ -4,66 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - Registro</title>
+    <style>
+        /* Estilos base y centrado de la tarjeta */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 15px;
+            box-sizing: border-box;
+        }
+
+        /* Contenedor principal estilo tarjeta */
+        .form-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        /* Encabezado */
+        h2 {
+            font-size: 1.35rem;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        /* Agrupación de inputs en grid para 2 columnas en campos cortos */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        /* Ocupar toda la fila en campos largos */
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 0.88rem;
+            margin-bottom: 6px;
+            color: #444;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.92rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #fff;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        /* Botones del formulario */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-submit {
+            flex: 2;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1a252f;
+        }
+
+        .btn-reset {
+            flex: 1;
+            padding: 10px;
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #dee2e6;
+        }
+
+        /* Indicadores de requerimientos/módulos al pie */
+        .rf-tags {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #dee2e6;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rf-badge {
+            font-size: 0.75rem;
+            color: #6c757d;
+            background-color: #eef2f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Adaptación a pantallas pequeñas */
+        @media (max-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <h2>Registrar Nuevo Usuario</h2>
-    
-    <form action="#" method="POST">
-        <div>
-            <label for="nombre">Nombre:</label><br>
-            <input type="text" id="nombre" name="nombre" required>
-        </div>
-        <br>
+    <div class="form-card">
+        <h2>Registrar Nuevo Usuario</h2>
+        
+        <form action="#" method="POST">
+            <div class="form-grid">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan" required>
+                </div>
 
-        <div>
-            <label for="apellidos">Apellidos:</label><br>
-            <input type="text" id="apellidos" name="apellidos" required>
-        </div>
-        <br>
+                <div class="form-group">
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" placeholder="Ej. Pérez López" required>
+                </div>
 
-        <div>
-            <label for="contacto">Número de contacto:</label><br>
-            <input type="tel" id="contacto" name="contacto" required>
-        </div>
-        <br>
+                <div class="form-group">
+                    <label for="contacto">Contacto:</label>
+                    <input type="tel" id="contacto" name="contacto" placeholder="10 dígitos" required>
+                </div>
 
-        <div>
-            <label for="correo">Correo electrónico:</label><br>
-            <input type="email" id="correo" name="correo" required>
-        </div>
-        <br>
+                <div class="form-group">
+                    <label for="rol">Rol del usuario:</label>
+                    <select id="rol" name="rol" required>
+                        <option value="" disabled selected>Selecciona...</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Tecnico">Técnico</option>
+                    </select>
+                </div>
 
-        <div>
-            <label for="curp">CURP:</label><br>
-            <input type="text" id="curp" name="curp" maxlength="18" required>
-        </div>
-        <br>
+                <div class="form-group full-width">
+                    <label for="correo">Correo electrónico:</label>
+                    <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required>
+                </div>
 
-        <div>
-            <label for="rfc">RFC:</label><br>
-            <input type="text" id="rfc" name="rfc" maxlength="13" required>
-        </div>
-        <br>
+                <div class="form-group">
+                    <label for="curp">CURP:</label>
+                    <input type="text" id="curp" name="curp" maxlength="18" placeholder="18 caracteres" required>
+                </div>
 
-        <div>
-            <label for="rol">Rol del usuario:</label><br>
-            <select id="rol" name="rol" required>
-                <option value="" disabled selected>Selecciona un rol...</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Supervisor">Supervisor</option>
-                <option value="Tecnico">Técnico</option>
-            </select>
-        </div>
-        <br>
+                <div class="form-group">
+                    <label for="rfc">RFC:</label>
+                    <input type="text" id="rfc" name="rfc" maxlength="13" placeholder="12 o 13 caracteres" required>
+                </div>
 
-        <div>
-            <button type="submit">Registrar Usuario</button>
-            <button type="reset">Limpiar Formulario</button>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-submit">Registrar Usuario</button>
+                <button type="reset" class="btn-reset">Limpiar</button>
+            </div>
+        </form>
+
+        <div class="rf-tags">
+            <span class="rf-badge">RF02 Gestión de Usuarios</span>
+            <span class="rf-badge">RF03 Modificación de Usuarios</span>
         </div>
-    </form>
-    <h2>RF02 Gestión de Usuarios</h2>
-    <h2>RF03 Modificacion de Usuarios</h2>
+    </div>
 
 </body>
 </html>

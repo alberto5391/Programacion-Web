@@ -2,51 +2,186 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLAGUE - Plataforma Web de Control de Plagas</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            padding-top: 70px; /* Espacio para la barra fija */
+        }
+        /* Navbar con el estilo oscuro de la referencia */
+        .custom-navbar {
+            background-color: #1a1d20 !important;
+            border-bottom: 1px solid #2b2f33;
+        }
+        .custom-navbar .navbar-brand,
+        .custom-navbar .nav-link {
+            color: #ffffff !important;
+        }
+        .custom-navbar .nav-link:hover {
+            color: #0d6efd !important;
+        }
+        /* Botón azul idéntico a la referencia */
+        .btn-custom-blue {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+            color: #fff !important;
+            font-weight: 500;
+        }
+        .btn-custom-blue:hover {
+            background-color: #0b5ed7 !important;
+            border-color: #0a58ca !important;
+        }
+        /* Hero section adaptada al tono oscuro/institucional */
+        .hero-section {
+            background: linear-gradient(135deg, #1a1d20 0%, #2b2f33 100%);
+            color: white;
+            border-radius: 1rem;
+            border: 1px solid #373b3e;
+        }
+        .card-feature {
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: all 0.2s ease-in-out;
+        }
+        .card-feature:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
+            border-color: #0d6efd;
+        }
+    </style>
 </head>
 <body>
 
-    
-    <h1>PLAGUE</h1>
-    <p>Plataforma web para gestionar campañas de fumigación y control de plagas urbanas</p>
+    <!-- Barra de Navegación Fija con estilo oscuro -->
+    <nav class="navbar navbar-expand-lg custom-navbar fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white" href="#inicio">
+                <i class="bi bi-shield-shaded fs-4 text-primary"></i> PLAGUE
+            </a>
+            <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon filter-invert" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center gap-3">
+                    <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#acerca">Acerca del sistema</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                    <li class="nav-item">
+                        <a href="administrador/RF01_y_RF06_Login.html" class="btn btn-custom-blue btn-sm px-3 shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    
-    <img src="img/logo_plague.png" alt="Logo de PLAGUE" width="150">
+    <!-- Contenido Principal -->
+    <main class="container my-4">
 
-    <hr>
+        <!-- Hero / Sección de Bienvenida -->
+        <section id="inicio" class="hero-section p-5 mb-5 shadow-sm text-center text-lg-start">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-3">
+                        <i class="bi bi-bullseye me-1"></i> Control de Plagas Urbanas
+                    </span>
+                    <h1 class="display-5 fw-bold mb-3">Bienvenidos a PLAGUE</h1>
+                    <p class="lead mb-4 text-light opacity-85">
+                        Plataforma web orientada a dependencias gubernamentales encargadas de realizar y supervisar campañas de fumigación y control de plagas urbanas.
+                    </p>
+                    <a href="administrador/RF01_y_RF06_Login.html" class="btn btn-custom-blue px-4 py-2 shadow-sm">
+                        Iniciar sesión <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <img src="img/logo_plague.png" alt="Logo de PLAGUE" class="img-fluid bg-white p-3 rounded-4 shadow" style="max-width: 160px;">
+                </div>
+            </div>
+        </section>
 
-   
-    <p>
-        <a href="#inicio">Inicio</a> | 
-        <a href="#acerca">Acerca del sistema</a> | 
-        <a href="#contacto">Contacto</a> | 
-       <a href="administrador/RF01_y_RF06_Login.html">Iniciar sesión</a>
-    </p>
+        <!-- Sección: Acerca del Sistema -->
+        <section id="acerca" class="mb-5">
+            <div class="card bg-white border-0 shadow-sm p-4 p-md-5 rounded-4">
+                <h2 class="h3 fw-bold text-dark mb-4 border-bottom pb-3">
+                    <i class="bi bi-info-circle text-primary me-2"></i> Acerca del sistema
+                </h2>
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-7">
+                        <p class="text-secondary mb-3">
+                            El sistema surge de la necesidad de organizar y centralizar la información relacionada con las campañas de fumigación, ya que el manejo de registros de forma manual o mediante diferentes herramientas puede dificultar el seguimiento de las inspecciones, diagnósticos, aplicaciones de productos y resultados obtenidos.
+                        </p>
+                        <p class="text-secondary mb-4">
+                            La plataforma estará dirigida principalmente a <strong>administradores, supervisores y técnicos</strong> de las dependencias encargadas de estas actividades, permitiendo gestionar de manera estructurada la información generada durante las campañas.
+                        </p>
+                        <div class="p-3 bg-light rounded-3 border-start border-primary border-4 d-flex justify-content-between align-items-center">
+                            <span class="text-dark small fw-medium">¿Listo para comenzar con la gestión?</span>
+                            <a href="administrador/RF01_y_RF06_Login.html" class="btn btn-sm btn-custom-blue fw-semibold">Iniciar sesión</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="card card-feature p-3 bg-white shadow-sm">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-primary-subtle text-primary p-2 rounded-3 fs-4"><i class="bi bi-clipboard2-pulse"></i></div>
+                                        <div>
+                                            <h6 class="mb-1 fw-bold text-dark">Inspecciones y Diagnósticos</h6>
+                                            <p class="mb-0 text-muted small">Control de campo detallado.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card card-feature p-3 bg-white shadow-sm">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-primary-subtle text-primary p-2 rounded-3 fs-4"><i class="bi bi-map"></i></div>
+                                        <div>
+                                            <h6 class="mb-1 fw-bold text-dark">Campañas y Coordenadas GPS</h6>
+                                            <p class="mb-0 text-muted small">Seguimiento geolocalizado de zonas.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <hr>
+        <!-- Sección: Contacto / Institución -->
+        <section id="contacto" class="mb-5">
+            <div class="card bg-white border-0 shadow-sm p-4 p-md-5 rounded-4 text-center">
+                <h3 class="h4 fw-bold text-dark mb-3"><i class="bi bi-building text-primary me-2"></i> Contacto e Institución</h3>
+                <p class="text-secondary mb-4 mx-auto" style="max-width: 600px;">
+                    <em>Tecnológico Nacional de México Campus Villahermosa</em><br>
+                    <em>Departamento de Sistemas y Computación</em><br>
+                    <em>Villahermosa, Tabasco, México</em>
+                </p>
+                <div>
+                    <a href="mailto:contacto@itvillahermosa.edu.mx" class="btn btn-outline-primary btn-sm px-4 rounded-pill">
+                        <i class="bi bi-envelope me-2"></i> contacto@itvillahermosa.edu.mx
+                    </a>
+                </div>
+            </div>
+        </section>
 
-    
-    <h2 id="inicio">Bienvenidos a PLAGUE</h2>
-    <p>Sistema web orientado a dependencias gubernamentales encargadas de realizar y supervisar campañas de fumigación y control de plagas urbanas.</p>
+    </main>
 
-    
-    <h2 id="acerca">Acerca del sistema</h2>
-    <p>El sistema surge de la necesidad de organizar y centralizar la información relacionada con las campañas de fumigación, ya que el manejo de registros de forma manual o mediante diferentes herramientas puede dificultar el seguimiento de las inspecciones, diagnósticos, aplicaciones de productos y resultados obtenidos.</p>
-    <p>La plataforma estará dirigida principalmente a administradores, supervisores y técnicos de las dependencias encargadas de estas actividades, permitiendo gestionar de manera estructurada la información generada durante las campañas.</p>
-    
-    <p>
-        ¿Listo para comenzar? 
-        <a href="administrador/RF01_y_RF06_Login.html"><strong>[ Iniciar sesión ]</strong></a>
-    </p>
+    <!-- Footer -->
+    <footer class="bg-white border-top py-3 text-center text-muted small">
+        <div class="container">
+            PLAGUE &copy; 2026 — Plataforma Web de Control de Plagas Urbanas
+        </div>
+    </footer>
 
-    <h2 id="contacto">Contacto</h2>
-    <p>
-        <em>Tecnológico Nacional de México Campus Villahermosa</em><br>
-        <em>Departamento de Sistemas y Computación</em><br>
-        <em>Villahermosa, Tabasco, México</em><br>
-        <em>Correo: contacto@itvillahermosa.edu.mx</em>
-    </p>
-
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión del Catálogo de Zonas</title>
+    <title>RF_11 Gestión del Personal Técnico</title>
     <style>
         /* Estilos base */
         body {
@@ -75,7 +75,7 @@
         }
 
         input[type="text"],
-        textarea,
+        input[type="tel"],
         select {
             width: 100%;
             padding: 9px 12px;
@@ -88,13 +88,7 @@
             font-family: inherit;
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
         input:focus,
-        textarea:focus,
         select:focus {
             border-color: #3498db;
             outline: none;
@@ -177,17 +171,36 @@
             background-color: #f8f9fa;
         }
 
-        /* Botón de acción en tabla */
-        .btn-edit {
-            padding: 6px 12px;
-            background-color: #3498db;
-            color: #ffffff;
+        /* Botones de acción en tabla */
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn {
+            padding: 6px 10px;
             border: none;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
+        }
+
+        .btn-history {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-history:hover {
+            background-color: #dee2e6;
+            color: #212529;
+        }
+
+        .btn-edit {
+            background-color: #3498db;
+            color: #ffffff;
         }
 
         .btn-edit:hover {
@@ -208,105 +221,124 @@
 <body>
 
     <div class="page-container">
-        <h1>Gestión del Catálogo de Zonas</h1>
-        <p class="module-desc">Módulo para registrar, modificar y desactivar zonas urbanas para inspecciones y campañas de fumigación.</p>
+        <h1>RF_11 Gestión del Personal Técnico</h1>
+        <p class="module-desc">Módulo para registrar, administrar y consultar la información de los técnicos encargados de realizar las inspecciones y aplicar los tratamientos de fumigación.</p>
 
-        <h2>Registrar / Modificar Zona</h2>
+        <h2>Registrar / Modificar Técnico</h2>
         
         <form action="#" method="POST">
             <div class="form-grid">
                 
                 <div class="form-group">
-                    <label for="codigo_zona">Código de Zona:</label>
-                    <input type="text" id="codigo_zona" name="codigo_zona" placeholder="Ej. ZN-001" required>
+                    <label for="numero_empleado">Número de Empleado:</label>
+                    <input type="text" id="numero_empleado" name="numero_empleado" placeholder="Ej. TEC-045" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="municipio">Municipio / Localidad:</label>
-                    <input type="text" id="municipio" name="municipio" placeholder="Ej. Centro" required>
+                    <label for="telefono">Teléfono de Contacto:</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Número celular o fijo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nombres">Nombres:</label>
+                    <input type="text" id="nombres" name="nombres" placeholder="Nombre(s) del técnico" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos del técnico" required>
                 </div>
 
                 <div class="form-group full-width">
-                    <label for="nombre_zona">Nombre de la Zona o Colonia:</label>
-                    <input type="text" id="nombre_zona" name="nombre_zona" placeholder="Nombre de la zona urbana" required>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="referencias">Referencias de Ubicación:</label>
-                    <textarea id="referencias" name="referencias" rows="3" placeholder="Descripción para ubicar la zona, colindancias, etc." required></textarea>
+                    <label for="especialidad">Especialidad o Función Principal:</label>
+                    <select id="especialidad" name="especialidad" required>
+                        <option value="" disabled selected>Selecciona una función...</option>
+                        <option value="inspeccion">Inspector (Diagnóstico)</option>
+                        <option value="aplicacion">Aplicador (Fumigación)</option>
+                        <option value="ambas">Ambas funciones</option>
+                    </select>
                 </div>
 
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn-submit">Guardar Zona</button>
+                <button type="submit" class="btn-submit">Guardar Técnico</button>
                 <button type="reset" class="btn-reset">Limpiar Datos</button>
             </div>
         </form>
 
-        <h2>Zonas Registradas</h2>
+        <h2>Consulta y Administración de Técnicos</h2>
         
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Código</th>
-                        <th>Nombre de la Zona</th>
-                        <th>Municipio</th>
-                        <th>Referencias</th>
+                        <th>No. Empleado</th>
+                        <th>Nombre Completo</th>
+                        <th>Teléfono</th>
+                        <th>Especialidad</th>
                         <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Registro de Actividades</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Ejemplo de Zona 1 -->
+                    <!-- Ejemplo de Técnico 1 -->
                     <tr>
-                        <td><strong>ZN-001</strong></td>
-                        <td>Colonia Centro</td>
-                        <td>Centro</td>
-                        <td>Zona comercial, colinda con el río.</td>
+                        <td><strong>TEC-045</strong></td>
+                        <td>Roberto Domínguez Pérez</td>
+                        <td>9931112233</td>
+                        <td>Ambas funciones</td>
                         <td>
-                            <select name="estado_zona1">
-                                <option value="activa" selected>Activa</option>
-                                <option value="inactiva">Inactiva (Desactivada)</option>
+                            <select name="estado_tec1">
+                                <option value="activo" selected>Activo (En campo)</option>
+                                <option value="inactivo">Inactivo (Vacaciones/Baja)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-history">Ver historial de actividades</button>
+                                <button type="button" class="btn btn-edit">Editar Datos</button>
+                            </div>
                         </td>
                     </tr>
                     
-                    <!-- Ejemplo de Zona 2 -->
+                    <!-- Ejemplo de Técnico 2 -->
                     <tr>
-                        <td><strong>ZN-002</strong></td>
-                        <td>Fraccionamiento Las Rosas</td>
-                        <td>Centro</td>
-                        <td>A espaldas del parque principal.</td>
+                        <td><strong>TEC-046</strong></td>
+                        <td>Luis Méndez Vargas</td>
+                        <td>9934445566</td>
+                        <td>Aplicador (Fumigación)</td>
                         <td>
-                            <select name="estado_zona2">
-                                <option value="activa">Activa</option>
-                                <option value="inactiva" selected>Inactiva (Desactivada)</option>
+                            <select name="estado_tec2">
+                                <option value="activo">Activo (En campo)</option>
+                                <option value="inactivo" selected>Inactivo (Vacaciones/Baja)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-history">Ver historial de actividades</button>
+                                <button type="button" class="btn btn-edit">Editar Datos</button>
+                            </div>
                         </td>
                     </tr>
 
-                    <!-- Ejemplo de Zona 3 -->
+                    <!-- Ejemplo de Técnico 3 -->
                     <tr>
-                        <td><strong>ZN-003</strong></td>
-                        <td>Villa Macultepec</td>
-                        <td>Macultepec</td>
-                        <td>Entrada principal por la carretera.</td>
+                        <td><strong>TEC-047</strong></td>
+                        <td>Ana Martínez Cruz</td>
+                        <td>9937778899</td>
+                        <td>Inspector (Diagnóstico)</td>
                         <td>
-                            <select name="estado_zona3">
-                                <option value="activa" selected>Activa</option>
-                                <option value="inactiva">Inactiva (Desactivada)</option>
+                            <select name="estado_tec3">
+                                <option value="activo" selected>Activo (En campo)</option>
+                                <option value="inactivo">Inactivo (Vacaciones/Baja)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-history">Ver historial de actividades</button>
+                                <button type="button" class="btn btn-edit">Editar Datos</button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión del Catálogo de Zonas</title>
+    <title>RF_10 y RF_17 Gestión del Catálogo de Productos</title>
     <style>
         /* Estilos base */
         body {
@@ -177,17 +177,36 @@
             background-color: #f8f9fa;
         }
 
-        /* Botón de acción en tabla */
-        .btn-edit {
-            padding: 6px 12px;
-            background-color: #3498db;
-            color: #ffffff;
+        /* Botones de acción en tabla */
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn {
+            padding: 6px 10px;
             border: none;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
+        }
+
+        .btn-history {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-history:hover {
+            background-color: #dee2e6;
+            color: #212529;
+        }
+
+        .btn-edit {
+            background-color: #3498db;
+            color: #ffffff;
         }
 
         .btn-edit:hover {
@@ -208,105 +227,126 @@
 <body>
 
     <div class="page-container">
-        <h1>Gestión del Catálogo de Zonas</h1>
-        <p class="module-desc">Módulo para registrar, modificar y desactivar zonas urbanas para inspecciones y campañas de fumigación.</p>
+        <h1>RF_10 y RF_17 Gestión del Catálogo de Productos</h1>
+        <p class="module-desc">Módulo para registrar, administrar y consultar los productos químicos y materiales utilizados en los tratamientos de fumigación y campañas.</p>
 
-        <h2>Registrar / Modificar Zona</h2>
+        <h2>Registrar / Modificar Producto</h2>
         
         <form action="#" method="POST">
             <div class="form-grid">
                 
                 <div class="form-group">
-                    <label for="codigo_zona">Código de Zona:</label>
-                    <input type="text" id="codigo_zona" name="codigo_zona" placeholder="Ej. ZN-001" required>
+                    <label for="codigo_producto">Código de Producto:</label>
+                    <input type="text" id="codigo_producto" name="codigo_producto" placeholder="Ej. PRD-001" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="municipio">Municipio / Localidad:</label>
-                    <input type="text" id="municipio" name="municipio" placeholder="Ej. Centro" required>
+                    <label for="nombre_comercial">Nombre Comercial:</label>
+                    <input type="text" id="nombre_comercial" name="nombre_comercial" placeholder="Ej. Biothrine WG 250" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ingrediente_activo">Ingrediente Activo:</label>
+                    <input type="text" id="ingrediente_activo" name="ingrediente_activo" placeholder="Ej. Deltametrina al 25%">
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_producto">Tipo de Producto:</label>
+                    <select id="tipo_producto" name="tipo_producto" required>
+                        <option value="" disabled selected>Selecciona una categoría...</option>
+                        <option value="insecticida">Insecticida</option>
+                        <option value="rodenticida">Rodenticida (Raticida)</option>
+                        <option value="larvicida">Larvicida</option>
+                        <option value="repelente">Repelente</option>
+                        <option value="otro">Otro</option>
+                    </select>
                 </div>
 
                 <div class="form-group full-width">
-                    <label for="nombre_zona">Nombre de la Zona o Colonia:</label>
-                    <input type="text" id="nombre_zona" name="nombre_zona" placeholder="Nombre de la zona urbana" required>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="referencias">Referencias de Ubicación:</label>
-                    <textarea id="referencias" name="referencias" rows="3" placeholder="Descripción para ubicar la zona, colindancias, etc." required></textarea>
+                    <label for="presentacion">Presentación y Dosis Recomendada:</label>
+                    <textarea id="presentacion" name="presentacion" rows="3" placeholder="Ej. Bote de 1 Litro. Dosis: 10ml por litro de agua."></textarea>
                 </div>
 
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn-submit">Guardar Zona</button>
+                <button type="submit" class="btn-submit">Guardar Producto</button>
                 <button type="reset" class="btn-reset">Limpiar Datos</button>
             </div>
         </form>
 
-        <h2>Zonas Registradas</h2>
+        <h2>Consulta y Administración de Productos</h2>
         
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
                         <th>Código</th>
-                        <th>Nombre de la Zona</th>
-                        <th>Municipio</th>
-                        <th>Referencias</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Nombre Comercial</th>
+                        <th>Tipo</th>
+                        <th>Ingrediente Activo</th>
+                        <th>Estado (Stock)</th>
+                        <th>Acciones de Campaña</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Ejemplo de Zona 1 -->
+                    <!-- Producto 1 -->
                     <tr>
-                        <td><strong>ZN-001</strong></td>
-                        <td>Colonia Centro</td>
-                        <td>Centro</td>
-                        <td>Zona comercial, colinda con el río.</td>
+                        <td><strong>PRD-001</strong></td>
+                        <td>Biothrine WG 250</td>
+                        <td>Insecticida</td>
+                        <td>Deltametrina 25%</td>
                         <td>
-                            <select name="estado_zona1">
-                                <option value="activa" selected>Activa</option>
-                                <option value="inactiva">Inactiva (Desactivada)</option>
+                            <select name="estado_prod1">
+                                <option value="activo" selected>Activo (Disponible)</option>
+                                <option value="inactivo">Inactivo (Agotado/Descontinuado)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-history">Ver historial de uso</button>
+                                <button type="button" class="btn btn-edit">Editar</button>
+                            </div>
                         </td>
                     </tr>
                     
-                    <!-- Ejemplo de Zona 2 -->
+                    <!-- Producto 2 -->
                     <tr>
-                        <td><strong>ZN-002</strong></td>
-                        <td>Fraccionamiento Las Rosas</td>
-                        <td>Centro</td>
-                        <td>A espaldas del parque principal.</td>
+                        <td><strong>PRD-002</strong></td>
+                        <td>Storm Cebos</td>
+                        <td>Rodenticida</td>
+                        <td>Flocoumafen 0.005%</td>
                         <td>
-                            <select name="estado_zona2">
-                                <option value="activa">Activa</option>
-                                <option value="inactiva" selected>Inactiva (Desactivada)</option>
+                            <select name="estado_prod2">
+                                <option value="activo" selected>Activo (Disponible)</option>
+                                <option value="inactivo">Inactivo (Agotado/Descontinuado)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-history">Ver historial de uso</button>
+                                <button type="button" class="btn btn-edit">Editar</button>
+                            </div>
                         </td>
                     </tr>
 
-                    <!-- Ejemplo de Zona 3 -->
+                    <!-- Producto 3 -->
                     <tr>
-                        <td><strong>ZN-003</strong></td>
-                        <td>Villa Macultepec</td>
-                        <td>Macultepec</td>
-                        <td>Entrada principal por la carretera.</td>
+                        <td><strong>PRD-003</strong></td>
+                        <td>Abate 1 SG</td>
+                        <td>Larvicida</td>
+                        <td>Temephos 1%</td>
                         <td>
-                            <select name="estado_zona3">
-                                <option value="activa" selected>Activa</option>
-                                <option value="inactiva">Inactiva (Desactivada)</option>
+                            <select name="estado_prod3">
+                                <option value="activo">Activo (Disponible)</option>
+                                <option value="inactivo" selected>Inactivo (Agotado/Descontinuado)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-history">Ver historial de uso</button>
+                                <button type="button" class="btn btn-edit">Editar</button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

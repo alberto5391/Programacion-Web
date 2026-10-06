@@ -5,107 +5,226 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de Usuarios</title>
     <style>
+        /* Estilos base y centrado de la tarjeta */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Contenedor principal estilo tarjeta amplia */
+        .table-container {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
+        }
+
+        /* Encabezado */
+        h2 {
+            font-size: 1.35rem;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        /* Contenedor responsivo con scroll horizontal */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Estilos de la tabla */
         table {
             width: 100%;
             border-collapse: collapse;
-            font-family: Arial, sans-serif;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 8px;
+            font-size: 0.88rem;
             text-align: left;
+            white-space: nowrap;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #2c3e50;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 12px 14px;
+            border-bottom: 2px solid #1a252f;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e9ecef;
+            color: #444;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilos para el select de estado */
+        select {
+            padding: 5px 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            background-color: #fff;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: #3498db;
+        }
+
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.2s, opacity 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-details {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-details:hover {
+            background-color: #dee2e6;
+            color: #212529;
+        }
+
+        .btn-edit {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+
+        .btn-edit:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
 
-    <h2>Consulta de Usuarios Registrados</h2>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Número de Contacto</th>
-                <th>Correo Electrónico</th>
-                <th>CURP</th>
-                <th>RFC</th>
-                <th>Rol Asignado</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Ejemplo de registro 1 -->
-            <tr>
-                <td>Juan</td>
-                <td>Pérez López</td>
-                <td>9931234567</td>
-                <td>juan.perez@email.com</td>
-                <td>PELJ850101HMXRRA01</td>
-                <td>PELJ850101ABC</td>
-                <td>Administrador</td>
-                <td>
-                    <!-- Menú desplegable para elegir el estado -->
-                    <select name="estado_usuario1">
-                        <option value="activo" selected>Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                    </select>
-                </td>
-                <td>
-                    <button>Ver detalles</button>
-                    <button>Editar</button>
-                </td>
-            </tr>
-            
-            <!-- Ejemplo de registro 2 -->
-            <tr>
-                <td>María</td>
-                <td>Gómez Sánchez</td>
-                <td>9937654321</td>
-                <td>maria.gomez@email.com</td>
-                <td>GOSM921015MMXSRB02</td>
-                <td>GOSM921015DEF</td>
-                <td>Técnico</td>
-                <td>
-                    <!-- Menú desplegable para elegir el estado (Inactivo por defecto) -->
-                    <select name="estado_usuario2">
-                        <option value="activo">Activo</option>
-                        <option value="inactivo" selected>Inactivo</option>
-                    </select>
-                </td>
-                <td>
-                    <button>Ver detalles</button>
-                    <button>Editar</button>
-                </td>
-            </tr>
+    <div class="table-container">
+        <h2>Consulta de Usuarios Registrados</h2>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Contacto</th>
+                        <th>Correo Electrónico</th>
+                        <th>CURP</th>
+                        <th>RFC</th>
+                        <th>Rol Asignado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ejemplo de registro 1 -->
+                    <tr>
+                        <td>Juan</td>
+                        <td>Pérez López</td>
+                        <td>9931234567</td>
+                        <td>juan.perez@email.com</td>
+                        <td>PELJ850101HMXRRA01</td>
+                        <td>PELJ850101ABC</td>
+                        <td>Administrador</td>
+                        <td>
+                            <select name="estado_usuario1">
+                                <option value="activo" selected>Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-details">Ver detalles</button>
+                                <!-- Opción 1: Redirige con enlace a la ruta exacta de tu archivo -->
+                                <a href="RF02_y_RF03_Gestion de usuarios.html" class="btn btn-edit">Editar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Ejemplo de registro 2 -->
+                    <tr>
+                        <td>María</td>
+                        <td>Gómez Sánchez</td>
+                        <td>9937654321</td>
+                        <td>maria.gomez@email.com</td>
+                        <td>GOSM921015MMXSRB02</td>
+                        <td>GOSM921015DEF</td>
+                        <td>Técnico</td>
+                        <td>
+                            <select name="estado_usuario2">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo" selected>Inactivo</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-details">Ver detalles</button>
+                                <!-- Opción 2: Regresa a la vista inmediatamente anterior del historial del navegador -->
+                                <button type="button" class="btn btn-edit" onclick="history.back()">Editar</button>
+                            </div>
+                        </td>
+                    </tr>
 
-            <!-- Ejemplo de registro 3 -->
-            <tr>
-                <td>Carlos</td>
-                <td>Ramírez Díaz</td>
-                <td>9935558899</td>
-                <td>carlos.ramirez@email.com</td>
-                <td>RADC880808HMXXYZ03</td>
-                <td>RADC880808GHI</td>
-                <td>Supervisor</td>
-                <td>
-                    <!-- Menú desplegable para elegir el estado -->
-                    <select name="estado_usuario3">
-                        <option value="activo" selected>Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                    </select>
-                </td>
-                <td>
-                    <button>Ver detalles</button>
-                    <button>Editar</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    <!-- Ejemplo de registro 3 -->
+                    <tr>
+                        <td>Carlos</td>
+                        <td>Ramírez Díaz</td>
+                        <td>9935558899</td>
+                        <td>carlos.ramirez@email.com</td>
+                        <td>RADC880808HMXXYZ03</td>
+                        <td>RADC880808GHI</td>
+                        <td>Supervisor</td>
+                        <td>
+                            <select name="estado_usuario3">
+                                <option value="activo" selected>Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-details">Ver detalles</button>
+                                <a href="registro_usuario.html" class="btn btn-edit">Editar</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </body>
 </html>

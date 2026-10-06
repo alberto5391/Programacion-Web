@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión del Catálogo de Zonas</title>
+    <title>RF_11 Gestión del Catálogo de Plagas</title>
     <style>
         /* Estilos base */
         body {
@@ -177,17 +177,36 @@
             background-color: #f8f9fa;
         }
 
-        /* Botón de acción en tabla */
-        .btn-edit {
-            padding: 6px 12px;
-            background-color: #3498db;
-            color: #ffffff;
+        /* Botones de acción en tabla */
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn {
+            padding: 6px 10px;
             border: none;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
+        }
+
+        .btn-details {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-details:hover {
+            background-color: #dee2e6;
+            color: #212529;
+        }
+
+        .btn-edit {
+            background-color: #3498db;
+            color: #ffffff;
         }
 
         .btn-edit:hover {
@@ -208,105 +227,119 @@
 <body>
 
     <div class="page-container">
-        <h1>Gestión del Catálogo de Zonas</h1>
-        <p class="module-desc">Módulo para registrar, modificar y desactivar zonas urbanas para inspecciones y campañas de fumigación.</p>
+        <h1>Gestión del Catálogo de Plagas</h1>
+        <p class="module-desc">Módulo para registrar, modificar, consultar y desactivar los diferentes tipos de plagas identificados durante las inspecciones.</p>
 
-        <h2>Registrar / Modificar Zona</h2>
+        <h2>Registrar / Modificar Tipo de Plaga</h2>
         
         <form action="#" method="POST">
             <div class="form-grid">
                 
                 <div class="form-group">
-                    <label for="codigo_zona">Código de Zona:</label>
-                    <input type="text" id="codigo_zona" name="codigo_zona" placeholder="Ej. ZN-001" required>
+                    <label for="codigo_plaga">Código de Plaga:</label>
+                    <input type="text" id="codigo_plaga" name="codigo_plaga" placeholder="Ej. PLG-001" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="municipio">Municipio / Localidad:</label>
-                    <input type="text" id="municipio" name="municipio" placeholder="Ej. Centro" required>
+                    <label for="nombre_plaga">Nombre Común:</label>
+                    <input type="text" id="nombre_plaga" name="nombre_plaga" placeholder="Ej. Mosquito del Dengue" required>
                 </div>
 
                 <div class="form-group full-width">
-                    <label for="nombre_zona">Nombre de la Zona o Colonia:</label>
-                    <input type="text" id="nombre_zona" name="nombre_zona" placeholder="Nombre de la zona urbana" required>
+                    <label for="nombre_cientifico">Nombre Científico (Opcional):</label>
+                    <input type="text" id="nombre_cientifico" name="nombre_cientifico" placeholder="Ej. Aedes aegypti">
                 </div>
 
                 <div class="form-group full-width">
-                    <label for="referencias">Referencias de Ubicación:</label>
-                    <textarea id="referencias" name="referencias" rows="3" placeholder="Descripción para ubicar la zona, colindancias, etc." required></textarea>
+                    <label for="descripcion">Descripción y Características:</label>
+                    <textarea id="descripcion" name="descripcion" rows="3" placeholder="Describe los detalles de la plaga, lugares donde se anida, daños que causa, etc." required></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="tratamiento">Tratamiento Recomendado:</label>
+                    <textarea id="tratamiento" name="tratamiento" rows="2" placeholder="Ej. Fumigación con insecticida especial, descacharrización..."></textarea>
                 </div>
 
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn-submit">Guardar Zona</button>
+                <button type="submit" class="btn-submit">Guardar Plaga</button>
                 <button type="reset" class="btn-reset">Limpiar Datos</button>
             </div>
         </form>
 
-        <h2>Zonas Registradas</h2>
+        <h2>Consulta de Plagas Registradas</h2>
         
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
                         <th>Código</th>
-                        <th>Nombre de la Zona</th>
-                        <th>Municipio</th>
-                        <th>Referencias</th>
+                        <th>Nombre Común</th>
+                        <th>Nombre Científico</th>
+                        <th>Descripción Breve</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Ejemplo de Zona 1 -->
+                    <!-- Ejemplo de Plaga 1 -->
                     <tr>
-                        <td><strong>ZN-001</strong></td>
-                        <td>Colonia Centro</td>
-                        <td>Centro</td>
-                        <td>Zona comercial, colinda con el río.</td>
+                        <td><strong>PLG-001</strong></td>
+                        <td>Mosquito del Dengue</td>
+                        <td><em>Aedes aegypti</em></td>
+                        <td>Transmisor de virus, se reproduce en agua limpia estancada.</td>
                         <td>
-                            <select name="estado_zona1">
+                            <select name="estado_plaga1">
                                 <option value="activa" selected>Activa</option>
                                 <option value="inactiva">Inactiva (Desactivada)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-details">Ver Detalles</button>
+                                <button type="button" class="btn btn-edit">Editar / Modificar</button>
+                            </div>
                         </td>
                     </tr>
                     
-                    <!-- Ejemplo de Zona 2 -->
+                    <!-- Ejemplo de Plaga 2 -->
                     <tr>
-                        <td><strong>ZN-002</strong></td>
-                        <td>Fraccionamiento Las Rosas</td>
-                        <td>Centro</td>
-                        <td>A espaldas del parque principal.</td>
+                        <td><strong>PLG-002</strong></td>
+                        <td>Rata de Alcantarilla</td>
+                        <td><em>Rattus norvegicus</em></td>
+                        <td>Roedor urbano, transmisor de enfermedades. Anida en drenajes.</td>
                         <td>
-                            <select name="estado_zona2">
+                            <select name="estado_plaga2">
                                 <option value="activa">Activa</option>
                                 <option value="inactiva" selected>Inactiva (Desactivada)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-details">Ver Detalles</button>
+                                <button type="button" class="btn btn-edit">Editar / Modificar</button>
+                            </div>
                         </td>
                     </tr>
 
-                    <!-- Ejemplo de Zona 3 -->
+                    <!-- Ejemplo de Plaga 3 -->
                     <tr>
-                        <td><strong>ZN-003</strong></td>
-                        <td>Villa Macultepec</td>
-                        <td>Macultepec</td>
-                        <td>Entrada principal por la carretera.</td>
+                        <td><strong>PLG-003</strong></td>
+                        <td>Cucaracha Americana</td>
+                        <td><em>Periplaneta americana</em></td>
+                        <td>Insecto rastrero común en zonas húmedas y cálidas.</td>
                         <td>
-                            <select name="estado_zona3">
+                            <select name="estado_plaga3">
                                 <option value="activa" selected>Activa</option>
                                 <option value="inactiva">Inactiva (Desactivada)</option>
                             </select>
                         </td>
                         <td>
-                            <button type="button" class="btn-edit">Editar / Modificar</button>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-details">Ver Detalles</button>
+                                <button type="button" class="btn btn-edit">Editar / Modificar</button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
