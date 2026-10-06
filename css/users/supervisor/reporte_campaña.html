@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reporte de campaña - PLAGUE</title>
+
+    <!-- Bootstrap 4.6.2 -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    >
+</head>
+
+<body class="bg-light">
+
+<!-- BARRA DE NAVEGACIÓN -->
+<nav class="navbar navbar-dark bg-dark">
+
+    <!-- NOMBRE DEL SISTEMA -->
+    <a class="navbar-brand mr-4" href="#">
+        PLAGUE - SUPERVISOR
+    </a>
+
+
+    <!-- CATÁLOGOS -->
+    <div class="dropdown">
+
+        <button class="btn btn-dark dropdown-toggle"
+                type="button"
+                id="catalogosDropdown"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+
+            Catálogos
+
+        </button>
+
+        <div class="dropdown-menu"
+             aria-labelledby="catalogosDropdown">
+
+            <a class="dropdown-item" href="zonas_prioritarias.html">
+                Zonas prioritarias
+            </a>
+
+            <a class="dropdown-item" href="reporte_campaña.html">
+                Campañas
+            </a>
+
+            <a class="dropdown-item" href="reporte_inspecciones.html">
+                Inspecciones
+            </a>
+
+            <a class="dropdown-item" href="reporte_aplicaciones.html">
+                Aplicaciones
+            </a>
+
+        </div>
+
+    </div>
+
+
+<!-- LADO DERECHO -->
+<div class="ml-auto">
+
+    <a class="text-white mr-4" href="menu_supervisor.html">
+        Panel principal
+    </a>
+
+    <a class="text-white" href="../../index.html">
+        Cerrar sesión
+    </a>
+
+</div>
+
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="container py-4">
+
+        <h2 class="mb-3">
+            Reporte de Campaña (RF-39)
+        </h2>
+
+        <p class="text-muted">
+            Selecciona los criterios para generar un documento PDF
+            con la información registrada durante las inspecciones
+            realizadas en las diferentes zonas.
+        </p>
+
+
+        <!-- Selección de campaña -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-dark text-white">
+                <strong>Selección de campaña</strong>
+            </div>
+
+            <div class="card-body">
+
+                <form action="#" method="post">
+
+                    <div class="form-group">
+
+                        <label for="campana">
+                            <strong>Campaña:</strong>
+                        </label>
+
+                        <select
+                            id="campana"
+                            name="campana"
+                            class="form-control"
+                        >
+
+                            <option value="">
+                                -- Selecciona una campaña --
+                            </option>
+
+                            <option value="001">
+                                Campaña de Prevención 2026 - Zona Sierra
+                            </option>
+
+                            <option value="002">
+                                Campaña de Inspección 2026 - Zona Centro
+                            </option>
+
+                            <option value="003">
+                                Campaña de Seguimiento 2026 - Zona Chontalpa
+                            </option>
+
+                            <option value="004">
+                                Campaña de Control 2026 - Zona Pantanos
+                            </option>
+
+                            <option value="005">
+                                Campaña de Fumigación 2026 - Zona Ríos
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Consultar campaña
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Campañas de ejemplo -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-primary text-white">
+                <strong>Campañas disponibles</strong>
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="thead-dark">
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Campaña</th>
+                                <th>Zona</th>
+                                <th>Periodo</th>
+                                <th>Responsable</th>
+                                <th>Estado</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>CAMP-001</td>
+                                <td>
+                                    Campaña de Prevención 2026
+                                </td>
+                                <td>
+                                    Zona Sierra
+                                </td>
+                                <td>
+                                    01/02/2026 - 28/02/2026
+                                </td>
+                                <td>
+                                    Juan Pérez
+                                </td>
+                                <td>
+                                    <span class="badge badge-success">
+                                        Activa
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>CAMP-002</td>
+                                <td>
+                                    Campaña de Inspección 2026
+                                </td>
+                                <td>
+                                    Zona Centro
+                                </td>
+                                <td>
+                                    05/02/2026 - 20/02/2026
+                                </td>
+                                <td>
+                                    María González
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">
+                                        Finalizada
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>CAMP-003</td>
+                                <td>
+                                    Campaña de Seguimiento 2026
+                                </td>
+                                <td>
+                                    Zona Chontalpa
+                                </td>
+                                <td>
+                                    10/02/2026 - 15/03/2026
+                                </td>
+                                <td>
+                                    Carlos Hernández
+                                </td>
+                                <td>
+                                    <span class="badge badge-warning">
+                                        En seguimiento
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>CAMP-004</td>
+                                <td>
+                                    Campaña de Control 2026
+                                </td>
+                                <td>
+                                    Zona Pantanos
+                                </td>
+                                <td>
+                                    15/02/2026 - 28/02/2026
+                                </td>
+                                <td>
+                                    Ana López
+                                </td>
+                                <td>
+                                    <span class="badge badge-success">
+                                        Completada
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+   
+        <!-- Regresar -->
+        <div class="mb-5">
+
+            <a
+                href="#"
+                class="btn btn-secondary"
+            >
+                Exportar
+            </a>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+
+        <p class="mb-0">
+            Prototipo css — AEB-1055 Programación Web
+        </p>
+
+    </footer>
+
+    <!-- JavaScript Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

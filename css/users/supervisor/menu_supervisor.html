@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PLAGUE - Panel principal</title>
+
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+</head>
+
+<body class="bg-light">
+
+
+<!-- BARRA DE NAVEGACIÓN -->
+<nav class="navbar navbar-dark bg-dark">
+
+    <!-- NOMBRE DEL SISTEMA -->
+    <a class="navbar-brand mr-4" href="#">
+        PLAGUE - SUPERVISOR
+    </a>
+
+
+    <!-- CATÁLOGOS -->
+    <div class="dropdown">
+
+        <button class="btn btn-dark dropdown-toggle"
+                type="button"
+                id="catalogosDropdown"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+
+            Catálogos
+
+        </button>
+
+        <div class="dropdown-menu"
+             aria-labelledby="catalogosDropdown">
+
+            <a class="dropdown-item" href="zonas_prioritarias.html">
+                Zonas prioritarias
+            </a>
+
+            <a class="dropdown-item" href="reporte_campaña.html">
+                Campañas
+            </a>
+
+            <a class="dropdown-item" href="reporte_inspecciones.html">
+                Inspecciones
+            </a>
+
+            <a class="dropdown-item" href="reporte_aplicaciones.html">
+                Aplicaciones
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- LADO DERECHO -->
+    <div class="ml-auto">
+
+        <a class="text-white" href="../../index.html">
+            Cerrar sesión
+        </a>
+
+    </div>
+
+</nav>
+
+<!-- CONTENIDO PRINCIPAL -->
+
+<div class="container-fluid mt-4">
+
+    <!-- TÍTULO -->
+
+    <div class="mb-4">
+
+        <h2>
+            Panel principal
+        </h2>
+
+        <p class="text-muted">
+            Resumen de actividades del sistema
+        </p>
+
+    </div>
+
+    <!-- TARJETAS DE RESUMEN -->
+
+    <div class="row">
+
+        <!-- CAMPAÑAS -->
+
+        <div class="col-md-6 col-lg-3 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        CAMPAÑAS
+                    </h6>
+
+                    <h2 class="font-weight-bold">
+                        8
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Campañas activas
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERSONAL -->
+
+        <div class="col-md-6 col-lg-3 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        PERSONAL
+                    </h6>
+
+                    <h2 class="font-weight-bold">
+                        24
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Personal asignado
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INSPECCIONES -->
+
+        <div class="col-md-6 col-lg-3 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        INSPECCIONES
+                    </h6>
+
+                    <h2 class="font-weight-bold">
+                        36
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Inspecciones realizadas
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- APLICACIONES -->
+
+        <div class="col-md-6 col-lg-3 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        APLICACIONES
+                    </h6>
+
+                    <h2 class="font-weight-bold">
+                        18
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Aplicaciones realizadas
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CAMPAÑAS + ACTIVIDAD RECIENTE -->
+
+    <div class="row">
+
+
+        <!-- CAMPAÑAS ACTIVAS -->
+
+        <div class="col-lg-7 mb-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+                        Campañas activas
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body p-0">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover mb-0">
+
+                            <thead class="thead-light">
+
+                                <tr>
+
+                                    <th>
+                                        Campaña
+                                    </th>
+
+                                    <th>
+                                        Estado
+                                    </th>
+
+                                    <th>
+                                        Inicio
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        Campaña Dengue
+                                    </td>
+
+                                    <td>
+                                        <span class="badge badge-success">
+                                            Activa
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        01/01/2026
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Campaña Mosca
+                                    </td>
+
+                                    <td>
+                                        <span class="badge badge-success">
+                                            Activa
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        15/02/2026
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Campaña Palomilla
+                                    </td>
+
+                                    <td>
+                                        <span class="badge badge-success">
+                                            Activa
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        01/03/2026
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Campaña Langosta
+                                    </td>
+
+                                    <td>
+                                        <span class="badge badge-success">
+                                            Activa
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        15/03/2026
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-footer bg-white text-right">
+
+                    <a href="reporte_campaña.html" class="btn btn-sm btn-outline-dark">
+                        Ver todas las campañas
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ACTIVIDAD RECIENTE -->
+
+        <div class="col-lg-5 mb-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+                        Actividad reciente
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <div class="mb-3">
+
+                        <div class="d-flex">
+
+                            <span class="text-success mr-2">
+                                ✓
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Campaña registrada
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    Campaña Dengue
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <div class="d-flex">
+
+                            <span class="text-success mr-2">
+                                ✓
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Personal asignado
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    5 personas asignadas
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <div class="d-flex">
+
+                            <span class="text-success mr-2">
+                                ✓
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Inspección registrada
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    Zona prioritaria 03
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="d-flex">
+
+                            <span class="text-success mr-2">
+                                ✓
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Aplicación actualizada
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    Aplicación foliar
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PENDIENTES -->
+
+    <div class="row">
+
+        <div class="col-12 mb-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+                        Pendientes
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="table-responsive">
+
+                        <table class="table mb-0">
+
+                            <tbody>
+
+
+                                <tr>
+
+                                    <td style="width: 50px;">
+
+                                        <span class="text-warning">
+                                            ⚠
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <strong>
+                                            Inspecciones pendientes de validar
+                                        </strong>
+
+                                    </td>
+
+                                    <td class="text-right">
+
+                                        <span class="badge badge-warning">
+                                            3
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <span class="text-warning">
+                                            ⚠
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <strong>
+                                            Campañas sin personal asignado
+                                        </strong>
+
+                                    </td>
+
+                                    <td class="text-right">
+
+                                        <span class="badge badge-warning">
+                                            2
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <span class="text-warning">
+                                            ⚠
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <strong>
+                                            Aplicaciones pendientes de actualizar
+                                        </strong>
+
+                                    </td>
+
+                                    <td class="text-right">
+
+                                        <span class="badge badge-warning">
+                                            5
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- JAVASCRIPT DE BOOTSTRAP -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
+

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reporte de inspecciones - PLAGUE</title>
+
+    <!-- Bootstrap 4.6.2 -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+</head>
+
+<body class="bg-light">
+
+<!-- BARRA DE NAVEGACIÓN -->
+<nav class="navbar navbar-dark bg-dark">
+
+    <!-- NOMBRE DEL SISTEMA -->
+    <a class="navbar-brand mr-4" href="#">
+        PLAGUE - SUPERVISOR
+    </a>
+
+
+    <!-- CATÁLOGOS -->
+    <div class="dropdown">
+
+        <button class="btn btn-dark dropdown-toggle"
+                type="button"
+                id="catalogosDropdown"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+
+            Catálogos
+
+        </button>
+
+        <div class="dropdown-menu"
+             aria-labelledby="catalogosDropdown">
+
+            <a class="dropdown-item" href="zonas_prioritarias.html">
+                Zonas prioritarias
+            </a>
+
+            <a class="dropdown-item" href="reporte_campaña.html">
+                Campañas
+            </a>
+
+            <a class="dropdown-item" href="reporte_inspecciones.html">
+                Inspecciones
+            </a>
+
+            <a class="dropdown-item" href="reporte_aplicaciones.html">
+                Aplicaciones
+            </a>
+
+        </div>
+
+    </div>
+
+
+<!-- LADO DERECHO -->
+<div class="ml-auto">
+
+    <a class="text-white mr-4" href="menu_supervisor.html">
+        Panel principal
+    </a>
+
+    <a class="text-white" href="../../index.html">
+        Cerrar sesión
+    </a>
+
+</div>
+
+</nav>
+
+    <!-- Contenido principal -->
+    <main class="container py-4">
+
+        <h2 class="mb-3">
+            Reporte de inspecciones (RF-40)
+        </h2>
+
+        <p class="text-muted">
+            Selecciona los criterios para generar un documento PDF
+            con la información registrada durante las inspecciones
+            realizadas en las diferentes zonas.
+        </p>
+
+
+        <!-- Filtros -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+                <strong>Filtros del reporte</strong>
+            </div>
+
+            <div class="card-body">
+
+                <form action="#" method="post">
+
+                    <div class="form-row">
+
+                        <!-- Zona -->
+                        <div class="form-group col-md-6">
+
+                            <label for="zona">
+                                <strong>Zona:</strong>
+                            </label>
+
+                            <select
+                                id="zona"
+                                name="zona"
+                                class="form-control">
+
+                                <option value="">
+                                    -- Selecciona una zona --
+                                </option>
+
+                                <option value="centro">
+                                    Zona Centro
+                                </option>
+
+                                <option value="chontalpa">
+                                    Zona Chontalpa
+                                </option>
+
+                                <option value="sierra">
+                                    Zona Sierra
+                                </option>
+
+                                <option value="pantanos">
+                                    Zona Pantanos
+                                </option>
+
+                                <option value="rios">
+                                    Zona Ríos
+                                </option>
+
+                                <option value="todas">
+                                    Todas las zonas
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Estado -->
+                        <div class="form-group col-md-6">
+
+                            <label for="estado">
+                                <strong>Estado de inspección:</strong>
+                            </label>
+
+                            <select
+                                id="estado"
+                                name="estado"
+                                class="form-control">
+
+                                <option value="todos">
+                                    Todos
+                                </option>
+
+                                <option value="realizada">
+                                    Realizada
+                                </option>
+
+                                <option value="pendiente">
+                                    Pendiente
+                                </option>
+
+                                <option value="cancelada">
+                                    Cancelada
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <!-- Fecha inicial -->
+                        <div class="form-group col-md-6">
+
+                            <label for="fecha_inicio">
+                                <strong>Fecha de inicio:</strong>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="fecha_inicio"
+                                name="fecha_inicio"
+                                class="form-control">
+
+                        </div>
+
+
+                        <!-- Fecha final -->
+                        <div class="form-group col-md-6">
+
+                            <label for="fecha_fin">
+                                <strong>Fecha de finalización:</strong>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="fecha_fin"
+                                name="fecha_fin"
+                                class="form-control">
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        Consultar inspecciones
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- Ejemplo de resultados -->
+        <h3 class="mb-3">
+            Resultados de inspecciones
+        </h3>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover bg-white">
+
+                <thead class="thead-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Zona</th>
+                        <th>Fecha</th>
+                        <th>Técnico responsable</th>
+                        <th>Tipo de plaga</th>
+                        <th>Incidencias</th>
+                        <th>Estado</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>INS-001</td>
+
+                        <td>
+                            Zona Sierra
+                        </td>
+
+                        <td>
+                            25/08/2026
+                        </td>
+
+                        <td>
+                            Juan Pérez
+                        </td>
+
+                        <td>
+                            Mosquito
+                        </td>
+
+                        <td>
+                            12
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-success">
+                                Realizada
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>INS-002</td>
+
+                        <td>
+                            Zona Chontalpa
+                        </td>
+
+                        <td>
+                            24/08/2026
+                        </td>
+
+                        <td>
+                            María López
+                        </td>
+
+                        <td>
+                            Roedores
+                        </td>
+
+                        <td>
+                            8
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-success">
+                                Realizada
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>INS-003</td>
+
+                        <td>
+                            Zona Centro
+                        </td>
+
+                        <td>
+                            23/08/2026
+                        </td>
+
+                        <td>
+                            Carlos Hernández
+                        </td>
+
+                        <td>
+                            Cucaracha
+                        </td>
+
+                        <td>
+                            5
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-warning">
+                                Pendiente
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>INS-004</td>
+
+                        <td>
+                            Zona Pantanos
+                        </td>
+
+                        <td>
+                            22/08/2026
+                        </td>
+
+                        <td>
+                            Ana Martínez
+                        </td>
+
+                        <td>
+                            Hormiga
+                        </td>
+
+                        <td>
+                            4
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-success">
+                                Realizada
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>INS-005</td>
+
+                        <td>
+                            Zona Ríos
+                        </td>
+
+                        <td>
+                            21/08/2026
+                        </td>
+
+                        <td>
+                            Pedro García
+                        </td>
+
+                        <td>
+                            Mosquito
+                        </td>
+
+                        <td>
+                            3
+                        </td>
+
+                        <td>
+
+                            <span class="badge badge-danger">
+                                Cancelada
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger">
+
+                        Generar reporte PDF
+
+                    </button>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+
+        <p class="mb-0">
+            Prototipo css — AEB-1055 Programación Web
+        </p>
+
+    </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
