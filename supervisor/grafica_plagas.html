@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Plagas detectadas</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/supervisor.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-bug me-2"></i>
+                Plagas detectadas
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a href="../index.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    Inicio
+                </a>
+
+                <a href="notificaciones.html" class="btn btn-primary btn-sm">
+                    <i class="bi bi-bell"></i>
+                    Notificaciones
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Contenido -->
+    <div class="container">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-graph-up me-2"></i>
+                Plagas detectadas por periodo
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+                    Cantidad de plagas detectadas durante los últimos meses.
+                </p>
+
+                <canvas id="graficaPlagas"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <a href="supervisor-dashboard.html" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Regresar al menú
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Gráfica -->
+    <script>
+
+        const ctx = document.getElementById('graficaPlagas');
+
+        new Chart(ctx, {
+
+            type: 'line',
+
+            data: {
+
+                labels: [
+                    'Enero',
+                    'Febrero',
+                    'Marzo',
+                    'Abril',
+                    'Mayo',
+                    'Junio'
+                ],
+
+                datasets: [{
+
+                    label: 'Plagas detectadas',
+
+                    data: [18, 25, 20, 32, 27, 15],
+
+                    borderWidth: 3,
+
+                    tension: 0.4,
+
+                    fill: false,
+
+                    pointRadius: 5,
+
+                    pointHoverRadius: 7
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+
+                        display: true
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: 'Cantidad de plagas'
+
+                        }
+
+                    },
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: 'Periodo'
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
