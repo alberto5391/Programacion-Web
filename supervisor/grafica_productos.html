@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Productos utilizados</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/supervisor.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-bar-chart-line me-2"></i>
+                Productos utilizados
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a href="../index.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    Inicio
+                </a>
+
+                <a href="notificaciones.html" class="btn btn-primary btn-sm">
+                    <i class="bi bi-bell"></i>
+                    Notificaciones
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Contenido -->
+    <div class="container">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-droplet-half me-2"></i>
+                Productos utilizados para fumigación
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+                    Cantidad de veces que se ha utilizado cada producto.
+                </p>
+
+                <canvas id="graficaProductos"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <a href="supervisor-dashboard.html" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Regresar al menú
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Gráfica -->
+    <script>
+
+        const ctx = document.getElementById('graficaProductos');
+
+        new Chart(ctx, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: [
+                    'Insecticida',
+                    'Rodenticida',
+                    'Gel insecticida',
+                    'Desinfectante',
+                    'Trampas'
+                ],
+
+                datasets: [{
+
+                    label: 'Cantidad utilizada',
+
+                    data: [35, 22, 30, 18, 15],
+
+                    borderWidth: 1
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        title: {
+
+                            display: true,
+
+                            text: 'Cantidad de usos'
+
+                        }
+
+                    },
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: 'Producto'
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+```

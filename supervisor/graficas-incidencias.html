@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Incidencias</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/supervisor.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-pie-chart me-2"></i>
+                Incidencias
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a href="../index.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    Inicio
+                </a>
+
+                <a href="notificaciones.html" class="btn btn-primary btn-sm">
+                    <i class="bi bi-bell"></i>
+                    Notificaciones
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Contenido -->
+    <div class="container">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Incidencias más comunes
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+                    Principales plagas encontradas durante los servicios
+                    de fumigación.
+                </p>
+
+                <div style="max-width: 600px; margin: auto;">
+                    <canvas id="graficaIncidencias"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <a href="supervisor-dashboard.html" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Regresar al menú
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Gráfica -->
+    <script>
+
+        const ctx = document.getElementById('graficaIncidencias');
+
+        new Chart(ctx, {
+
+            type: 'doughnut',
+
+            data: {
+
+                labels: [
+                    'Cucarachas',
+                    'Roedores',
+                    'Hormigas',
+                    'Mosquitos',
+                    'Termitas'
+                ],
+
+                datasets: [{
+
+                    label: 'Incidencias',
+
+                    data: [40, 25, 18, 12, 5],
+
+                    borderWidth: 2
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+
+                        position: 'bottom'
+
+                    },
+
+                    title: {
+
+                        display: true,
+
+                        text: 'Incidencias registradas'
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+```
