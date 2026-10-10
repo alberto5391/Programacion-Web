@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reporte de campaña - PLAGUE</title>
+
+    <!-- Bootstrap 4.6.2 -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    >
+</head>
+
+<body class="bg-light">
+
+<!-- Barra Superior de Navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="supervisor-dashboard.html">
+            <i class="bi bi-shield-check me-2"></i> Reporte Aplicaciones
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+           <a href="../index.html" class="btn btn-outline-light btn-sm mr-2">
+            <i class="bi bi-arrow-left"></i> Inicio 
+            </a> <a href="notificaciones.html" class="btn btn-primary btn-sm position-relative">
+                <i class="bi bi-bell"></i> Notificaciones
+            </a>
+        </div>
+    </div>
+</nav>
+
+    <!-- Contenido principal -->
+    <main class="container py-4">
+
+        <h2 class="mb-3">
+            Reporte de Aplicaciones (RF-41)
+        </h2>
+
+        <p class="text-muted">
+            El sistema deberá generar reportes de aplicaciones indicando productos,
+            responsables, ubicacion y observaciones.
+        </p>
+
+
+        <!-- Filtros -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-dark text-white">
+                <strong>Filtros del reporte</strong>
+            </div>
+
+            <div class="card-body">
+
+                <form action="#" method="post">
+
+                    <div class="form-row">
+
+                        <!-- Zona -->
+                        <div class="form-group col-md-4">
+                            <label for="zona">
+                                <strong>Zona:</strong>
+                            </label>
+
+                            <select
+                                id="zona"
+                                name="zona"
+                                class="form-control"
+                            >
+                                <option value="">
+                                    -- Selecciona una zona --
+                                </option>
+
+                                <option value="centro">
+                                    Zona Centro
+                                </option>
+
+                                <option value="chontalpa">
+                                    Zona Chontalpa
+                                </option>
+
+                                <option value="sierra">
+                                    Zona Sierra
+                                </option>
+
+                                <option value="pantanos">
+                                    Zona Pantanos
+                                </option>
+
+                                <option value="rios">
+                                    Zona Ríos
+                                </option>
+
+                                <option value="todas">
+                                    Todas las zonas
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Fecha inicial -->
+                        <div class="form-group col-md-4">
+                            <label for="fecha_inicio">
+                                <strong>Fecha de inicio:</strong>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="fecha_inicio"
+                                name="fecha_inicio"
+                                class="form-control"
+                            >
+                        </div>
+
+                        <!-- Fecha final -->
+                        <div class="form-group col-md-4">
+                            <label for="fecha_fin">
+                                <strong>Fecha de finalización:</strong>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="fecha_fin"
+                                name="fecha_fin"
+                                class="form-control"
+                            >
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Consultar aplicaciones
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Aplicaciones realizadas -->
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-primary text-white">
+                <strong>Aplicaciones realizadas</strong>
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Ubicación</th>
+                                <th>Responsable</th>
+                                <th>Producto utilizado</th>
+                                <th>Observaciones</th>
+                                <th>Evidencias</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>APP-001</td>
+                                <td>05/02/2026</td>
+                                <td>Zona Ríos - Sector 1</td>
+                                <td>Juan Pérez</td>
+                                <td>Producto A</td>
+                                <td>
+                                    Aplicación realizada correctamente.
+                                </td>
+                                <td>
+                                    <a
+                                        href="../img/evidencia_001.jpg"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Ver evidencia
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>APP-002</td>
+                                <td>10/02/2026</td>
+                                <td>Zona Centro - Sector 3</td>
+                                <td>María González</td>
+                                <td>Producto B</td>
+                                <td>
+                                    Se realizó aplicación preventiva.
+                                </td>
+                                <td>
+                                    <a
+                                        href="../img/evidencia_002.jpg"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Ver evidencia
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>APP-003</td>
+                                <td>15/02/2026</td>
+                                <td>Zona Sierra - Sector 2</td>
+                                <td>Carlos Hernández</td>
+                                <td>Producto C</td>
+                                <td>
+                                    Se recomienda seguimiento.
+                                </td>
+                                <td>
+                                    <a
+                                        href="../img/evidencia_003.jpeg"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Ver evidencia
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>APP-004</td>
+                                <td>20/02/2026</td>
+                                <td>Zona Pantanos - Sector 4</td>
+                                <td>Ana López</td>
+                                <td>Producto A</td>
+                                <td>
+                                    Aplicación completada.
+                                </td>
+                                <td>
+                                    <a
+                                        href="../img/evidencia_004.jpg"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Ver evidencia
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+   
+<!-- BOTONES -->
+        <div class="mt-3 mb-5">
+
+            <a href="../reportes/notificacion_exportar.html"
+            class="btn btn-success">
+                Exportar bitácora
+            </a>
+
+            <a href="../reportes/reporte_aplicacion.pdf"
+            class="btn btn-primary"
+            target="_blank">
+                Generar reporte
+            </a>
+            <br><br>
+            <a href="supervisor-dashboard.html">← Regresar al menú</a>
+        </div>
+        </div>
+    </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+
+        <p class="mb-0">
+            Prototipo css — AEB-1055 Programación Web
+        </p>
+
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
+
