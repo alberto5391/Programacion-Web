@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/tecnico.css">
+    <title>Registro de Responsables</title>
+</head>
+<body>
+    <!-- Barra Superior de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                Registro de Responsables
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="../index.html" class="btn btn-outline-light btn-sm">
+                    ← Inicio
+                </a>
+                <a href="notificaciones.html" class="btn btn-primary btn-sm">
+                    Notificaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h2 class="mb-4">Registro de responsables de actividades (RF44)</h2>
+        <form>
+            <fieldset class="border rounded p-4 mb-4 shadow-sm">
+                <legend class="float-none w-auto px-2">
+                    Información de la actividad
+                </legend>
+                <div class="mb-3">
+                    <label for="tipo_actividad" class="form-label">
+                        Actividad realizada:
+                    </label>
+                    <select
+                        class="form-select"
+                        id="tipo_actividad"
+                        name="tipo_actividad">
+                        <option value="inspeccion">Inspección</option>
+                        <option value="diagnostico">Diagnóstico</option>
+                        <option value="aplicacion">Aplicación</option>
+                        <option value="seguimiento">Seguimiento</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="usuario_responsable" class="form-label">
+                        Usuario / Técnico responsable:
+                    </label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="usuario_responsable"
+                        name="usuario_responsable"
+                        value="Carlos Eduardo Domínguez Hernández"
+                        readonly>
+                </div>
+            </fieldset>
+            <!-- Botones -->
+            <div class="d-flex flex-wrap gap-2 mt-4 mb-4">
+                <button
+                    type="submit"
+                    formaction="tecnico_dashboard.html"
+                    class="btn btn-primary">
+                    Registrar
+                </button>
+                <a href="tecnico_dashboard.html"
+                   class="btn btn-outline-secondary">
+                    ← Regresar al menú
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
