@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Personal Técnico</title>
+</head>
+<body>
+
+    <center>
+        <h1><font face="Arial, sans-serif" color="#333333">Gestión del Personal Técnico</font></h1>
+    </center>
+    <p><font face="Arial, sans-serif">Módulo para registrar, administrar y consultar la información de los técnicos encargados de realizar las inspecciones y aplicar los tratamientos de fumigación.</font></p>
+    <hr>
+    <br>
+
+    <h2>Registrar / Modificar Técnico</h2>
+    
+    <form action="#" method="POST">
+        
+        <div>
+            <label for="numero_empleado">Número de Empleado:</label><br>
+            <input type="text" id="numero_empleado" name="numero_empleado" placeholder="Ej. TEC-045" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="nombres">Nombres:</label><br>
+            <input type="text" id="nombres" name="nombres" placeholder="Nombre(s) del técnico" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="apellidos">Apellidos:</label><br>
+            <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos del técnico" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="telefono">Teléfono de Contacto:</label><br>
+            <input type="tel" id="telefono" name="telefono" placeholder="Número celular o fijo" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="especialidad">Especialidad o Función Principal:</label><br>
+            <select id="especialidad" name="especialidad" required>
+                <option value="" disabled selected>Selecciona una función</option>
+                <option value="inspeccion">Inspector (Diagnóstico)</option>
+                <option value="aplicacion">Aplicador (Fumigación)</option>
+                <option value="ambas">Ambas funciones</option>
+            </select>
+        </div>
+        <br>
+
+        <div>
+            <button type="submit">Guardar Técnico</button>
+            <button type="reset">Limpiar Datos</button>
+        </div>
+    </form>
+
+    <br><br>
+    <hr>
+    <br>
+
+    <h2>Consulta y Administración de Técnicos</h2>
+    
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th align="left" bgcolor="#f2f2f2">No. Empleado</th>
+                <th align="left" bgcolor="#f2f2f2">Nombre Completo</th>
+                <th align="left" bgcolor="#f2f2f2">Teléfono</th>
+                <th align="left" bgcolor="#f2f2f2">Especialidad</th>
+                <th align="left" bgcolor="#f2f2f2">Estado</th>
+                <th align="left" bgcolor="#f2f2f2">Registro de Actividades</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ejemplo de Técnico 1 -->
+            <tr>
+                <td>TEC-045</td>
+                <td>Roberto Domínguez Pérez</td>
+                <td>9931112233</td>
+                <td>Ambas funciones</td>
+                <td>
+                    <select name="estado_tec1">
+                        <option value="activo" selected>Activo (En campo)</option>
+                        <option value="inactivo">Inactivo (Vacaciones/Baja)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver historial de actividades</button>
+                    <button>Editar Datos</button>
+                </td>
+            </tr>
+            
+            <!-- Ejemplo de Técnico 2 -->
+            <tr>
+                <td>TEC-046</td>
+                <td>Luis Méndez Vargas</td>
+                <td>9934445566</td>
+                <td>Aplicador (Fumigación)</td>
+                <td>
+                    <select name="estado_tec2">
+                        <option value="activo">Activo (En campo)</option>
+                        <option value="inactivo" selected>Inactivo (Vacaciones/Baja)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver historial de actividades</button>
+                    <button>Editar Datos</button>
+                </td>
+            </tr>
+
+            <!-- Ejemplo de Técnico 3 -->
+            <tr>
+                <td>TEC-047</td>
+                <td>Ana Martínez Cruz</td>
+                <td>9937778899</td>
+                <td>Inspector (Diagnóstico)</td>
+                <td>
+                    <select name="estado_tec3">
+                        <option value="activo" selected>Activo (En campo)</option>
+                        <option value="inactivo">Inactivo (Vacaciones/Baja)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver historial de actividades</button>
+                    <button>Editar Datos</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

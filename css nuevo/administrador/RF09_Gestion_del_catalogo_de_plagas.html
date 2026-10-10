@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Catálogo de Plagas</title>
+</head>
+<body>
+
+    <center>
+        <h1><font face="Arial, sans-serif" color="#333333">Gestión del Catálogo de Plagas</font></h1>
+    </center>
+    <p><font face="Arial, sans-serif">Módulo para registrar, modificar, consultar y desactivar los diferentes tipos de plagas identificados durante las inspecciones.</font></p>
+    <hr>
+    <br>
+
+    <h2>Registrar / Modificar Tipo de Plaga</h2>
+    
+    <form action="#" method="POST">
+        
+        <div>
+            <label for="codigo_plaga">Código de Plaga:</label><br>
+            <input type="text" id="codigo_plaga" name="codigo_plaga" placeholder="Ej. PLG-001" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="nombre_plaga">Nombre Común de la Plaga:</label><br>
+            <input type="text" id="nombre_plaga" name="nombre_plaga" placeholder="Ej. Mosquito del Dengue" required>
+        </div>
+        <br>
+
+        <div>
+            <label for="nombre_cientifico">Nombre Científico (Opcional):</label><br>
+            <input type="text" id="nombre_cientifico" name="nombre_cientifico" placeholder="Ej. Aedes aegypti">
+        </div>
+        <br>
+
+        <div>
+            <label for="descripcion">Descripción y Características:</label><br>
+            <textarea id="descripcion" name="descripcion" rows="4" cols="50" placeholder="Describe los detalles de la plaga, lugares donde se anida, daños que causa, etc." required></textarea>
+        </div>
+        <br>
+
+        <div>
+            <label for="tratamiento">Tratamiento Recomendado:</label><br>
+            <textarea id="tratamiento" name="tratamiento" rows="3" cols="50" placeholder="Ej. Fumigación con insecticida especial, descacharrización..."></textarea>
+        </div>
+        <br>
+
+        <div>
+            <button type="submit">Guardar Plaga</button>
+            <button type="reset">Limpiar Datos</button>
+        </div>
+    </form>
+
+    <br><br>
+    <hr>
+    <br>
+
+    <h2>Consulta de Plagas Registradas</h2>
+    
+    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th align="left" bgcolor="#f2f2f2">Código</th>
+                <th align="left" bgcolor="#f2f2f2">Nombre Común</th>
+                <th align="left" bgcolor="#f2f2f2">Nombre Científico</th>
+                <th align="left" bgcolor="#f2f2f2">Descripción Breve</th>
+                <th align="left" bgcolor="#f2f2f2">Estado (Desactivar)</th>
+                <th align="left" bgcolor="#f2f2f2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ejemplo de Plaga 1 -->
+            <tr>
+                <td>PLG-001</td>
+                <td>Mosquito del Dengue</td>
+                <td>Aedes aegypti</td>
+                <td>Transmisor de virus, se reproduce en agua limpia estancada.</td>
+                <td>
+                    <select name="estado_plaga1">
+                        <option value="activa" selected>Activa</option>
+                        <option value="inactiva">Inactiva (Desactivada)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver Detalles</button>
+                    <button>Editar / Modificar</button>
+                </td>
+            </tr>
+            
+            <!-- Ejemplo de Plaga 2 -->
+            <tr>
+                <td>PLG-002</td>
+                <td>Rata de Alcantarilla</td>
+                <td>Rattus norvegicus</td>
+                <td>Roedor urbano, transmisor de enfermedades. Anida en drenajes.</td>
+                <td>
+                    <select name="estado_plaga2">
+                        <option value="activa">Activa</option>
+                        <option value="inactiva" selected>Inactiva (Desactivada)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver Detalles</button>
+                    <button>Editar / Modificar</button>
+                </td>
+            </tr>
+
+            <!-- Ejemplo de Plaga 3 -->
+            <tr>
+                <td>PLG-003</td>
+                <td>Cucaracha Americana</td>
+                <td>Periplaneta americana</td>
+                <td>Insecto rastrero común en zonas húmedas y cálidas.</td>
+                <td>
+                    <select name="estado_plaga3">
+                        <option value="activa" selected>Activa</option>
+                        <option value="inactiva">Inactiva (Desactivada)</option>
+                    </select>
+                </td>
+                <td>
+                    <button>Ver Detalles</button>
+                    <button>Editar / Modificar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
