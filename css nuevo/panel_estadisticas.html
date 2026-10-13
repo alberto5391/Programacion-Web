@@ -2,125 +2,301 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLAGUE - Panel de Estadísticas</title>
+    <style>
+
+        :root {
+            --fondo: #f8f9fa;
+            --blanco: #ffffff;
+            --texto: #212529;
+            --secundario: #637080;
+            --borde: #dee2e6;
+            --cabecera-tabla: #e9ecef;
+            --azul: #007bff;
+            --azul-hover: #0069d9;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--fondo);
+            color: var(--texto);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .contenedor { width: min(1120px, calc(100% - 32px)); margin: 28px auto 44px; }
+        .encabezado-pagina { margin-bottom: 20px; }
+        .encabezado-pagina h1 { font-size: 25px; line-height: 1.25; margin: 0 0 7px; font-weight: 700; }
+        .encabezado-pagina p { color: var(--secundario); margin: 0; }
+        .tarjeta {
+            background: var(--blanco);
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,.06);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .tarjeta-titulo {
+            padding: 13px 20px;
+            margin: 0;
+            border-bottom: 1px solid var(--borde);
+            font-size: 16px;
+            font-weight: 700;
+            background: #fff;
+        }
+        .tarjeta-cuerpo { padding: 20px; }
+        .texto-ayuda { margin: 0 0 18px; color: var(--secundario); }
+        .campo { margin-bottom: 18px; }
+        .campo label { display: block; margin-bottom: 8px; }
+        .control {
+            display: block;
+            width: 100%;
+            min-height: 39px;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background: #fff;
+            color: #343a40;
+            font: inherit;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        textarea.control { resize: vertical; min-height: 125px; }
+        input[type="file"].control { padding: 7px 10px; }
+        .control::placeholder { color: #697a8e; opacity: 1; }
+        .control:focus { outline: none; border-color: #80bdff; box-shadow: 0 0 0 3px rgba(0,123,255,.16); }
+        .boton {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 38px;
+            padding: 8px 13px;
+            background: var(--azul);
+            border: 1px solid var(--azul);
+            border-radius: 4px;
+            color: #fff;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .boton:hover { background: var(--azul-hover); border-color: #0062cc; }
+        .boton:focus-visible, .enlace-regreso:focus-visible, .enlace-mapa:focus-visible {
+            outline: 3px solid #80bdff; outline-offset: 2px;
+        }
+        .formulario-busqueda { display: flex; align-items: flex-end; gap: 12px; }
+        .formulario-busqueda .campo { margin: 0; flex: 1; min-width: 0; }
+        .tabla-scroll { width: 100%; overflow-x: auto; }
+        .tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+        .tabla th, .tabla td { border: 1px solid #d9dfe5; padding: 12px; vertical-align: middle; }
+        .tabla th { background: var(--cabecera-tabla); font-weight: 700; color: #374151; }
+        .tabla tbody tr:nth-child(even) { background: #f0f0f0; }
+        .etiqueta { display: inline-block; padding: 2px 7px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; line-height: 1.3; }
+        .etiqueta-alta { background: #dc3545; }
+        .rejilla-reportes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+        .rejilla-reportes .tarjeta { margin-bottom: 0; }
+        .seccion-titulo { font-size: 20px; font-weight: 700; margin: 30px 0 14px; }
+        .multimedia { width: 100%; display: block; max-height: 390px; object-fit: contain; }
+        .marco-mapa { width: 100%; height: 340px; display: block; border: 1px solid var(--borde); border-radius: 4px; }
+        .enlace-mapa { display: inline-block; margin-top: 12px; color: #0069d9; text-decoration: none; }
+        .enlace-mapa:hover, .enlace-regreso:hover { text-decoration: underline; }
+        .pie-pagina { margin-top: 6px; }
+        .enlace-regreso { color: #0069d9; text-decoration: none; font-weight: 500; }
+        @media (max-width: 760px) {
+            .contenedor { width: min(100% - 24px, 1120px); margin-top: 20px; }
+            .encabezado-pagina h1 { font-size: 22px; }
+            .rejilla-reportes { grid-template-columns: 1fr; }
+            .tarjeta-cuerpo { padding: 16px; }
+            .tarjeta-titulo { padding: 12px 16px; }
+            .formulario-busqueda { flex-direction: column; align-items: stretch; }
+            .formulario-busqueda .boton { align-self: flex-start; }
+            .tabla { min-width: 430px; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Panel Estadístico y Consultas</h1>
-    <h2>Buscador de Campañas (RF28)</h2>
-    <form action="#" method="GET">
-        <label for="busqueda">Buscar por zona o responsable:</label>
-        <input type="text" id="busqueda" name="busqueda" placeholder="Ej. Centro">
-        <button type="submit">Buscar</button>
-    </form>
-    <hr>
-    <h2>Reportes Estadísticos</h2>
-    <h3>Estadísticas Globales por Periodo (RF29)</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Periodo</th>
-            <th>Total de Campañas</th>
-            <th>Campañas Finalizadas</th>
-        </tr>
-        <tr>
-            <td>Agosto 2026</td>
-            <td>120</td>
-            <td>115</td>
-        </tr>
-    </table>
-    <h3>Plagas Frecuentes (RF30)</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Plaga</th>
-            <th>Incidencias Detectadas</th>
-        </tr>
-        <tr>
-            <td>Cucarachas</td>
-            <td>45</td>
-        </tr>
-        <tr>
-            <td>Roedores</td>
-            <td>28</td>
-        </tr>
-        <tr>
-            <td>Mosquitos</td>
-            <td>15</td>
-        </tr>
-    </table>
-    <h3>Zonas Críticas (RF31)</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Zona</th>
-            <th>Campañas Realizadas</th>
-            <th>Nivel de Incidencia</th>
-        </tr>
-        <tr>
-            <td>Zona Centro</td>
-            <td>35</td>
-            <td>Alta</td>
-        </tr>
-        <tr>
-            <td>Mercado Municipal</td>
-            <td>22</td>
-            <td>Alta</td>
-        </tr>
-    </table>
-    <h3>Productos Más Utilizados (RF32)</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Producto</th>
-            <th>Aplicaciones</th>
-        </tr>
-        <tr>
-            <td>Deltametrina 5%</td>
-            <td>60</td>
-        </tr>
-        <tr>
-            <td>Brodifacoum</td>
-            <td>30</td>
-        </tr>
-    </table>
-    <h3>Efectividad de Tratamientos (RF33)</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Tratamiento</th>
-            <th>Efectividad Global</th>
-            <th>Reincidencias Reportadas</th>
-        </tr>
-        <tr>
-            <td>Nebulización espacial</td>
-            <td>85%</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>Cebos rodenticidas</td>
-            <td>90%</td>
-            <td>1</td>
-        </tr>
-    </table>
-    <hr>
-    <h2>Gráficos y Mapas (RF34-RF35)</h2>
-    <h3>Representación Gráfica</h3>
-    <p><em>Estadística de plagas, zonas, productos e incidencias.</em></p>
-    <table border="1" cellpadding="10">
-        <tr>
-            <td align="center">
-                <img src="img/Estadisticas.png" alt="Gráfica Estadística de PLAGUE" width="500" height="300">
-            </td>
-        </tr>
-    </table>
-    <br>
-    <h3>Mapa de Zonas Atendidas</h3>
-    <table border="1" cellpadding="10">
-        <tr>
-            <td>
-                <iframe width="500" height="300" src="https://www.openstreetmap.org/export/embed.html?bbox=-92.98%2C17.96%2C-92.90%2C18.02&amp;layer=mapnik&amp;marker=17.99%2C-92.94"></iframe>
-                <br>
-                <a href="https://www.openstreetmap.org/?mlat=17.99&mlon=-92.94#map=13/17.9900/-92.9400" target="_blank">Ver mapa completo</a>
-            </td>
-        </tr>
-    </table>
+    <main class="contenedor">
+        <header class="encabezado-pagina">
+            <h1>Panel Estadístico y Consultas</h1>
+            <p>Consulta de campañas, reportes estadísticos y zonas atendidas.</p>
+        </header>
 
-    <br><br><br>
-    <a href="supervisor/supervisor-dashboard.html">← Volver al menu</a>
+        <section class="tarjeta" aria-labelledby="titulo-buscador">
+            <h2 class="tarjeta-titulo" id="titulo-buscador">Buscador de Campañas (RF28)</h2>
+            <div class="tarjeta-cuerpo">
+                <form class="formulario-busqueda" action="#" method="GET">
+                    <div class="campo">
+                        <label for="busqueda">Buscar por zona o responsable:</label>
+                        <input class="control" type="text" id="busqueda" name="busqueda" placeholder="Ej. Centro">
+                    </div>
+                    <button class="boton" type="submit">Buscar</button>
+                </form>
+            </div>
+        </section>
+
+        <h2 class="seccion-titulo">Reportes Estadísticos</h2>
+        <div class="rejilla-reportes">
+            <section class="tarjeta" aria-labelledby="reporte-global">
+                <h3 class="tarjeta-titulo" id="reporte-global">Estadísticas Globales por Periodo (RF29)</h3>
+                <div class="tarjeta-cuerpo">
+                    <div class="tabla-scroll">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                <th scope="col">Periodo</th>
+                                <th scope="col">Total de Campañas</th>
+                                <th scope="col">Campañas Finalizadas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Agosto 2026</td>
+                                <td>120</td>
+                                <td>115</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="tarjeta" aria-labelledby="reporte-plagas">
+                <h3 class="tarjeta-titulo" id="reporte-plagas">Plagas Frecuentes (RF30)</h3>
+                <div class="tarjeta-cuerpo">
+                    <div class="tabla-scroll">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                <th scope="col">Plaga</th>
+                                <th scope="col">Incidencias Detectadas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Cucarachas</td>
+                                <td>45</td>
+                            </tr>
+                            <tr>
+                                <td>Roedores</td>
+                                <td>28</td>
+                            </tr>
+                            <tr>
+                                <td>Mosquitos</td>
+                                <td>15</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="tarjeta" aria-labelledby="reporte-zonas">
+                <h3 class="tarjeta-titulo" id="reporte-zonas">Zonas Críticas (RF31)</h3>
+                <div class="tarjeta-cuerpo">
+                    <div class="tabla-scroll">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                <th scope="col">Zona</th>
+                                <th scope="col">Campañas Realizadas</th>
+                                <th scope="col">Nivel de Incidencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Zona Centro</td>
+                                <td>35</td>
+                                <td><span class="etiqueta etiqueta-alta">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>Mercado Municipal</td>
+                                <td>22</td>
+                                <td><span class="etiqueta etiqueta-alta">Alta</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="tarjeta" aria-labelledby="reporte-productos">
+                <h3 class="tarjeta-titulo" id="reporte-productos">Productos Más Utilizados (RF32)</h3>
+                <div class="tarjeta-cuerpo">
+                    <div class="tabla-scroll">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Aplicaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Deltametrina 5%</td>
+                                <td>60</td>
+                            </tr>
+                            <tr>
+                                <td>Brodifacoum</td>
+                                <td>30</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="tarjeta" aria-labelledby="reporte-efectividad">
+                <h3 class="tarjeta-titulo" id="reporte-efectividad">Efectividad de Tratamientos (RF33)</h3>
+                <div class="tarjeta-cuerpo">
+                    <div class="tabla-scroll">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                <th scope="col">Tratamiento</th>
+                                <th scope="col">Efectividad Global</th>
+                                <th scope="col">Reincidencias Reportadas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Nebulización espacial</td>
+                                <td>85%</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>Cebos rodenticidas</td>
+                                <td>90%</td>
+                                <td>1</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <h2 class="seccion-titulo">Gráficos y Mapas (RF34-RF35)</h2>
+        <div class="rejilla-reportes">
+            <section class="tarjeta" aria-labelledby="titulo-grafica">
+                <h3 class="tarjeta-titulo" id="titulo-grafica">Representación Gráfica</h3>
+                <div class="tarjeta-cuerpo">
+                    <p class="texto-ayuda">Estadística de plagas, zonas, productos e incidencias.</p>
+                    <img class="multimedia" src="img/Estadisticas.png" alt="Gráfica Estadística de PLAGUE" width="500" height="300">
+                </div>
+            </section>
+            <section class="tarjeta" aria-labelledby="titulo-mapa">
+                <h3 class="tarjeta-titulo" id="titulo-mapa">Mapa de Zonas Atendidas</h3>
+                <div class="tarjeta-cuerpo">
+                    <iframe class="marco-mapa" title="Mapa de zonas atendidas" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-92.98%2C17.96%2C-92.90%2C18.02&amp;layer=mapnik&amp;marker=17.99%2C-92.94"></iframe>
+                    <a class="enlace-mapa" href="https://www.openstreetmap.org/?mlat=17.99&amp;mlon=-92.94#map=13/17.9900/-92.9400" target="_blank" rel="noopener noreferrer">Ver mapa completo ↗</a>
+                </div>
+            </section>
+        </div>
+
+        <footer class="pie-pagina" style="margin-top: 24px;">
+            <a class="enlace-regreso" href="supervisor/supervisor-dashboard.html">← Volver al menu</a>
+        </footer>
+    </main>
 </body>
 </html>
