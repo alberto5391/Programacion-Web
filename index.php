@@ -1,187 +1,210 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLAGUE - Plataforma Web de Control de Plagas</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Estilos personalizados -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-            padding-top: 70px; /* Espacio para la barra fija */
-        }
-        /* Navbar con el estilo oscuro de la referencia */
-        .custom-navbar {
-            background-color: #1a1d20 !important;
-            border-bottom: 1px solid #2b2f33;
-        }
-        .custom-navbar .navbar-brand,
-        .custom-navbar .nav-link {
-            color: #ffffff !important;
-        }
-        .custom-navbar .nav-link:hover {
-            color: #0d6efd !important;
-        }
-        /* Botón azul idéntico a la referencia */
-        .btn-custom-blue {
-            background-color: #0d6efd !important;
-            border-color: #0d6efd !important;
-            color: #fff !important;
-            font-weight: 500;
-        }
-        .btn-custom-blue:hover {
-            background-color: #0b5ed7 !important;
-            border-color: #0a58ca !important;
-        }
-        /* Hero section adaptada al tono oscuro/institucional */
-        .hero-section {
-            background: linear-gradient(135deg, #1a1d20 0%, #2b2f33 100%);
-            color: white;
-            border-radius: 1rem;
-            border: 1px solid #373b3e;
-        }
-        .card-feature {
-            border: 1px solid rgba(0,0,0,0.08);
-            transition: all 0.2s ease-in-out;
-        }
-        .card-feature:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
-            border-color: #0d6efd;
-        }
-    </style>
-</head>
-<body>
+<?php
+/**
+ * FRONT CONTROLLER - PLAGUE
+ * Punto único de entrada para toda la aplicación (Arquitectura MVC)
+ */
 
-    <!-- Barra de Navegación Fija con estilo oscuro -->
-    <nav class="navbar navbar-expand-lg custom-navbar fixed-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white" href="#inicio">
-                <i class="bi bi-shield-shaded fs-4 text-primary"></i> PLAGUE
-            </a>
-            <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon filter-invert" style="filter: invert(1);"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center gap-3">
-                    <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#acerca">Acerca del sistema</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-                    <li class="nav-item">
-                        <a href="administrador/RF01_y_RF06_Login.html" class="btn btn-custom-blue btn-sm px-3 shadow-sm">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+// 1. Iniciar sesión en el punto más alto del sistema
+session_start();
 
-    <!-- Contenido Principal -->
-    <main class="container my-4">
+// 2. Cargar las constantes de los directorios absolutos
+require_once 'directorios.php';
 
-        <!-- Hero / Sección de Bienvenida -->
-        <section id="inicio" class="hero-section p-5 mb-5 shadow-sm text-center text-lg-start">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-3">
-                        <i class="bi bi-bullseye me-1"></i> Control de Plagas Urbanas
-                    </span>
-                    <h1 class="display-5 fw-bold mb-3">Bienvenidos a PLAGUE</h1>
-                    <p class="lead mb-4 text-light opacity-85">
-                        Plataforma web orientada a dependencias gubernamentales encargadas de realizar y supervisar campañas de fumigación y control de plagas urbanas.
-                    </p>
-                    <a href="administrador/RF01_y_RF06_Login.html" class="btn btn-custom-blue px-4 py-2 shadow-sm">
-                        Iniciar sesión <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
-                </div>
-                <div class="col-lg-4 text-center mt-4 mt-lg-0">
-                    <img src="img/logo_plague.png" alt="Logo de PLAGUE" class="img-fluid bg-white p-3 rounded-4 shadow" style="max-width: 160px;">
-                </div>
-            </div>
-        </section>
+// 3. Cargar e inicializar la conexión a la Base de Datos
+// Al hacerlo aquí, la variable $conexion estará disponible para todos los controladores y modelos
+require_once RESOURCE_PATH . 'class/class.connection.php';
+$objConexion = new Connection();
+$conexion = $objConexion->getConexion();
 
-        <!-- Sección: Acerca del Sistema -->
-        <section id="acerca" class="mb-5">
-            <div class="card bg-white border-0 shadow-sm p-4 p-md-5 rounded-4">
-                <h2 class="h3 fw-bold text-dark mb-4 border-bottom pb-3">
-                    <i class="bi bi-info-circle text-primary me-2"></i> Acerca del sistema
-                </h2>
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-7">
-                        <p class="text-secondary mb-3">
-                            El sistema surge de la necesidad de organizar y centralizar la información relacionada con las campañas de fumigación, ya que el manejo de registros de forma manual o mediante diferentes herramientas puede dificultar el seguimiento de las inspecciones, diagnósticos, aplicaciones de productos y resultados obtenidos.
-                        </p>
-                        <p class="text-secondary mb-4">
-                            La plataforma estará dirigida principalmente a <strong>administradores, supervisores y técnicos</strong> de las dependencias encargadas de estas actividades, permitiendo gestionar de manera estructurada la información generada durante las campañas.
-                        </p>
-                        <div class="p-3 bg-light rounded-3 border-start border-primary border-4 d-flex justify-content-between align-items-center">
-                            <span class="text-dark small fw-medium">¿Listo para comenzar con la gestión?</span>
-                            <a href="administrador/RF01_y_RF06_Login.html" class="btn btn-sm btn-custom-blue fw-semibold">Iniciar sesión</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <div class="card card-feature p-3 bg-white shadow-sm">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary-subtle text-primary p-2 rounded-3 fs-4"><i class="bi bi-clipboard2-pulse"></i></div>
-                                        <div>
-                                            <h6 class="mb-1 fw-bold text-dark">Inspecciones y Diagnósticos</h6>
-                                            <p class="mb-0 text-muted small">Control de campo detallado.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="card card-feature p-3 bg-white shadow-sm">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary-subtle text-primary p-2 rounded-3 fs-4"><i class="bi bi-map"></i></div>
-                                        <div>
-                                            <h6 class="mb-1 fw-bold text-dark">Campañas y Coordenadas GPS</h6>
-                                            <p class="mb-0 text-muted small">Seguimiento geolocalizado de zonas.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+// 4. Capturar el módulo solicitado
+// Usamos $_REQUEST para que lea 'modulo' tanto de la URL (?modulo=x) como de formularios POST ocultos
+$modulo = isset($_REQUEST['modulo']) ? $_REQUEST['modulo'] : 'home';
 
-        <!-- Sección: Contacto / Institución -->
-        <section id="contacto" class="mb-5">
-            <div class="card bg-white border-0 shadow-sm p-4 p-md-5 rounded-4 text-center">
-                <h3 class="h4 fw-bold text-dark mb-3"><i class="bi bi-building text-primary me-2"></i> Contacto e Institución</h3>
-                <p class="text-secondary mb-4 mx-auto" style="max-width: 600px;">
-                    <em>Tecnológico Nacional de México Campus Villahermosa</em><br>
-                    <em>Departamento de Sistemas y Computación</em><br>
-                    <em>Villahermosa, Tabasco, México</em>
-                </p>
-                <div>
-                    <a href="mailto:contacto@itvillahermosa.edu.mx" class="btn btn-outline-primary btn-sm px-4 rounded-pill">
-                        <i class="bi bi-envelope me-2"></i> contacto@itvillahermosa.edu.mx
-                    </a>
-                </div>
-            </div>
-        </section>
+// 5. Enrutador (Switch) - Llama al controlador adecuado según el módulo
+switch ($modulo) {
 
-    </main>
+    case 'home':
+        require_once VIEW_PATH . 'home.php';
+        break;
+    
+    // --- AUTENTICACIÓN ---
+    case 'login':
+        require_once CONTROLLER_PATH . 'controller.login.php';
+        break;
+        
+    case 'logout':
+        require_once CONTROLLER_PATH . 'admin/controller.logout.php';
+        break;
 
-    <!-- Footer -->
-    <footer class="bg-white border-top py-3 text-center text-muted small">
-        <div class="container">
-            PLAGUE &copy; 2026 — Plataforma Web de Control de Plagas Urbanas
-        </div>
-    </footer>
+    // --- PANEL PRINCIPAL ---
+    case 'dashboard':
+            require_once CONTROLLER_PATH . 'admin/controller.dashboard.php';
+        break;
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    // --- MÓDULOS DE ADMINISTRACIÓN (Catálogos y Registros) ---
+    case 'usuarios':
+        // Maneja RF02, RF03, RF04 y RF05
+        require_once CONTROLLER_PATH . 'admin/controller.usuario.php';
+        break;
+
+    // case 'zonas':
+    case 'coordenadas_gps':
+        require_once CONTROLLER_PATH . 'admin/controller.gps.php';
+        break;
+
+    case 'plagas':
+        // Maneja RF09
+        require_once CONTROLLER_PATH . 'admin/controller.plaga.php';
+        break;
+
+    case 'productos':
+        // Maneja RF10 y RF17
+        require_once CONTROLLER_PATH . 'admin/controller.producto.php';
+        break;
+
+    case 'tecnicos':
+        // Maneja RF11
+        require_once CONTROLLER_PATH . 'admin/controller.tecnico.php';
+        break;
+
+    case 'evidencias':
+        // Maneja RF22 y las evidencias
+        require_once CONTROLLER_PATH . 'admin/controller.evidencia.php';
+        break;
+
+    case 'solicitantes':
+        require_once CONTROLLER_PATH . 'admin/controller.solicitante.php';
+        break;
+
+    case 'notificaciones':
+        require_once CONTROLLER_PATH . 'admin/controller.notificacion.php';
+        break;
+
+    // --- REPORTES Y BITÁCORAS ---
+    case 'bitacora':
+        require_once CONTROLLER_PATH . 'admin/controller.bitacora.php';
+        break;
+
+    case 'informacion_historica':
+        // Maneja la bitácora de auditoría y consultas históricas
+        require_once CONTROLLER_PATH . 'admin/controller.informacion_historica.php';
+        break;
+
+    case 'estadisticas':
+        // Maneja el panel de estadísticas y mapas
+        require_once CONTROLLER_PATH . 'admin/controller.estadistica.php'; // (Asegúrate de crear este controlador o integrarlo donde prefieras)
+        break;
+    
+    case 'control_acceso':
+        require_once CONTROLLER_PATH . 'admin/controller.control_acceso.php';
+        break;
+
+    case 'zonas':
+        require_once CONTROLLER_PATH . 'admin/controller.zona.php';
+        break;
+    
+    case 'campanas':
+        require_once CONTROLLER_PATH . 'admin/controller.campana.php';
+        break;
+    
+    case 'notificacion_modificar':
+        require_once VIEW_PATH . 'admin/notificacion_modificar.php';
+        break;
+
+    case 'notificacion_desactivar':
+        require_once VIEW_PATH . 'admin/notificacion_desactivar.php';
+        break;
+
+    case 'super_dashboard':
+        require_once CONTROLLER_PATH . 'super/controller.super_dashboard.php';
+        break;
+    
+    case 'graficas':
+        require_once CONTROLLER_PATH . 'super/controller.graficas.php';
+        break;
+
+    case 'graficas_productos':
+        require_once CONTROLLER_PATH . 'super/controller.graficas_productos.php';
+        break;
+
+    case 'graficas_incidencias':
+        require_once CONTROLLER_PATH . 'super/controller.graficas_incidencias.php';
+        break;
+
+    case 'graficas_plagas':
+        require_once CONTROLLER_PATH . 'super/controller.graficas_plagas.php';
+        break;
+
+    case 'graficas_zonas':
+        require_once CONTROLLER_PATH . 'super/controller.graficas_zonas.php';
+        break;
+    
+    case 'registro_campanas':
+        require_once CONTROLLER_PATH . 'super/controller.registro_campanas.php';
+        break;
+
+    case 'historial_zonas':
+        require_once CONTROLLER_PATH . 'super/controller.historial_zonas.php';
+        break;
+
+    case 'estado_campana':
+        require_once CONTROLLER_PATH . 'super/controller.estado_campana.php';
+        break;
+
+    case 'zonas_prioritarias':
+        require_once CONTROLLER_PATH . 'super/controller.zonas_prioritarias.php';
+        break;
+    
+    case 'notificacion_exportar':
+        require_once CONTROLLER_PATH . 'super/controller.notificacion_exportar.php';
+        break;
+
+    case 'reporte_campana':
+        require_once CONTROLLER_PATH . 'super/controller.reporte_campana.php';
+        break;
+
+    case 'reporte_inspecciones':
+        require_once CONTROLLER_PATH . 'super/controller.reporte_inspecciones.php';
+        break;
+
+    case 'reporte_aplicaciones':
+        require_once CONTROLLER_PATH . 'super/controller.reporte_aplicaciones.php';
+        break;
+
+    case 'seguimiento_posterior':
+        require_once CONTROLLER_PATH . 'super/controller.seguimiento_posterior.php';
+        break;
+
+    case 'incidencias':
+        require_once CONTROLLER_PATH . 'super/controller.incidencias.php';
+        break;
+
+    case 'tecnico_dashboard':
+        require_once CONTROLLER_PATH . 'tec/controller.tecnico.php';
+        break;
+    // --- RUTA POR DEFECTO (Error 404) ---
+    default:
+        // Si el usuario escribe un módulo que no existe en la URL, mostramos un error genérico
+        echo "<!DOCTYPE html>
+              <html lang='es'>
+              <head>
+                  <meta charset='UTF-8'>
+                  <title>Error 404 - PLAGUE</title>
+                  <style>
+                      body { font-family: sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #333; text-align: center;}
+                      .error-box { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+                      h1 { color: #dc3545; }
+                      a { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: #fff; text-decoration: none; border-radius: 5px; }
+                  </style>
+              </head>
+              <body>
+                  <div class='error-box'>
+                      <h1>Error 404</h1>
+                      <p>El módulo <strong>" . htmlspecialchars($modulo) . "</strong> no existe o fue movido.</p>
+                      <a href='" . BASE_URL . "index.php?modulo=dashboard'>Regresar al inicio</a>
+                  </div>
+              </body>
+              </html>";
+        break;
+}
+?>

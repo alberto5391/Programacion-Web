@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Control de acceso a información - PLAGUE</title>
+
+    <!-- Bootstrap 4.6.2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body { margin: 0; padding: 0; background-color: #f8f9fa; }
+        .navbar-brand { font-weight: bold; }
+        .encabezado { margin-top: 40px; margin-bottom: 30px; }
+        .encabezado h1 { font-weight: 500; }
+        .card-header { font-weight: bold; }
+        footer { margin-top: 50px; padding: 20px; background-color: #343a40; color: white; text-align: center; }
+    </style>
+</head>
+
+<body>
+
+<!-- Barra Superior de Navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="<?= BASE_URL ?>index.php?modulo=dashboard">
+            <i class="bi bi-shield-check me-2"></i> Control Acceso
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+           <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-light btn-sm mr-2">
+            <i class="bi bi-arrow-left"></i> Inicio 
+            </a> 
+            <a href="<?= BASE_URL ?>index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
+                <i class="bi bi-bell"></i> Notificaciones
+            </a>
+        </div>
+    </div>
+</nav>
+
+    <!-- CONTENIDO -->
+    <div class="container">
+
+        <!-- ENCABEZADO SENCILLO -->
+        <div class="encabezado">
+            <h1>Control de acceso a información</h1>
+            <p class="text-muted">RF-43 — Gestión de roles y permisos</p>
+            <hr>
+            <p>El sistema controla las operaciones que puede realizar cada usuario de acuerdo con el rol y los permisos asignados.</p>
+        </div>
+
+
+        <!-- GESTIÓN DE ROLES Y PERMISOS -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">Gestión de roles y permisos</div>
+            <div class="card-body">
+                <form action="#" method="post">
+                    <div class="form-group">
+                        <label for="rol"><strong>Rol:</strong></label>
+                        <select class="form-control" id="rol" name="rol" required>
+                            <option value="">-- Selecciona un rol --</option>
+                            <option value="administrador">Administrador</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="tecnico">Técnico</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Permisos:</strong></label>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="consultar" name="permisos" value="consultar">
+                            <label class="custom-control-label" for="consultar">Consultar información</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="registrar" name="permisos" value="registrar">
+                            <label class="custom-control-label" for="registrar">Registrar información</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="modificar" name="permisos" value="modificar">
+                            <label class="custom-control-label" for="modificar">Modificar información</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="eliminar" name="permisos" value="eliminar">
+                            <label class="custom-control-label" for="eliminar">Eliminar lógicamente información</label>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="alert('Funcionalidad de guardado pendiente.')">Guardar permisos</button>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- EJEMPLOS DE ROLES -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">Ejemplos de roles y permisos</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Rol</th>
+                                <th>Consultar</th>
+                                <th>Registrar</th>
+                                <th>Modificar</th>
+                                <th>Eliminar lógicamente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ADMINISTRADOR -->
+                            <tr>
+                                <td><strong>Administrador</strong></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                            </tr>
+                            <!-- SUPERVISOR -->
+                            <tr>
+                                <td><strong>Supervisor</strong></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-secondary">No permitido</span></td>
+                            </tr>
+                            <!-- TÉCNICO -->
+                            <tr>
+                                <td><strong>Técnico</strong></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-success">Permitido</span></td>
+                                <td><span class="badge badge-secondary">No permitido</span></td>
+                                <td><span class="badge badge-secondary">No permitido</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <br><br>
+        <a href="<?= BASE_URL ?>index.php?modulo=dashboard">← Regresar al menú</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="mb-0">Prototipo css — AEB-1055 Programación Web</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
