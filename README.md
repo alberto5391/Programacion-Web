@@ -1,6 +1,6 @@
 El proyecto PLAGUE, desarrollado para la clase del maestro Javier Romero Castro, ha sido actualizado para funcionar con la arquitectura **MVC (Modelo-Vista-Controlador)**. Esta arquitectura organiza el código separando las diferentes responsabilidades del sistema en módulos independientes, lo que hace que sea más fácil de mantener, escalar y asegurar.
 
-Basado en la estructura y los archivos que compartiste, aquí tienes la explicación de cómo funciona cada parte fundamental del proyecto:
+Aqui esta la explicacion del proyecto y como funciona:
 
 * **`index.php` (Punto único de entrada):**
 * Funciona como el "Front Controller" o enrutador de toda la aplicación.
