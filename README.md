@@ -108,5 +108,8 @@ plague/
 * Contiene recursos generales, como la carpeta `img/` para las fotografías y logos.
 * Almacena clases fundamentales como `class.connection.php`, la cual establece la conexión directa a la base de datos `plagueweb_db` utilizando el puerto 3307.
 
-## Pequeña informacion
-El dashboarh tecnicos es funcional pero no funciona nada de lo de adentro ya que no me dio tiempo terminarlo 
+### ⚠️ Nota: Módulo de Recuperación de Contraseña
+
+En el **Dashboard Técnico**, la vista del módulo `Recuperación de contraseña` actualmente se encuentra únicamente en HTML plano. 
+
+Si alguien cuenta con el controlador/archivo PHP correspondiente a las vistas y la lógica de este módulo, por favor súbanlo a la rama de desarrollo (o ábranse un PR), ya que el archivo original no se encuentra localmente y pudo haberse extraviado por error.
