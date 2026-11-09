@@ -31,9 +31,17 @@
     <header class="bg-white border-bottom py-3 mb-4 shadow-sm">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <a href="index.php?modulo=<?php echo ($_SESSION['rol'] === 'Administrador') ? 'dashboard' : 'super_dashboard'; ?>" class="btn btn-light btn-sm text-secondary">
-                    <i class="bi bi-arrow-left"></i> Regresar al menú
-                </a>
+                <?php
+                if (isset($_SESSION['rol'])) {
+                if ($_SESSION['rol'] === 'Administrador') {
+                    echo '<a href="index.php?modulo=dashboard" class="btn btn-light border btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Regresar al menú administrativo</a>';
+                } elseif ($_SESSION['rol'] === 'Supervisor') {
+                    echo '<a href="index.php?modulo=super_dashboard" class="btn btn-light border btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Regresar al menú supervisor</a>';
+                } elseif ($_SESSION['rol'] === 'Tecnico') {
+                    echo '<a href="index.php?modulo=tecnico_dashboard" class="btn btn-light border btn-sm text-secondary"><i class="bi bi-arrow-left"></i> Regresar al menú técnico</a>';
+                    }
+                }
+                ?>
                 <!-- <a href="index.php?modulo=dashboard" class="btn btn-light border btn-sm text-secondary">
                     <i class="bi bi-arrow-left"></i> Regresar al menú
                 </a> -->

@@ -159,21 +159,17 @@
 
         <footer class="pie-pagina">
             <?php
-            // Aquí podrías agregar un enlace para regresar al menú principal dependiendo del rol del usuario
-            $enlace_regreso = 'index.php?modulo=dashboard'; // Enlace por defecto
-            if (isset($_SESSION['rol'])) {
-                switch ($_SESSION['rol']) {
-                    case 'Administrador':
-                        $enlace_regreso = 'index.php?modulo=dashboard';
-                        break;
-                    case 'Supervisor':
-                        $enlace_regreso = 'index.php?modulo=super_dashboard';
-                        break;
-                    // Agrega más casos según los roles que tengas
+           if (isset($_SESSION['rol'])) {
+                if ($_SESSION['rol'] === 'Administrador') {
+                    echo '<a class="enlace-regreso" href="index.php?modulo=admin_dashboard">← Volver al menú de administrador</a>';
+                } elseif ($_SESSION['rol'] === 'Supervisor') {
+                    echo '<a class="enlace-regreso" href="index.php?modulo=super_dashboard">← Volver al menú de supervisor</a>';
+                } elseif ($_SESSION['rol'] === 'Tecnico') {
+                    echo '<a class="enlace-regreso" href="index.php?modulo=tecnico_dashboard">← Volver al menú técnico</a>';
                 }
             }
             ?>
-            <a class="enlace-regreso" href="<?php echo $enlace_regreso; ?>">← Volver al menú</a>
+            
         </footer>
     </main>
 </body>

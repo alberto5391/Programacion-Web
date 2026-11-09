@@ -1,9 +1,15 @@
 <?php
 // 1- Validar sesión integrada (El session_start ya está en index.php)
-if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'Supervisor') {
+$roles_permitidos = [ 'Supervisor', 'Tecnico']; // Roles permitidos para acceder a esta página
+
+if (!isset($_SESSION['id_usuario']) || !in_array($_SESSION['rol'], $roles_permitidos)) {
     header("Location: index.php?modulo=login");
     exit();
 }
+/*if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'Supervisor') {
+    header("Location: index.php?modulo=login");
+    exit();
+}*/
 
 // 2- Aquí iría la conexión al modelo ModelBitacora en el futuro cuando se conecte a la BD
 // require_once MODEL_PATH . 'model.bitacora.php';

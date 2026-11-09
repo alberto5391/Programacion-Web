@@ -15,8 +15,17 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="bi bi-geo-alt me-2"></i>Coordenadas</a>
             <div class="d-flex align-items-center gap-2">
-                <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
-                <a href="<?= BASE_URL ?>index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
+                <?php
+                if (isset($_SESSION['rol'])) {
+                    if ($_SESSION['rol'] === 'Administrador') {
+                        echo '<a href="index.php?modulo=dashboard" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Regresar a administrador</a>';
+                    } elseif ($_SESSION['rol'] === 'Tecnico') {
+                        echo '<a href="index.php?modulo=tecnico_dashboard" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Regresar al menú técnico</a>';
+                    }
+                }
+                ?>
+                <!-- <a href="index.php?modulo=dashboard" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a> -->
+                <a href="index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
                     <i class="bi bi-bell"></i> Notificaciones
                 </a>
             </div>

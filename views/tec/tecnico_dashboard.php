@@ -44,11 +44,11 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Menu/tecnico</a>
             <div class="d-flex align-items-center gap-2">
-                <a href="../index.html" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
-                <a href="notificaciones.php" class="btn btn-primary btn-sm position-relative">
+                <a href="index.php?modulo=home" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
+                <a href="index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
                     <i class="bi bi-bell"></i> Notificaciones
                 </a>
-                <a href="../administrador/logout.php" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+                <a href="index.php?modulo=logout" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
             </div>
         </div>
     </nav>
@@ -62,7 +62,7 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                 
                 <div class="col">
-                    <a href="tecnico_coordenadas_gps.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                    <a href="index.php?modulo=coordenadas_gps" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-success-subtle text-success fs-5"><i class="bi bi-geo"></i></div>
                             <span class="text-dark fw-medium small">Coordenadas Gps</span>
@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="inspeccion_diagnostico.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                    <a href="index.php?modulo=inspeccion_diagnostico" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-clipboard2-pulse"></i></div>
                             <span class="text-dark fw-medium small">Inspección y Diagnóstico en Campo</span>
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="tratamientos.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                    <a href="index.php?modulo=tratamientos" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-capsule"></i></div>
                             <span class="text-dark fw-medium small">Aplicacion de tratamientos</span>
@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="seguimiento_posterior.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                    <a href="index.php?modulo=seguimiento_posterior" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-person-lines-fill"></i></div>
                             <span class="text-dark fw-medium small">Seguimiento</span>
@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="responsables.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                    <a href="index.php?modulo=responsables" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-person-badge"></i></div>
                             <span class="text-dark fw-medium small">Resposable de la actividad</span>
@@ -107,7 +107,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="tec-recuperar-contraseña.html" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                    <a href="index.php?modulo=recuperar_contraseña" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-key"></i></div>
                             <span class="text-dark fw-medium small">Recuperar Contraseña</span>
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="../incidencias.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
+                    <a href="index.php?modulo=incidencias" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-warning-subtle text-warning fs-5"><i class="bi bi-wifi-off"></i></div>
                             <span class="text-dark fw-medium small">Incidencias y Offline <span class="text-muted fs-8 d-block">RF21, RF26</span></span>
@@ -125,7 +125,7 @@
                 </div>
 
                 <div class="col">
-                    <a href="../evidencias.php" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
+                    <a href="index.php?modulo=evidencias" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-warning-subtle text-warning fs-5"><i class="bi bi-images"></i></div>
                             <span class="text-dark fw-medium small">Evidencias <span class="text-muted fs-8 d-block">RF24, RF25</span></span>

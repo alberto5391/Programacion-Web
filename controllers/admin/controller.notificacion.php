@@ -1,6 +1,6 @@
 <?php
 // 1. Validar sesión integrada
-$roles_permitidos = ['Administrador', 'Supervisor'];
+$roles_permitidos = ['Administrador', 'Supervisor', 'Tecnico']; // Roles permitidos para acceder a esta página
 
 if (!isset($_SESSION['id_usuario']) || !in_array($_SESSION['rol'], $roles_permitidos)) {
     header("Location: index.php?modulo=login");

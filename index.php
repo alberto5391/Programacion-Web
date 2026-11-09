@@ -182,6 +182,24 @@ switch ($modulo) {
     case 'tecnico_dashboard':
         require_once CONTROLLER_PATH . 'tec/controller.tecnico.php';
         break;
+        
+    case 'inspeccion_diagnostico':
+        require_once CONTROLLER_PATH . 'tec/controller.inspeccion_diagnostico.php';
+        break;
+
+    case 'tratamientos':
+        require_once CONTROLLER_PATH . 'tec/controller.tratamientos.php';
+        break;
+
+    case 'responsables':
+        require_once CONTROLLER_PATH . 'tec/controller.responsables.php';
+        break;
+
+    case 'recuperar_contraseña':
+        require_once CONTROLLER_PATH . 'tec/controller.recuperar_contraseña.php';
+        break;
+    
+    
     // --- RUTA POR DEFECTO (Error 404) ---
     default:
         // Si el usuario escribe un módulo que no existe en la URL, mostramos un error genérico

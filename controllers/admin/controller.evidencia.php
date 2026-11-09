@@ -1,6 +1,6 @@
 <?php
 // 1. Validar sesión integrada (El session_start ya está en index.php)
-if (!isset($_SESSION['id_usuario']) || !in_array($_SESSION['rol'], ['Administrador', 'Supervisor'])) {
+if (!isset($_SESSION['id_usuario']) || !in_array($_SESSION['rol'], ['Administrador', 'Supervisor', 'Tecnico'])) {
     header("Location: index.php?modulo=login");
     exit();
 }

@@ -144,7 +144,16 @@
         </section>
 
         <footer class="pie-pagina">
-            <a class="enlace-regreso" href="index.php?modulo=super_dashboard">← Volver al menu</a>
+            <?php
+            if (isset($_SESSION['rol'])) {
+                if ($_SESSION['rol'] === 'Supervisor') {
+                    echo '<a class="enlace-regreso" href="index.php?modulo=super_dashboard">← Volver al menú de supervisor</a>';
+                } elseif ($_SESSION['rol'] === 'Tecnico') {
+                    echo '<a class="enlace-regreso" href="index.php?modulo=tecnico_dashboard">← Volver al menú técnico</a>';
+                }
+            }
+            ?>
+            <!-- <a class="enlace-regreso" href="index.php?modulo=super_dashboard">← Volver al menu</a> -->
         </footer>
     </main>
 </body>
