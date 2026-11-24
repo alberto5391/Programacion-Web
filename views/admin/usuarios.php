@@ -180,6 +180,7 @@
                             $rfc = htmlspecialchars($fila['Rfc']);
                             $rol = htmlspecialchars($fila['NombreRol']);
                             $estado = htmlspecialchars($fila['Estado']);
+                            $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
                             echo "<tr>
                                     <td>{$nombre}</td>
@@ -193,7 +194,13 @@
                                     <td>
                                         <div class='action-buttons'>
                                             <a href='" . BASE_URL . "index.php?modulo=usuarios&accion=editar&id={$id}' class='btn btn-edit'>Editar</a>
-                                            <a href='" . BASE_URL . "index.php?modulo=usuarios&accion=eliminar&id={$id}' class='btn btn-delete' onclick=\"return confirm('¿Estás seguro de eliminar a este usuario? Esta acción no se puede deshacer.');\">Eliminar</a>
+                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de eliminar a este usuario? Esta acción no se puede deshacer.');\">
+                                                <input type='hidden' name='modulo' value='usuarios'>
+                                                <input type='hidden' name='accion' value='eliminar'>
+                                                <input type='hidden' name='id' value='{$id}'>
+                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                            </form>
                                         </div>
                                     </td>
                                   </tr>";

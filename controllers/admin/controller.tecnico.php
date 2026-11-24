@@ -14,17 +14,25 @@ require_once MODEL_PATH . 'admin/model.tecnico.php';
 $modeloTecnico = new ModelTecnico($conexion);
 
 $mensaje = "";
+$esEliminacion = $_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['accion'] ?? null) === 'eliminar';
 
-// 3. LÓGICA DE EDICIÓN O ELIMINACIÓN (GET)
+// 3. LÓGICA DE EDICIÓN (GET)
 $tecnicoEditar = null;
 if (isset($_GET['accion']) && isset($_GET['id'])) {
     $id_get = intval($_GET['id']);
     
     if ($_GET['accion'] === 'editar') {
         $tecnicoEditar = $modeloTecnico->obtenerTecnicoPorId($id_get);
-    } elseif ($_GET['accion'] === 'eliminar') {
+    }
+}
+
+if ($esEliminacion) {
+    $idEliminar = $_POST['id'] ?? null;
+    if (!is_string($idEliminar) || !ctype_digit($idEliminar) || (int)$idEliminar < 1) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>El técnico seleccionado no es válido.</div>";
+    } else {
         try {
-            $modeloTecnico->eliminarTecnico($id_get);
+            $modeloTecnico->eliminarTecnico((int)$idEliminar);
             $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Registro de técnico eliminado correctamente.</div>";
         } catch (mysqli_sql_exception $e) {
             // Código 1451: Error de restricción de llave foránea (ON DELETE RESTRICT - Ej. tabla AccionesCampana)
@@ -38,7 +46,7 @@ if (isset($_GET['accion']) && isset($_GET['id'])) {
 }
 
 // 4. LÓGICA DE REGISTRO O ACTUALIZACIÓN (POST)
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $numero_empleado = trim($_POST['numero_empleado']);
     $especialidad = $_POST['especialidad'];
 

@@ -18,17 +18,25 @@ $modeloCampana = new ModelCampana($conexion);
 $modeloZona = new ModelZona($conexion);
 
 $mensaje = "";
+$esEliminacion = $_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['accion'] ?? null) === 'eliminar';
 
-// 3. LÓGICA DE EDICIÓN O ELIMINACIÓN (GET)
+// 3. LÓGICA DE EDICIÓN (GET)
 $campanaEditar = null;
 if (isset($_GET['accion']) && isset($_GET['id'])) {
     $id_get = intval($_GET['id']);
     
     if ($_GET['accion'] === 'editar') {
         $campanaEditar = $modeloCampana->obtenerCampanaPorId($id_get);
-    } elseif ($_GET['accion'] === 'eliminar') {
+    }
+}
+
+if ($esEliminacion) {
+    $idEliminar = $_POST['id'] ?? null;
+    if (!is_string($idEliminar) || !ctype_digit($idEliminar) || (int)$idEliminar < 1) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>La campaña seleccionada no es válida.</div>";
+    } else {
         try {
-            $modeloCampana->eliminarCampana($id_get);
+            $modeloCampana->eliminarCampana((int)$idEliminar);
             $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Campaña eliminada con éxito. (Nota: Cualquier registro asociado también ha sido eliminado).</div>";
         } catch (mysqli_sql_exception $e) {
             $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error al eliminar la campaña: " . $e->getMessage() . "</div>";
@@ -37,7 +45,7 @@ if (isset($_GET['accion']) && isset($_GET['id'])) {
 }
 
 // 4. LÓGICA DE REGISTRO O ACTUALIZACIÓN (POST)
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $codigo_campana = trim($_POST['codigo_campana']);
     $nombre_campana = trim($_POST['nombre_campana']);
     $id_zona = $_POST['id_zona'];

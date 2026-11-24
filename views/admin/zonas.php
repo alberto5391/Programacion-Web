@@ -127,6 +127,7 @@
                             $municipio = htmlspecialchars($fila['Municipio']);
                             $referencias = htmlspecialchars($fila['Referencias']);
                             $estado = htmlspecialchars($fila['Estado']);
+                            $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
@@ -136,7 +137,13 @@
                                     <td>{$estado}</td>
                                     <td>
                                         <a href='" . BASE_URL . "index.php?modulo=zonas&accion=editar&id={$idZona}' class='btn-edit'>Editar</a>
-                                        <a href='" . BASE_URL . "index.php?modulo=zonas&accion=eliminar&id={$idZona}' class='btn-delete' onclick=\"return confirm('¿Estás seguro de que deseas eliminar la zona {$codigo}? Esta acción no se puede deshacer.');\">Eliminar</a>
+                                        <form action='" . BASE_URL . "index.php' method='POST' style='display:inline; margin:0;' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar la zona {$codigo}? Esta acción no se puede deshacer.');\">
+                                            <input type='hidden' name='modulo' value='zonas'>
+                                            <input type='hidden' name='accion' value='eliminar'>
+                                            <input type='hidden' name='id' value='{$idZona}'>
+                                            <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                            <button type='submit' class='btn-delete'>Eliminar</button>
+                                        </form>
                                     </td>
                                   </tr>";
                         }

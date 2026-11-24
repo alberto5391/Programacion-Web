@@ -14,17 +14,25 @@ require_once MODEL_PATH . 'admin/model.plaga.php';
 $modeloPlaga = new ModelPlaga($conexion);
 
 $mensaje = "";
+$esEliminacion = $_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['accion'] ?? null) === 'eliminar';
 
-// 3. LÓGICA DE EDICIÓN O ELIMINACIÓN (GET)
+// 3. LÓGICA DE EDICIÓN (GET)
 $plagaEditar = null;
 if (isset($_GET['accion']) && isset($_GET['id'])) {
     $id_get = intval($_GET['id']);
     
     if ($_GET['accion'] === 'editar') {
         $plagaEditar = $modeloPlaga->obtenerPlagaPorId($id_get);
-    } elseif ($_GET['accion'] === 'eliminar') {
+    }
+}
+
+if ($esEliminacion) {
+    $idEliminar = $_POST['id'] ?? null;
+    if (!is_string($idEliminar) || !ctype_digit($idEliminar) || (int)$idEliminar < 1) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>La plaga seleccionada no es válida.</div>";
+    } else {
         try {
-            $modeloPlaga->eliminarPlaga($id_get);
+            $modeloPlaga->eliminarPlaga((int)$idEliminar);
             $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Plaga eliminada con éxito del catálogo.</div>";
         } catch (mysqli_sql_exception $e) {
             // Código 1451: Error de restricción de llave foránea (ON DELETE RESTRICT)
@@ -38,7 +46,7 @@ if (isset($_GET['accion']) && isset($_GET['id'])) {
 }
 
 // 4. LÓGICA DE REGISTRO O ACTUALIZACIÓN (POST)
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $codigo_plaga = trim($_POST['codigo_plaga']);
     $nombre_comun = trim($_POST['nombre_plaga']);
     

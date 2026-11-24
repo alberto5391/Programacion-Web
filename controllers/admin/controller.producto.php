@@ -14,17 +14,25 @@ require_once MODEL_PATH . 'admin/model.producto.php';
 $modeloProducto = new ModelProducto($conexion);
 
 $mensaje = "";
+$esEliminacion = $_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['accion'] ?? null) === 'eliminar';
 
-// 3. LÓGICA DE EDICIÓN O ELIMINACIÓN (GET)
+// 3. LÓGICA DE EDICIÓN (GET)
 $productoEditar = null;
 if (isset($_GET['accion']) && isset($_GET['id'])) {
     $id_get = intval($_GET['id']);
     
     if ($_GET['accion'] === 'editar') {
         $productoEditar = $modeloProducto->obtenerProductoPorId($id_get);
-    } elseif ($_GET['accion'] === 'eliminar') {
+    }
+}
+
+if ($esEliminacion) {
+    $idEliminar = $_POST['id'] ?? null;
+    if (!is_string($idEliminar) || !ctype_digit($idEliminar) || (int)$idEliminar < 1) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>El producto seleccionado no es válido.</div>";
+    } else {
         try {
-            $modeloProducto->eliminarProducto($id_get);
+            $modeloProducto->eliminarProducto((int)$idEliminar);
             $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Producto eliminado exitosamente del catálogo.</div>";
         } catch (mysqli_sql_exception $e) {
             // Código 1451: Error de restricción de llave foránea (ON DELETE RESTRICT - Ej. tabla InsumosUsados)
@@ -38,7 +46,7 @@ if (isset($_GET['accion']) && isset($_GET['id'])) {
 }
 
 // 4. LÓGICA DE REGISTRO O ACTUALIZACIÓN (POST)
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $codigo_producto = trim($_POST['codigo_producto']);
     $nombre_comercial = trim($_POST['nombre_comercial']);
     $ingrediente_activo = !empty(trim($_POST['ingrediente_activo'])) ? trim($_POST['ingrediente_activo']) : NULL;

@@ -170,6 +170,7 @@
                             $fFin = !empty($fila['FechaFin']) ? date("d/m/Y", strtotime($fila['FechaFin'])) : "Sin definir";
                             
                             $estado = htmlspecialchars($fila['Estado']);
+                            $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
@@ -181,7 +182,13 @@
                                         <div class='action-buttons'>
                                             <a href='" . BASE_URL . "index.php?modulo=campanas&accion=historial&id_campana={$codigo}' class='btn btn-history'>Ver Actividades</a>
                                             <a href='" . BASE_URL . "index.php?modulo=campanas&accion=editar&id={$idCampana}' class='btn btn-edit'>Editar</a>
-                                            <a href='" . BASE_URL . "index.php?modulo=campanas&accion=eliminar&id={$idCampana}' class='btn btn-delete' onclick=\"return confirm('¡ADVERTENCIA! ¿Estás seguro de eliminar la campaña {$codigo}? Esto borrará también TODAS las actividades, inspecciones y registros vinculados a esta campaña. Esta acción NO se puede deshacer.');\">Eliminar</a>
+                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¡ADVERTENCIA! ¿Estás seguro de eliminar la campaña {$codigo}? Esto borrará también TODAS las actividades, inspecciones y registros vinculados a esta campaña. Esta acción NO se puede deshacer.');\">
+                                                <input type='hidden' name='modulo' value='campanas'>
+                                                <input type='hidden' name='accion' value='eliminar'>
+                                                <input type='hidden' name='id' value='{$idCampana}'>
+                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                            </form>
                                         </div>
                                     </td>
                                   </tr>";

@@ -150,6 +150,7 @@
                             $tipo = ucfirst(htmlspecialchars($fila['TipoProducto'])); 
                             $ingrediente = !empty($fila['IngredienteActivo']) ? htmlspecialchars($fila['IngredienteActivo']) : "No especificado";
                             $estado = htmlspecialchars($fila['Estado']);
+                            $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
@@ -161,7 +162,13 @@
                                         <div class='action-buttons'>
                                             <button type='button' class='btn btn-history'>Ver historial</button>
                                             <a href='" . BASE_URL . "index.php?modulo=productos&accion=editar&id={$idProducto}' class='btn btn-edit'>Editar</a>
-                                            <a href='" . BASE_URL . "index.php?modulo=productos&accion=eliminar&id={$idProducto}' class='btn btn-delete' onclick=\"return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');\">Eliminar</a>
+                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');\">
+                                                <input type='hidden' name='modulo' value='productos'>
+                                                <input type='hidden' name='accion' value='eliminar'>
+                                                <input type='hidden' name='id' value='{$idProducto}'>
+                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                            </form>
                                         </div>
                                     </td>
                                   </tr>";

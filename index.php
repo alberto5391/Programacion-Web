@@ -7,6 +7,23 @@
 // 1. Iniciar sesión en el punto más alto del sistema
 session_start();
 
+if (!isset($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token']) || strlen($_SESSION['csrf_token']) !== 64) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && isset($_POST['accion'])
+    && $_POST['accion'] === 'eliminar'
+) {
+    $csrfTokenEnviado = $_POST['csrf_token'] ?? null;
+    if (!is_string($csrfTokenEnviado) || !hash_equals($csrfToken, $csrfTokenEnviado)) {
+        http_response_code(403);
+        exit('Solicitud no válida.');
+    }
+}
+
 // 2. Cargar las constantes de los directorios absolutos
 require_once 'directorios.php';
 

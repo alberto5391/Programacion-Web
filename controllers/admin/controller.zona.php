@@ -10,18 +10,25 @@ require_once MODEL_PATH . 'admin/model.zona.php';
 $modeloZona = new ModelZona($conexion);
 
 $mensaje = "";
+$esEliminacion = $_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['accion'] ?? null) === 'eliminar';
 
 // 3. LÓGICA DE EDICIÓN (GET)
-// 3. LÓGICA DE EDICIÓN O ELIMINACIÓN (GET)
 $zonaEditar = null;
 if (isset($_GET['accion']) && isset($_GET['id'])) {
     $id_get = intval($_GET['id']);
     
     if ($_GET['accion'] === 'editar') {
         $zonaEditar = $modeloZona->obtenerZonaPorId($id_get);
-    } elseif ($_GET['accion'] === 'eliminar') {
+    }
+}
+
+if ($esEliminacion) {
+    $idEliminar = $_POST['id'] ?? null;
+    if (!is_string($idEliminar) || !ctype_digit($idEliminar) || (int)$idEliminar < 1) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>La zona seleccionada no es válida.</div>";
+    } else {
         try {
-            $modeloZona->eliminarZona($id_get);
+            $modeloZona->eliminarZona((int)$idEliminar);
             $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Zona urbana eliminada con éxito.</div>";
         } catch (mysqli_sql_exception $e) {
             // Código 1451: Error de restricción de llave foránea (ON DELETE RESTRICT)
@@ -35,7 +42,7 @@ if (isset($_GET['accion']) && isset($_GET['id'])) {
 }
 
 // 4. LÓGICA DE REGISTRO O ACTUALIZACIÓN (POST)
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $codigo_zona = trim($_POST['codigo_zona']);
     $municipio = trim($_POST['municipio']);
     $nombre_zona = trim($_POST['nombre_zona']);

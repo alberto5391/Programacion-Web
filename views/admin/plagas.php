@@ -152,6 +152,7 @@
                             $descripcionCorta = strlen($descripcion) > 50 ? substr($descripcion, 0, 50) . "..." : $descripcion;
                             
                             $estado = htmlspecialchars($fila['Estado']);
+                            $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
@@ -163,7 +164,13 @@
                                     <td>
                                         <div class='action-buttons'>
                                             <a href='" . BASE_URL . "index.php?modulo=plagas&accion=editar&id={$idPlaga}' class='btn btn-edit'>Editar</a>
-                                            <a href='" . BASE_URL . "index.php?modulo=plagas&accion=eliminar&id={$idPlaga}' class='btn btn-delete' onclick=\"return confirm('¿Estás seguro de que deseas eliminar la plaga {$codigo}? Esta acción no se puede deshacer.');\">Eliminar</a>
+                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar la plaga {$codigo}? Esta acción no se puede deshacer.');\">
+                                                <input type='hidden' name='modulo' value='plagas'>
+                                                <input type='hidden' name='accion' value='eliminar'>
+                                                <input type='hidden' name='id' value='{$idPlaga}'>
+                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                            </form>
                                         </div>
                                     </td>
                                   </tr>";
