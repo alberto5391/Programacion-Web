@@ -15,7 +15,7 @@ class ModelPlaga {
 
     // Obtener todas las plagas para mostrarlas en la tabla
     public function obtenerPlagas() {
-        $query = "SELECT IdPlaga, CodigoPlaga, NombreComun, NombreCientifico, Descripcion, Estado FROM Plagas ORDER BY IdPlaga DESC";
+        $query = "SELECT IdPlaga, CodigoPlaga, NombreComun, NombreCientifico, Descripcion, TratamientoRecomendado, Estado FROM Plagas ORDER BY IdPlaga DESC";
         return $this->conexion->query($query);
     }
 

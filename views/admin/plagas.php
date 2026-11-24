@@ -132,6 +132,7 @@
                         <th>Nombre Común</th>
                         <th>Nombre Científico</th>
                         <th>Descripción Breve</th>
+                        <th>Tratamiento Recomendado</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -145,10 +146,9 @@
                             $idPlaga = htmlspecialchars($fila['IdPlaga']);
                             $codigo = htmlspecialchars($fila['CodigoPlaga']);
                             $nombreComun = htmlspecialchars($fila['NombreComun']);
-                            
                             $nombreCientifico = !empty($fila['NombreCientifico']) ? "<em>" . htmlspecialchars($fila['NombreCientifico']) . "</em>" : "N/A";
-                            
                             $descripcion = htmlspecialchars($fila['Descripcion']);
+                            $tratamientoRecomendado = htmlspecialchars($fila['TratamientoRecomendado'] ?? '');
                             $descripcionCorta = strlen($descripcion) > 50 ? substr($descripcion, 0, 50) . "..." : $descripcion;
                             
                             $estado = htmlspecialchars($fila['Estado']);
@@ -158,6 +158,7 @@
                                     <td>{$nombreComun}</td>
                                     <td>{$nombreCientifico}</td>
                                     <td title='{$descripcion}'>{$descripcionCorta}</td>
+                                    <td>{$tratamientoRecomendado}</td>
                                     <td>{$estado}</td>
                                     <td>
                                         <div class='action-buttons'>
@@ -168,7 +169,7 @@
                                   </tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='6' style='text-align: center; padding: 20px;'>No hay plagas registradas en el catálogo.</td></tr>";
+                        echo "<tr><td colspan='7' style='text-align: center; padding: 20px;'>No hay plagas registradas en el catálogo.</td></tr>";
                     }
                     ?>
                 </tbody>

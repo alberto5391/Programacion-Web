@@ -18,5 +18,5 @@ define('RESOURCE_PATH',   BASE_PATH . 'resources/');
 // Esto es útil para los atributos href="" y src="" en tus vistas
 $protocolo = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'];
-define('BASE_URL', $protocolo . '://' . $host . '/plague/');
+define('BASE_URL', $protocolo . '://' . $host . '/Programacion_Web/');
 ?>
