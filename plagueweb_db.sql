@@ -397,9 +397,9 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 --
 
 INSERT INTO `usuarios` (`IdUsuario`, `IdRol`, `Nombre`, `Apellidos`, `Contacto`, `Correo`, `Curp`, `Rfc`, `Password`, `Estado`, `FechaCreacion`) VALUES
-(1, 1, 'Admin', 'Root', '1234567890', 'root@root.com', 'root123', 'root123', '123456', 'Activo', '2026-10-23 06:14:13'),
-(2, 2, 'root2', 'root2', 'root2', 'root2@root2.com', 'root2', 'root2', '123456', 'Activo', '2026-10-23 15:55:25'),
-(3, 3, 'root3', 'root3', 'root3', 'root3@root3.com', 'root3', 'root3', '123456', 'Activo', '2026-10-23 15:52:02'),
+(1, 1, 'Admin', 'Root', '1234567890', 'root@root.com', 'root123', 'root123', '$2y$12$kC1gQgG4I96wkLMA0CUStOHAUFUMB9znUjWHC197AbmLOyaexZa4G', 'Activo', '2026-10-23 06:14:13'),
+(2, 2, 'root2', 'root2', 'root2', 'root2@root2.com', 'root2', 'root2', '$2y$12$Fa834aRyCbfNh2IrhDc0p.HQYrT5INjmD3FqGLOeIpSmj.Ri1ws2K', 'Activo', '2026-10-23 15:55:25'),
+(3, 3, 'root3', 'root3', 'root3', 'root3@root3.com', 'root3', 'root3', '$2y$12$Diph8QyGt/JlJvyuGeYlTOfYtCWwPuii1qLf0XMNu5cbhgSIqj4hC', 'Activo', '2026-10-23 15:52:02'),
 (4, 1, 'JOSE ALBERTO', 'RODRIGUEZ perez', '1234567890', 'alberto@gmail.com', 'ROGA', 'ROGA', '$2y$10$HQFCz/N1zaLN.Syd8ZFEBu6fkWFV.P9VJ8uH74okCtpsGEyxvZRBm', 'Activo', '2026-10-27 19:43:35'),
 (5, 2, 'EDUARDO ALBERTO', 'RODRIGUEZ GERONIMO', '123456789', 'prueba1@itvh.tecnm.mx.com', '123456789', '123456789', '$2y$10$kC3HFoaYZX5Hgatg4BbaLe1kITs.tjGIdqnPM1Sq2DwAdodJUVv4u', 'Activo', '2026-10-28 16:26:45');
 

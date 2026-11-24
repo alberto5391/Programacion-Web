@@ -21,12 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $datos = $usuarioModel->obtenerPorCorreo($correo);
 
     // Verificamos si existe el usuario y coincide la contraseña
-    $passwordValida = false;
-    if ($datos) {
-        if ($password === $datos["Password"] || password_verify($password, $datos["Password"])) {
-            $passwordValida = true;
-        }
-    }
+    $passwordValida = $datos && password_verify($password, $datos["Password"]);
 
     if (!$passwordValida) {
         header("Location: index.php?modulo=login&error=credenciales");

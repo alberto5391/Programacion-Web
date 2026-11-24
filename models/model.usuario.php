@@ -11,7 +11,7 @@ class ModelUsuario {
         $sql = "SELECT u.*, r.NombreRol 
                 FROM Usuarios u 
                 INNER JOIN Roles r ON u.IdRol = r.IdRol 
-                WHERE u.Correo = ?";
+                WHERE u.Correo = ? AND u.Estado = 'Activo'";
                 
         // Lógica de preparación y ejecución nativa para MySQLi
         $stmt = $this->conexion->prepare($sql);
