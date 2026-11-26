@@ -12,28 +12,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body { margin: 0; padding: 0; background-color: #f8f9fa; }
-        .navbar-brand { font-weight: bold; }
-        .encabezado { margin-top: 40px; margin-bottom: 30px; }
-        .encabezado h1 { font-weight: 500; }
-        .card-header { font-weight: bold; }
-        footer { margin-top: 50px; padding: 20px; background-color: #343a40; color: white; text-align: center; }
+        body { background-color: #f8f9fa; }
+        .navbar-brand, .card-header { font-weight: bold; }
+        .encabezado { margin-top: 2rem; margin-bottom: 1.5rem; }
+        .permission-status { white-space: nowrap; }
+        footer { margin-top: 3rem; padding: 1.25rem; background-color: #343a40; color: white; text-align: center; }
     </style>
 </head>
 
 <body>
 
-<!-- Barra Superior de Navegación -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="<?= BASE_URL ?>index.php?modulo=dashboard">
-            <i class="bi bi-shield-check me-2"></i> Control Acceso
+            <i class="bi bi-shield-check mr-2"></i> Control de acceso
         </a>
 
-        <div class="d-flex align-items-center gap-2">
-           <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-light btn-sm mr-2">
-            <i class="bi bi-arrow-left"></i> Inicio 
-            </a> 
+        <div class="d-flex align-items-center">
+            <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-light btn-sm mr-2">
+                <i class="bi bi-arrow-left"></i> Inicio
+            </a>
             <a href="<?= BASE_URL ?>index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
                 <i class="bi bi-bell"></i> Notificaciones
             </a>
@@ -41,114 +39,77 @@
     </div>
 </nav>
 
-    <!-- CONTENIDO -->
     <div class="container">
-
-        <!-- ENCABEZADO SENCILLO -->
         <div class="encabezado">
-            <h1>Control de acceso a información</h1>
-            <p class="text-muted">RF-43 — Gestión de roles y permisos</p>
+            <h1>Control de acceso</h1>
+            <p class="text-muted mb-3">Consulta de permisos efectivos por rol.</p>
             <hr>
-            <p>El sistema controla las operaciones que puede realizar cada usuario de acuerdo con el rol y los permisos asignados.</p>
-        </div>
-
-
-        <!-- GESTIÓN DE ROLES Y PERMISOS -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white">Gestión de roles y permisos</div>
-            <div class="card-body">
-                <form action="#" method="post">
-                    <div class="form-group">
-                        <label for="rol"><strong>Rol:</strong></label>
-                        <select class="form-control" id="rol" name="rol" required>
-                            <option value="">-- Selecciona un rol --</option>
-                            <option value="administrador">Administrador</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="tecnico">Técnico</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label><strong>Permisos:</strong></label>
-                        <div class="custom-control custom-checkbox mb-2">
-                            <input type="checkbox" class="custom-control-input" id="consultar" name="permisos" value="consultar">
-                            <label class="custom-control-label" for="consultar">Consultar información</label>
-                        </div>
-                        <div class="custom-control custom-checkbox mb-2">
-                            <input type="checkbox" class="custom-control-input" id="registrar" name="permisos" value="registrar">
-                            <label class="custom-control-label" for="registrar">Registrar información</label>
-                        </div>
-                        <div class="custom-control custom-checkbox mb-2">
-                            <input type="checkbox" class="custom-control-input" id="modificar" name="permisos" value="modificar">
-                            <label class="custom-control-label" for="modificar">Modificar información</label>
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="eliminar" name="permisos" value="eliminar">
-                            <label class="custom-control-label" for="eliminar">Eliminar lógicamente información</label>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="alert('Funcionalidad de guardado pendiente.')">Guardar permisos</button>
-                </form>
+            <div class="alert alert-info mb-0" role="status">
+                <i class="bi bi-info-circle mr-1"></i>
+                Los permisos son reglas fijas aplicadas por el sistema. Esta pantalla es informativa y no los modifica.
             </div>
         </div>
 
-
-        <!-- EJEMPLOS DE ROLES -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white">Ejemplos de roles y permisos</div>
+            <div class="card-header bg-white">Permisos generales en módulos operativos</div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover mb-0">
                         <thead class="thead-light">
                             <tr>
                                 <th>Rol</th>
                                 <th>Consultar</th>
                                 <th>Registrar</th>
                                 <th>Modificar</th>
-                                <th>Eliminar lógicamente</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- ADMINISTRADOR -->
-                            <tr>
-                                <td><strong>Administrador</strong></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                            </tr>
-                            <!-- SUPERVISOR -->
-                            <tr>
-                                <td><strong>Supervisor</strong></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-secondary">No permitido</span></td>
-                            </tr>
-                            <!-- TÉCNICO -->
-                            <tr>
-                                <td><strong>Técnico</strong></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-success">Permitido</span></td>
-                                <td><span class="badge badge-secondary">No permitido</span></td>
-                                <td><span class="badge badge-secondary">No permitido</span></td>
-                            </tr>
+                            <?php foreach ($rolePermissions as $role => $allowedActions): ?>
+                                <tr>
+                                    <th scope="row"><?= htmlspecialchars($role, ENT_QUOTES, 'UTF-8') ?></th>
+                                    <?php foreach (['consultar', 'registrar', 'modificar', 'eliminar'] as $action): ?>
+                                        <?php $allowed = in_array($action, $allowedActions, true); ?>
+                                        <td class="permission-status">
+                                            <?php if ($allowed): ?>
+                                                <span class="badge badge-success">
+                                                    <i class="bi bi-check-lg" aria-hidden="true"></i> Permitido
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="badge badge-secondary">
+                                                    <i class="bi bi-dash-lg" aria-hidden="true"></i> No permitido
+                                                </span>
+                                            <?php endif; ?>
+                                        </td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        
-        <br><br>
-        <a href="<?= BASE_URL ?>index.php?modulo=dashboard">← Regresar al menú</a>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">Excepciones y alcance</div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li class="mb-2"><strong>Usuarios y Control de acceso:</strong> exclusivos del Administrador.</li>
+                    <li class="mb-2"><strong>Bitácora, paneles, estadísticas, gráficas, información histórica, reportes y zonas prioritarias:</strong> solo permiten consulta.</li>
+                    <li><strong>Notificaciones:</strong> permanecen fuera de esta política de permisos.</li>
+                </ul>
+            </div>
+        </div>
+
+        <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-secondary mb-4">
+            <i class="bi bi-arrow-left"></i> Regresar al menú
+        </a>
     </div>
 
-    <!-- FOOTER -->
     <footer>
-        <p class="mb-0">Prototipo css — AEB-1055 Programación Web</p>
+        <p class="mb-0">PLAGUE — Control de acceso</p>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 

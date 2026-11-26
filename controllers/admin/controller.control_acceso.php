@@ -5,6 +5,7 @@ if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'Administrador') {
     exit();
 }
 
-// Cargar la vista directamente, sin modelo ni base de datos por ahora
+$rolePermissions = PermissionPolicy::roleActions();
+
 require_once VIEW_PATH . 'admin/control_acceso.php';
 ?>

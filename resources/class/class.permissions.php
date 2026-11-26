@@ -1,6 +1,12 @@
 <?php
 final class PermissionPolicy
 {
+    private const ROLE_ACTIONS = [
+        'Administrador' => ['consultar', 'registrar', 'modificar', 'eliminar'],
+        'Supervisor' => ['consultar', 'registrar', 'modificar'],
+        'Tecnico' => ['consultar', 'registrar']
+    ];
+
     private const READ_ONLY_MODULES = [
         'dashboard',
         'super_dashboard',
@@ -62,6 +68,11 @@ final class PermissionPolicy
             && !in_array($module, self::UNMANAGED_MODULES, true);
     }
 
+    public static function roleActions()
+    {
+        return self::ROLE_ACTIONS;
+    }
+
     public static function can($role, $module, $action)
     {
         if (!self::governs($module)) {
@@ -78,14 +89,8 @@ final class PermissionPolicy
             return $action === 'consultar';
         }
 
-        $allowedActions = [
-            'Administrador' => ['consultar', 'registrar', 'modificar', 'eliminar'],
-            'Supervisor' => ['consultar', 'registrar', 'modificar'],
-            'Tecnico' => ['consultar', 'registrar']
-        ];
-
-        return isset($allowedActions[$role])
-            && in_array($action, $allowedActions[$role], true);
+        return isset(self::ROLE_ACTIONS[$role])
+            && in_array($action, self::ROLE_ACTIONS[$role], true);
     }
 
     public static function requestedAction($module, $method, array $get, array $post)
