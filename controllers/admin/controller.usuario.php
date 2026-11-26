@@ -51,6 +51,7 @@ if ($esEliminacion) {
 }
 
 // 4. LÓGICA DE REGISTRO O ACTUALIZACIÓN (POST)
+$formularioGuardado = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $nombre = trim($_POST['nombre']);
     $apellidos = trim($_POST['apellidos']);
@@ -121,6 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
 
                     $conexion->commit();
                     $transaccionIniciada = false;
+                    $formularioGuardado = true;
                     $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Usuario actualizado con éxito.</div>";
                     $usuarioEditar = null;
                     $tecnicoEditar = null;
@@ -135,6 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
 
                     $conexion->commit();
                     $transaccionIniciada = false;
+                    $formularioGuardado = true;
                     $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Usuario registrado con éxito.</div>";
                 }
             }
@@ -159,6 +162,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
 }
 
 // 5. PREPARAR DATOS PARA LA VISTA (RF04 / RF05 y Selects)
+$rolSeleccionado = $usuarioEditar['NombreRol'] ?? '';
+$numeroEmpleadoFormulario = $tecnicoEditar['NumeroEmpleado'] ?? '';
+$especialidadFormulario = $tecnicoEditar['Especialidad'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$esEliminacion) {
+    if ($formularioGuardado) {
+        $rolSeleccionado = '';
+        $numeroEmpleadoFormulario = '';
+        $especialidadFormulario = '';
+    } else {
+        $rolEntrada = $_POST['rol'] ?? null;
+        $numeroEmpleadoEntrada = $_POST['numero_empleado'] ?? null;
+        $especialidadEntrada = $_POST['especialidad'] ?? null;
+        if (is_string($rolEntrada)) {
+            $rolSeleccionado = $rolEntrada;
+        }
+        if (is_string($numeroEmpleadoEntrada)) {
+            $numeroEmpleadoFormulario = $numeroEmpleadoEntrada;
+        }
+        if (is_string($especialidadEntrada)) {
+            $especialidadFormulario = $especialidadEntrada;
+        }
+    }
+}
 $resultadoRoles = $modeloRol->obtenerRoles();
 $resultadoUsuarios = $modeloUsuario->obtenerUsuarios();
 

@@ -94,7 +94,7 @@
                         if ($resultadoRoles && $resultadoRoles->num_rows > 0) {
                             while ($rol = $resultadoRoles->fetch_assoc()) {
                                 $nombreRol = htmlspecialchars($rol['NombreRol']);
-                                $selected = ($usuarioEditar && $usuarioEditar['NombreRol'] === $nombreRol) ? 'selected' : '';
+                                $selected = ($rolSeleccionado ?? ($usuarioEditar['NombreRol'] ?? '')) === $rol['NombreRol'] ? 'selected' : '';
                                 echo "<option value='{$nombreRol}' {$selected}>{$nombreRol}</option>";
                             }
                         } else {
@@ -104,22 +104,23 @@
                     </select>
                 </div>
 
-                <div id="datos-tecnicos" class="form-group full-width" style="display: none;">
+                <div id="datos-tecnicos" class="form-group full-width">
+                    <strong>Datos del perfil técnico</strong>
+                    <p class="text-muted small">Se habilitan al seleccionar el rol “Tecnico”.</p>
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="numero_empleado">Número de empleado:</label>
                             <input type="text" id="numero_empleado" name="numero_empleado"
                                    maxlength="20"
-                                   value="<?= $tecnicoEditar ? htmlspecialchars($tecnicoEditar['NumeroEmpleado']) : '' ?>"
-                                   disabled>
+                                   value="<?= htmlspecialchars($numeroEmpleadoFormulario ?? '') ?>">
                         </div>
                         <div class="form-group">
                             <label for="especialidad">Especialidad:</label>
-                            <select id="especialidad" name="especialidad" disabled>
+                            <select id="especialidad" name="especialidad">
                                 <option value="">Selecciona una especialidad</option>
-                                <option value="Inspección" <?= $tecnicoEditar && $tecnicoEditar['Especialidad'] === 'Inspección' ? 'selected' : '' ?>>Inspección</option>
-                                <option value="Aplicación" <?= $tecnicoEditar && $tecnicoEditar['Especialidad'] === 'Aplicación' ? 'selected' : '' ?>>Aplicación</option>
-                                <option value="Ambas" <?= $tecnicoEditar && $tecnicoEditar['Especialidad'] === 'Ambas' ? 'selected' : '' ?>>Ambas</option>
+                                <option value="Inspección" <?= ($especialidadFormulario ?? '') === 'Inspección' ? 'selected' : '' ?>>Inspección</option>
+                                <option value="Aplicación" <?= ($especialidadFormulario ?? '') === 'Aplicación' ? 'selected' : '' ?>>Aplicación</option>
+                                <option value="Ambas" <?= ($especialidadFormulario ?? '') === 'Ambas' ? 'selected' : '' ?>>Ambas</option>
                             </select>
                         </div>
                     </div>
@@ -244,8 +245,8 @@
         const specialty = document.getElementById('especialidad');
 
         function toggleTechnicalFields() {
-            const isTechnician = roleSelect.value === 'Administrador';
-            technicalFields.style.display = isTechnician ? 'block' : 'none';
+            const isTechnician = roleSelect.value === 'Tecnico';
+            technicalFields.style.opacity = isTechnician ? '1' : '0.7';
             employeeNumber.disabled = !isTechnician;
             specialty.disabled = !isTechnician;
             employeeNumber.required = isTechnician;
