@@ -10,11 +10,11 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
-CREATE DATABASE IF NOT EXISTS `plagueweb_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `plagueweb_db`;
+CREATE DATABASE plagueweb_db;
+USE plagueweb_db;
 
 -- ========================================================
--- 1. CREACIÓN DE TABLAS (CON PK, UNIQUE Y FOREIGN KEYS)
+-- 1. CREACIÓN DE TABLAS (EN ORDEN DE DEPENDENCIAS)
 -- ========================================================
 
 CREATE TABLE `roles` (
@@ -36,6 +36,13 @@ CREATE TABLE `tipoaccion` (
   `idTipoAccion` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(255) NOT NULL,
   PRIMARY KEY (`idTipoAccion`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `tipoincidencia` (
+  `IdTipoIncidencia` int(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(100) NOT NULL,
+  PRIMARY KEY (`IdTipoIncidencia`),
+  UNIQUE KEY `Nombre` (`Nombre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `plagas` (
@@ -217,13 +224,6 @@ CREATE TABLE `evidenciasfotograficas` (
   CONSTRAINT `fk_idtipoaccion` FOREIGN KEY (`idTipoAccion`) REFERENCES `tipoaccion` (`idTipoAccion`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `tipoincidencia` (
-  `IdTipoIncidencia` int(11) NOT NULL AUTO_INCREMENT,
-  `Nombre` varchar(100) NOT NULL,
-  PRIMARY KEY (`IdTipoIncidencia`),
-  UNIQUE KEY `Nombre` (`Nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE `incidencias` (
   `IdIncidencia` int(11) NOT NULL AUTO_INCREMENT,
   `IdCampana` int(11) NOT NULL,
@@ -237,7 +237,7 @@ CREATE TABLE `incidencias` (
   KEY `fk_incidencia_campana` (`IdCampana`),
   KEY `fk_incidencia_tipo` (`IdTipoIncidencia`),
   CONSTRAINT `fk_incidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_incidencia_tipo` FOREIGN KEY (`IdTipoIncidencia`) REFERENCES `tipoincidencia` (`IdTipoIncidencia`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_incidencia_tipo` FOREIGN KEY (`IdTipoIncidencia`) REFERENCES `tipoincidencia` (`IdTipoIncidencia`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `accionescampana` (
@@ -357,6 +357,16 @@ INSERT INTO `tipoaccion` (`idTipoAccion`, `Nombre`) VALUES
 (10, 'Trampeo y captura'),
 (11, 'Eliminación de foco'),
 (12, 'Cierre y verificación');
+
+INSERT INTO `tipoincidencia` (`IdTipoIncidencia`, `Nombre`) VALUES
+(5, 'Acceso y restricciones'),
+(4, 'Condiciones ambientales'),
+(6, 'Equipo o insumos'),
+(3, 'Infraestructura del sitio'),
+(8, 'Otro'),
+(1, 'Presencia de plagas'),
+(2, 'Saneamiento y atrayentes'),
+(7, 'Seguridad operativa');
 
 INSERT INTO `plagas` (`IdPlaga`, `CodigoPlaga`, `NombreComun`, `NombreCientifico`, `Descripcion`, `TratamientoRecomendado`, `Estado`) VALUES
 (13, 'PLG-001', 'Mosquito del dengue', 'Aedes aegypti', 'Vector principal de dengue, zika y chikungunya; se reproduce en agua limpia estancada.', 'Eliminación de criaderos, aplicación de larvicidas (temefos) y nebulización espacial.', 'Activa'),
@@ -502,7 +512,7 @@ INSERT INTO `solicitantes` (`IdSolicitante`, `TipoOrigen`, `NombreSolicitante`, 
 (37, 'Reporte ciudadano', 'Miguel Ángel Torres Ovando', '9171235540', 'Reporte de caracoles en jardín y banqueta tras lluvia prolongada.', 'Activo'),
 (38, 'Cliente privado', 'Cafetería y Repostería Central', '9331754321', 'Aplicación de gel insecticida y diagnóstico en barra y almacén seco.', 'Activo'),
 (39, 'Programa de salud público', 'Centro de Salud Urbano', '9171192834', 'Notificación de puntos críticos con agua estancada en colonia vecina.', 'Activo'),
-(40, 'Institución', 'Juzgado y Ofinas Administrativas', '9931841290', 'Fumigación preventiva programada en fin de semana para áreas de archivo.', 'Activo'),
+(40, 'Institución', 'Juzgado y Oficinas Administrativas', '9931841290', 'Fumigación preventiva programada en fin de semana para áreas de archivo.', 'Activo'),
 (41, 'Solicitud interna', 'Almacén y Control de Inventarios', '9171506789', 'Solicitud de verificación de condiciones sanitarias en área de resguardo.', 'Activo'),
 (42, 'Reporte ciudadano', 'Sofía Alejandra Pérez Cruz', '9931149876', 'Madrigueras visibles en borde de zanja junto a viviendas de la colonia.', 'Activo'),
 (43, 'Cliente privado', 'Taller y Refaccionaria El Paso', '9331627804', 'Control de roedores y limpieza de rincones con acumulación de piezas.', 'Activo'),
@@ -723,7 +733,58 @@ INSERT INTO `bitacora` (`IdBitacora`, `IdUsuario`, `IdModulo`, `TipoAccion`, `Fe
 (97, 62, 8, 'Consulta de campaña', '2026-02-22 10:30:20', NULL),
 (98, 63, 9, 'Registro de acción', '2026-02-23 11:45:00', NULL),
 (99, 64, 13, 'Consulta de inspección', '2026-02-24 14:00:12', NULL),
-(100, 65, 17, 'Consulta de reporte', '2026-02-25 15:20:35', NULL);
+(100, 65, 17, 'Consulta de reporte', '2026-02-25 15:20:35', NULL),
+(134, 14, 19, 'Consulta', '2026-11-26 09:39:57', '2026-11-26 09:39:57'),
+(135, 14, 19, 'Exportación', '2026-11-26 09:40:02', '2026-11-26 09:40:02'),
+(136, 14, 19, 'Generación de reporte', '2026-11-26 09:40:49', '2026-11-26 09:40:49'),
+(137, 14, 19, 'Consulta', '2026-11-26 09:41:09', '2026-11-26 09:41:09'),
+(138, 14, 1, 'Consulta', '2026-11-26 09:41:32', '2026-11-26 09:41:32'),
+(139, 14, 19, 'Consulta', '2026-11-26 09:41:34', '2026-11-26 09:41:34'),
+(140, 14, 1, 'Consulta', '2026-11-26 09:41:41', '2026-11-26 09:41:41'),
+(141, 2, 1, 'Consulta', '2026-11-26 09:41:54', '2026-11-26 09:41:54'),
+(142, 2, 17, 'Consulta', '2026-11-26 09:42:03', '2026-11-26 09:42:03'),
+(143, 2, 17, 'Consulta', '2026-11-26 09:42:05', '2026-11-26 09:42:05'),
+(144, 2, 17, 'Consulta', '2026-11-26 09:42:06', '2026-11-26 09:42:06'),
+(145, 2, 1, 'Consulta', '2026-11-26 09:42:12', '2026-11-26 09:42:12'),
+(146, 2, 8, 'Consulta', '2026-11-26 09:42:15', '2026-11-26 09:42:15'),
+(147, 2, 1, 'Consulta', '2026-11-26 09:43:05', '2026-11-26 09:43:05'),
+(148, 2, 29, 'Consulta', '2026-11-26 09:43:06', '2026-11-26 09:43:06'),
+(149, 2, 1, 'Consulta', '2026-11-26 09:43:10', '2026-11-26 09:43:10'),
+(150, 2, 8, 'Consulta', '2026-11-26 09:43:12', '2026-11-26 09:43:12'),
+(151, 2, 1, 'Consulta', '2026-11-26 09:43:23', '2026-11-26 09:43:23'),
+(152, 2, 8, 'Consulta', '2026-11-26 09:43:25', '2026-11-26 09:43:25'),
+(153, 2, 1, 'Consulta', '2026-11-26 09:43:28', '2026-11-26 09:43:28'),
+(154, 2, 1, 'Consulta', '2026-11-26 09:43:34', '2026-11-26 09:43:34'),
+(155, 2, 6, 'Consulta', '2026-11-26 09:43:37', '2026-11-26 09:43:37'),
+(156, 2, 1, 'Consulta', '2026-11-26 09:43:45', '2026-11-26 09:43:45'),
+(157, 2, 1, 'Consulta', '2026-11-26 09:45:35', '2026-11-26 09:45:35'),
+(158, 14, 1, 'Consulta', '2026-11-26 09:45:49', '2026-11-26 09:45:49'),
+(159, 14, 19, 'Consulta', '2026-11-26 09:45:50', '2026-11-26 09:45:50'),
+(160, 14, 1, 'Consulta', '2026-11-26 09:46:37', '2026-11-26 09:46:37'),
+(161, 14, 19, 'Consulta', '2026-11-26 09:46:39', '2026-11-26 09:46:39'),
+(162, 14, 19, 'Consulta', '2026-11-26 09:55:55', '2026-11-26 09:55:55'),
+(163, 14, 19, 'Consulta', '2026-11-26 09:56:18', '2026-11-26 09:56:18'),
+(164, 14, 19, 'Consulta', '2026-11-26 09:56:24', '2026-11-26 09:56:24'),
+(165, 14, 19, 'Consulta', '2026-11-26 09:56:36', '2026-11-26 09:56:36'),
+(166, 14, 19, 'Consulta', '2026-11-26 09:56:57', '2026-11-26 09:56:57'),
+(167, 14, 19, 'Consulta', '2026-11-26 09:57:02', '2026-11-26 09:57:02'),
+(168, 14, 1, 'Consulta', '2026-11-26 09:57:10', '2026-11-26 09:57:10'),
+(169, 14, 1, 'Consulta', '2026-11-26 09:57:13', '2026-11-26 09:57:13'),
+(170, 14, 19, 'Consulta', '2026-11-26 09:57:14', '2026-11-26 09:57:14'),
+(171, 14, 1, 'Consulta', '2026-11-26 09:57:23', '2026-11-26 09:57:23'),
+(172, 2, 1, 'Consulta', '2026-11-26 20:17:49', '2026-11-26 20:17:49'),
+(173, 2, 17, 'Consulta', '2026-11-26 20:17:52', '2026-11-26 20:17:52'),
+(174, 2, 1, 'Consulta', '2026-11-26 20:18:22', '2026-11-26 20:18:22'),
+(175, 2, 17, 'Consulta', '2026-11-26 20:18:26', '2026-11-26 20:18:26'),
+(176, 2, 17, 'Consulta', '2026-11-26 20:23:39', '2026-11-26 20:23:39'),
+(177, 2, 17, 'Consulta', '2026-11-26 20:23:59', '2026-11-26 20:23:59'),
+(178, 2, 17, 'Consulta', '2026-11-26 20:24:06', '2026-11-26 20:24:06'),
+(179, 2, 17, 'Consulta', '2026-11-26 20:24:13', '2026-11-26 20:24:13'),
+(180, 2, 17, 'Consulta', '2026-11-26 20:24:18', '2026-11-26 20:24:18'),
+(181, 2, 17, 'Consulta', '2026-11-26 20:24:31', '2026-11-26 20:24:31'),
+(182, 2, 17, 'Consulta', '2026-11-26 20:24:33', '2026-11-26 20:24:33'),
+(183, 2, 1, 'Consulta', '2026-11-26 20:24:37', '2026-11-26 20:24:37'),
+(184, 2, 17, 'Consulta', '2026-11-26 20:24:39', '2026-11-26 20:24:39');
 
 INSERT INTO `zonasprioritarias` (`IdZonaPrioritaria`, `IdZona`, `IdPlaga`, `FechaInicialPrioritaria`, `FechaFinalPrioritaria`) VALUES
 (151, 7, 13, '2026-01-05', '2026-02-04'),
@@ -983,69 +1044,59 @@ INSERT INTO `evidenciasfotograficas` (`IdEvidencia`, `IdCampana`, `idTipoAccion`
 (47, 55, 2, 'Inspección', 'uploads/evidencias/2026/11/evidencia_047.jpg', '2026-11-11 14:05:00'),
 (48, 56, 6, 'Aplicación', 'uploads/evidencias/2026/11/evidencia_048.jpg', '2026-11-19 08:30:00'),
 (49, 57, 1, 'Inspección', 'uploads/evidencias/2026/12/evidencia_049.jpg', '2026-12-02 09:55:00'),
-(50, 58, 2, 'Seguimiento', 'uploads/evidencias/2026/12/evidencia_050.jpg', '2026-12-06 10:15:00');
+(50, 58, 2, 'Seguimiento', 'resources/uploads/evidencias/18f70412b5d982472e2e1231dd82fc56.jpg', '2026-12-06 10:15:00');
 
-INSERT INTO `tipoincidencia` (`IdTipoIncidencia`, `Nombre`) VALUES
-(1, 'Presencia de plagas'),
-(2, 'Saneamiento y atrayentes'),
-(3, 'Infraestructura del sitio'),
-(4, 'Condiciones ambientales'),
-(5, 'Acceso y restricciones'),
-(6, 'Equipo o insumos'),
-(7, 'Seguridad operativa'),
-(8, 'Otro');
-
-INSERT INTO `incidencias` (`IdIncidencia`, `IdCampana`, `Zona`, `ActividadRelacionada`, `Descripcion`, `FechaRegistro`, `SincronizadoOffline`) VALUES
-(1, 9, 'Centro Histórico, Huimanguillo', 'Inspección', 'Patio con acumulación de agua en recipientes abiertos y acceso restringido en dos predios.', '2026-01-07 09:10:00', 1),
-(2, 10, 'Colonia Pueblo Nuevo, Huimanguillo', 'Aplicación', 'Fuga de agua cerca del área de lavado que redujo la adherencia del gel insecticida.', '2026-01-13 10:05:00', 1),
-(3, 11, 'Villa La Venta, Huimanguillo', 'Aplicación', 'Estación cebadera desplazada por fauna doméstica; se reubicó y aseguró con anclaje.', '2026-01-19 11:20:00', 1),
-(4, 12, 'Villa Estación Chontalpa, Huimanguillo', 'Seguimiento', 'Humedad persistente en viga de madera debido a filtración pluvial en techo.', '2026-01-24 12:00:00', 1),
-(5, 13, 'Colonia El Torito, Huimanguillo', 'Inspección', 'Presencia de montículos adicionales en terreno baldío colindante sin acceso autorizado.', '2026-01-29 09:45:00', 1),
-(6, 14, 'Centro Cárdenas, Cárdenas', 'Aplicación', 'Obstrucción parcial por residuos sólidos en registro pluvial durante la aplicación larvicida.', '2026-02-03 10:30:00', 1),
-(7, 15, 'Colonia Petrolera, Cárdenas', 'Inspección', 'Lluvia ligera repentina obligó a pausar temporalmente el recorrido exterior.', '2026-02-08 15:10:00', 1),
-(8, 16, 'Poblado C-28, Cárdenas', 'Inspección', 'Maleza alta en lindero de parcela dificultó el acceso a los primeros surcos.', '2026-02-13 08:25:00', 1),
-(9, 17, 'Villa Benito Juárez, Cárdenas', 'Aplicación', 'Tráfico vehicular intenso sobre tramo intervenido requirió señalización preventiva extra.', '2026-02-17 11:15:00', 1),
-(10, 18, 'Centro Comalcalco, Comalcalco', 'Seguimiento', 'Residuos orgánicos no retirados a tiempo atrajeron nuevamente moscas al área del mercado.', '2026-02-21 12:05:00', 1),
-(11, 19, 'Zona Arqueológica, Comalcalco', 'Inspección', 'Polilla y humedad en bodega auxiliar dificultaron la inspección visual de tarimas.', '2026-02-25 10:10:00', 1),
-(12, 20, 'Villa Tecolutilla, Comalcalco', 'Seguimiento', 'Ráfagas de viento moderadas durante la jornada requirieron ajuste de horario de revisión.', '2026-03-03 14:00:00', 1),
-(13, 21, 'Centro Paraíso, Paraíso', 'Aplicación', 'Viviendas cerradas en horario matutino; se dejó aviso para reprogramar atención.', '2026-03-07 09:00:00', 1),
-(14, 22, 'Puerto Dos Bocas, Paraíso', 'Inspección', 'Falta de iluminación en sótano de almacén; se utilizó lámpara portátil de alta potencia.', '2026-03-11 11:30:00', 1),
-(15, 23, 'Villa Puerto Ceiba, Paraíso', 'Seguimiento', 'Mascotas sueltas en patio durante la verificación; se solicitó resguardo temporal.', '2026-03-15 15:50:00', 1),
-(16, 24, 'Centro Cunduacán, Cunduacán', 'Aplicación', 'Limpieza reciente con cloro en un punto de cocina obligó a reaplicar cebo específico.', '2026-03-19 09:50:00', 1),
-(17, 25, 'Zona Universitaria Chontalpa, Cunduacán', 'Seguimiento', 'Encharcamiento localizado tras riego excesivo en franja del cultivo evaluado.', '2026-03-23 12:35:00', 1),
-(18, 26, 'Centro Jalpa de Méndez, Jalpa de Méndez', 'Inspección', 'Exceso de fruta madura expuesta en vía pública generó foco secundario de mosca de la fruta.', '2026-03-28 09:40:00', 1),
-(19, 27, 'Centro Nacajuca, Nacajuca', 'Aplicación', 'Terreno irregular con lodo en perímetro trasero limitó el avance del equipo de aspersión.', '2026-04-02 11:00:00', 1),
-(20, 28, 'Bosques de Saloya, Nacajuca', 'Aplicación', 'Ducto de ventilación con acumulación de grasa requirió limpieza previa antes del gel.', '2026-04-06 15:15:00', 1),
-(21, 29, 'Tabasco 2000, Centro', 'Inspección', 'Muebles pesados adosados a muros dificultaron la revisión completa de grietas.', '2026-04-11 10:25:00', 1),
-(22, 30, 'Zona Luz Centro, Centro', 'Aplicación', 'Coladera con tapa soldada impidió tratamiento directo; se reportó a mantenimiento.', '2026-04-15 12:00:00', 1),
-(23, 31, 'Colonia Atasta, Centro', 'Seguimiento', 'Lluvia previa dejó charcos menores en patio baldío vecino a la zona monitoreada.', '2026-04-20 09:10:00', 1),
-(24, 32, 'Colonia Tamulté, Centro', 'Seguimiento', 'Acumulación de tarimas y costales en desuso favoreció refugio de roedores.', '2026-04-25 16:45:00', 1),
-(25, 33, 'Ciudad Industrial, Centro', 'Aplicación', 'Humedad ambiental elevada en bodega obligó a reforzar ventilación antes del tratamiento.', '2026-04-29 11:05:00', 1),
-(26, 34, 'Centro Teapa, Teapa', 'Inspección', 'Escombros de obra y leña apilada representaron refugio potencial para alacranes.', '2026-05-04 09:45:00', 1),
-(27, 35, 'Centro Macuspana, Macuspana', 'Aplicación', 'Zanja con alto nivel de agua requirió doble dosis de larvicida según etiqueta.', '2026-05-08 08:40:00', 1),
-(28, 36, 'Centro Frontera, Centla', 'Inspección', 'Cuerpo de agua con vegetación densa en orilla dificultó el muestreo larvario.', '2026-05-13 14:25:00', 1),
-(29, 37, 'Centro Tenosique, Tenosique', 'Seguimiento', 'Dos trampas desplazadas por viento; se reinstalaron y fijaron correctamente.', '2026-05-19 11:40:00', 1),
-(30, 38, 'Centro Balancán, Balancán', 'Aplicación', 'Alta densidad de ejemplares tras lluvia requirió ampliación del perímetro de recolección.', '2026-05-23 10:15:00', 1),
-(31, 39, 'Colonia Convivencia, Huimanguillo', 'Inspección', 'Muro con humedad capilar debilitó madera de marco en acceso lateral.', '2026-05-28 12:00:00', 1),
-(32, 40, 'Poblado C-34, Huimanguillo', 'Seguimiento', 'Falta de acceso a lote agrícola por camino temporalmente anegado.', '2026-06-02 14:50:00', 1),
-(33, 41, 'Villa Francisco Rueda, Huimanguillo', 'Aplicación', 'Nido ubicado a gran altura requirió pértiga telescópica para aplicación segura.', '2026-06-06 18:20:00', 1),
-(34, 42, 'Colonia Mastelero, Huimanguillo', 'Seguimiento', 'Trampa de grasa sin mantenimiento previo retrasó la evaluación de coladeras.', '2026-06-11 09:50:00', 1),
-(35, 43, 'Colonia Pueblo Nuevo Cárdenas, Cárdenas', 'Aplicación', 'Pozo de visita con presión de agua impidió aplicación en ese punto específico.', '2026-06-16 09:20:00', 1),
-(36, 44, 'Poblado C-16, Cárdenas', 'Inspección', 'Follaje denso en sector norte requirió revisión más detallada de envés de hojas.', '2026-06-21 10:45:00', 1),
-(37, 45, 'Villa Sánchez Magallanes, Cárdenas', 'Aplicación', 'Presencia de cableado eléctrico cerca de esquina exterior requirió precaución adicional.', '2026-06-26 16:05:00', 1),
-(38, 46, 'Villa Chichicapa, Comalcalco', 'Aplicación', 'Temperatura elevada al mediodía; se ajustó la aspersión a horas de menor evaporación.', '2026-07-02 10:20:00', 1),
-(39, 47, 'Villa Aldama, Comalcalco', 'Seguimiento', 'Acceso restringido a patio trasero por candado sin responsable en el sitio.', '2026-07-07 12:10:00', 1),
-(40, 48, 'Barra de Tupilco, Paraíso', 'Inspección', 'Espacio reducido entre mobiliario y pared dificultó inspección con espejo.', '2026-07-13 11:30:00', 1),
-(41, 49, 'Villa Libertad, Cunduacán', 'Aplicación', 'Ramas secas entrelazadas limitaron cobertura uniforme en copa baja del árbol.', '2026-07-19 09:05:00', 1),
-(42, 50, 'Poblado Ayapa, Jalpa de Méndez', 'Seguimiento', 'Riego nocturno automático encendió durante la visita; se coordinó ajuste con encargado.', '2026-08-02 15:30:00', 1),
-(43, 51, 'Poblado Tapotzingo, Nacajuca', 'Aplicación', 'Anaquel superior con polvo acumulado requirió limpieza previa antes de colocar trampa.', '2026-08-11 10:10:00', 1),
-(44, 52, 'Fraccionamiento Pomoca, Nacajuca', 'Seguimiento', 'Dos predios pendientes de firma de conformidad por ausencia del titular.', '2026-09-02 11:50:00', 1),
-(45, 53, 'Colonia Gaviotas Norte, Centro', 'Aplicación', 'Chubasco breve a mitad de la jornada obligó a reagendar el último sector.', '2026-10-02 08:15:00', 1),
-(46, 54, 'Villa Ocuiltzapotlán, Centro', 'Inspección', 'Saco con rasgadura menor en esquina de estiba; se separó para revisión detallada.', '2026-11-03 10:55:00', 1),
-(47, 55, 'Villa Parrilla, Centro', 'Inspección', 'Etiquetado ilegible en un lote de almacén; se reportó a control de calidad.', '2026-11-11 14:30:00', 0),
-(48, 56, 'Centro Tacotalpa, Tacotalpa', 'Aplicación', 'Zona con alta humedad ambiental; se registró incidencia sin conexión para sincronizar.', '2026-11-19 09:00:00', 0),
-(49, 57, 'Centro Jalapa, Jalapa', 'Inspección', 'Registro levantado en campo sin cobertura móvil; pendiente de sincronización.', '2026-12-02 10:20:00', 0),
-(50, 58, 'Centro Emiliano Zapata, Emiliano Zapata', 'Seguimiento', 'Inspección de cierre registrada offline en tablet; pendiente de subir al servidor.', '2026-12-06 10:40:00', 0);
+INSERT INTO `incidencias` (`IdIncidencia`, `IdCampana`, `IdTipoIncidencia`, `Zona`, `ActividadRelacionada`, `Descripcion`, `FechaRegistro`, `SincronizadoOffline`) VALUES
+(1, 9, 5, 'Centro Histórico, Huimanguillo', 'Inspección', 'Patio con acumulación de agua en recipientes abiertos y acceso restringido en dos predios.', '2026-01-07 09:10:00', 1),
+(2, 10, 3, 'Colonia Pueblo Nuevo, Huimanguillo', 'Aplicación', 'Fuga de agua cerca del área de lavado que redujo la adherencia del gel insecticida.', '2026-01-13 10:05:00', 1),
+(3, 11, 6, 'Villa La Venta, Huimanguillo', 'Aplicación', 'Estación cebadera desplazada por fauna doméstica; se reubicó y aseguró con anclaje.', '2026-01-19 11:20:00', 1),
+(4, 12, 3, 'Villa Estación Chontalpa, Huimanguillo', 'Seguimiento', 'Humedad persistente en viga de madera debido a filtración pluvial en techo.', '2026-01-24 12:00:00', 1),
+(5, 13, 5, 'Colonia El Torito, Huimanguillo', 'Inspección', 'Presencia de montículos adicionales en terreno baldío colindante sin acceso autorizado.', '2026-01-29 09:45:00', 1),
+(6, 14, 2, 'Centro Cárdenas, Cárdenas', 'Aplicación', 'Obstrucción parcial por residuos sólidos en registro pluvial durante la aplicación larvicida.', '2026-02-03 10:30:00', 1),
+(7, 15, 4, 'Colonia Petrolera, Cárdenas', 'Inspección', 'Lluvia ligera repentina obligó a pausar temporalmente el recorrido exterior.', '2026-02-08 15:10:00', 1),
+(8, 16, 5, 'Poblado C-28, Cárdenas', 'Inspección', 'Maleza alta en lindero de parcela dificultó el acceso a los primeros surcos.', '2026-02-13 08:25:00', 1),
+(9, 17, 7, 'Villa Benito Juárez, Cárdenas', 'Aplicación', 'Tráfico vehicular intenso sobre tramo intervenido requirió señalización preventiva extra.', '2026-02-17 11:15:00', 1),
+(10, 18, 2, 'Centro Comalcalco, Comalcalco', 'Seguimiento', 'Residuos orgánicos no retirados a tiempo atrajeron nuevamente moscas al área del mercado.', '2026-02-21 12:05:00', 1),
+(11, 19, 1, 'Zona Arqueológica, Comalcalco', 'Inspección', 'Polilla y humedad en bodega auxiliar dificultaron la inspección visual de tarimas.', '2026-02-25 10:10:00', 1),
+(12, 20, 4, 'Villa Tecolutilla, Comalcalco', 'Seguimiento', 'Ráfagas de viento moderadas durante la jornada requirieron ajuste de horario de revisión.', '2026-03-03 14:00:00', 1),
+(13, 21, 5, 'Centro Paraíso, Paraíso', 'Aplicación', 'Viviendas cerradas en horario matutino; se dejó aviso para reprogramar atención.', '2026-03-07 09:00:00', 1),
+(14, 22, 6, 'Puerto Dos Bocas, Paraíso', 'Inspección', 'Falta de iluminación en sótano de almacén; se utilizó lámpara portátil de alta potencia.', '2026-03-11 11:30:00', 1),
+(15, 23, 7, 'Villa Puerto Ceiba, Paraíso', 'Seguimiento', 'Mascotas sueltas en patio durante la verificación; se solicitó resguardo temporal.', '2026-03-15 15:50:00', 1),
+(16, 24, 6, 'Centro Cunduacán, Cunduacán', 'Aplicación', 'Limpieza reciente con cloro en un punto de cocina obligó a reaplicar cebo específico.', '2026-03-19 09:50:00', 1),
+(17, 25, 4, 'Zona Universitaria Chontalpa, Cunduacán', 'Seguimiento', 'Encharcamiento localizado tras riego excesivo en franja del cultivo evaluado.', '2026-03-23 12:35:00', 1),
+(18, 26, 2, 'Centro Jalpa de Méndez, Jalpa de Méndez', 'Inspección', 'Exceso de fruta madura expuesta en vía pública generó foco secundario de mosca de la fruta.', '2026-03-28 09:40:00', 1),
+(19, 27, 3, 'Centro Nacajuca, Nacajuca', 'Aplicación', 'Terreno irregular con lodo en perímetro trasero limitó el avance del equipo de aspersión.', '2026-04-02 11:00:00', 1),
+(20, 28, 2, 'Bosques de Saloya, Nacajuca', 'Aplicación', 'Ducto de ventilación con acumulación de grasa requirió limpieza previa antes del gel.', '2026-04-06 15:15:00', 1),
+(21, 29, 5, 'Tabasco 2000, Centro', 'Inspección', 'Muebles pesados adosados a muros dificultaron la revisión completa de grietas.', '2026-04-11 10:25:00', 1),
+(22, 30, 3, 'Zona Luz Centro, Centro', 'Aplicación', 'Coladera con tapa soldada impidió tratamiento directo; se reportó a mantenimiento.', '2026-04-15 12:00:00', 1),
+(23, 31, 4, 'Colonia Atasta, Centro', 'Seguimiento', 'Lluvia previa dejó charcos menores en patio baldío vecino a la zona monitoreada.', '2026-04-20 09:10:00', 1),
+(24, 32, 2, 'Colonia Tamulté, Centro', 'Seguimiento', 'Acumulación de tarimas y costales en desuso favoreció refugio de roedores.', '2026-04-25 16:45:00', 1),
+(25, 33, 4, 'Ciudad Industrial, Centro', 'Aplicación', 'Humedad ambiental elevada en bodega obligó a reforzar ventilación antes del tratamiento.', '2026-04-29 11:05:00', 1),
+(26, 34, 2, 'Centro Teapa, Teapa', 'Inspección', 'Escombros de obra y leña apilada representaron refugio potencial para alacranes.', '2026-05-04 09:45:00', 1),
+(27, 35, 6, 'Centro Macuspana, Macuspana', 'Aplicación', 'Zanja con alto nivel de agua requirió doble dosis de larvicida según etiqueta.', '2026-05-08 08:40:00', 1),
+(28, 36, 4, 'Centro Frontera, Centla', 'Inspección', 'Cuerpo de agua con vegetación densa en orilla dificultó el muestreo larvario.', '2026-05-13 14:25:00', 1),
+(29, 37, 6, 'Centro Tenosique, Tenosique', 'Seguimiento', 'Dos trampas desplazadas por viento; se reinstalaron y fijaron correctamente.', '2026-05-19 11:40:00', 1),
+(30, 38, 1, 'Centro Balancán, Balancán', 'Aplicación', 'Alta densidad de ejemplares tras lluvia requirió ampliación del perímetro de recolección.', '2026-05-23 10:15:00', 1),
+(31, 39, 3, 'Colonia Convivencia, Huimanguillo', 'Inspección', 'Muro con humedad capilar debilitó madera de marco en acceso lateral.', '2026-05-28 12:00:00', 1),
+(32, 40, 5, 'Poblado C-34, Huimanguillo', 'Seguimiento', 'Falta de acceso a lote agrícola por camino temporalmente anegado.', '2026-06-02 14:50:00', 1),
+(33, 41, 6, 'Villa Francisco Rueda, Huimanguillo', 'Aplicación', 'Nido ubicado a gran altura requirió pértiga telescópica para aplicación segura.', '2026-06-06 18:20:00', 1),
+(34, 42, 6, 'Colonia Mastelero, Huimanguillo', 'Seguimiento', 'Trampa de grasa sin mantenimiento previo retrasó la evaluación de coladeras.', '2026-06-11 09:50:00', 1),
+(35, 43, 3, 'Colonia Pueblo Nuevo Cárdenas, Cárdenas', 'Aplicación', 'Pozo de visita con presión de agua impidió aplicación en ese punto específico.', '2026-06-16 09:20:00', 1),
+(36, 44, 4, 'Poblado C-16, Cárdenas', 'Inspección', 'Follaje denso en sector norte requirió revisión más detallada de envés de hojas.', '2026-06-21 10:45:00', 1),
+(37, 45, 7, 'Villa Sánchez Magallanes, Cárdenas', 'Aplicación', 'Presencia de cableado eléctrico cerca de esquina exterior requirió precaución adicional.', '2026-06-26 16:05:00', 1),
+(38, 46, 4, 'Villa Chichicapa, Comalcalco', 'Aplicación', 'Temperatura elevada al mediodía; se ajustó la aspersión a horas de menor evaporación.', '2026-07-02 10:20:00', 1),
+(39, 47, 5, 'Villa Aldama, Comalcalco', 'Seguimiento', 'Acceso restringido a patio trasero por candado sin responsable en el sitio.', '2026-07-07 12:10:00', 1),
+(40, 48, 5, 'Barra de Tupilco, Paraíso', 'Inspección', 'Espacio reducido entre mobiliario y pared dificultó inspección con espejo.', '2026-07-13 11:30:00', 1),
+(41, 49, 4, 'Villa Libertad, Cunduacán', 'Aplicación', 'Ramas secas entrelazadas limitaron cobertura uniforme en copa baja del árbol.', '2026-07-19 09:05:00', 1),
+(42, 50, 6, 'Poblado Ayapa, Jalpa de Méndez', 'Seguimiento', 'Riego nocturno automático encendió durante la visita; se coordinó ajuste con encargado.', '2026-08-02 15:30:00', 1),
+(43, 51, 2, 'Poblado Tapotzingo, Nacajuca', 'Aplicación', 'Anaquel superior con polvo acumulado requirió limpieza previa antes de colocar trampa.', '2026-08-11 10:10:00', 1),
+(44, 52, 8, 'Fraccionamiento Pomoca, Nacajuca', 'Seguimiento', 'Dos predios pendientes de firma de conformidad por ausencia del titular.', '2026-09-02 11:50:00', 1),
+(45, 53, 4, 'Colonia Gaviotas Norte, Centro', 'Aplicación', 'Chubasco breve a mitad de la jornada obligó a reagendar el último sector.', '2026-10-02 08:15:00', 1),
+(46, 54, 6, 'Villa Ocuiltzapotlán, Centro', 'Inspección', 'Saco con rasgadura menor en esquina de estiba; se separó para revisión detallada.', '2026-11-03 10:55:00', 1),
+(47, 55, 6, 'Villa Parrilla, Centro', 'Inspección', 'Etiquetado ilegible en un lote de almacén; se reportó a control de calidad.', '2026-11-11 14:30:00', 0),
+(48, 56, 4, 'Centro Tacotalpa, Tacotalpa', 'Aplicación', 'Zona con alta humedad ambiental; se registró incidencia sin conexión para sincronizar.', '2026-11-19 09:00:00', 0),
+(49, 57, 8, 'Centro Jalapa, Jalapa', 'Inspección', 'Registro levantado en campo sin cobertura móvil; pendiente de sincronización.', '2026-12-02 10:20:00', 0),
+(50, 58, 8, 'Centro Emiliano Zapata, Emiliano Zapata', 'Seguimiento', 'Inspección de cierre registrada offline en tablet; pendiente de subir al servidor.', '2026-12-06 10:40:00', 0);
 
 INSERT INTO `accionescampana` (`IdAccion`, `IdCampana`, `IdTecnico`, `idTipoAccion`, `FechaHora`, `DetallesResultados`, `Observaciones`) VALUES
 (51, 9, 7, 1, '2026-01-07 08:30:00', 'Revisión inicial de patios, registros y depósitos de agua; se detectaron 4 recipientes con larvas.', 'Se recomendó voltear cubetas y tapar tinacos de inmediato.'),
