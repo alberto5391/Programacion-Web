@@ -114,7 +114,16 @@
                     <a href="index.php?modulo=campanas" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-clock-history"></i></div>
-                            <span class="text-dark fw-medium small">Campañas, solicitantes y evidencias <span class="text-muted fs-8 d-block">Relaciones administradas desde el flujo de campaña</span></span>
+                            <span class="text-dark fw-medium small">Campañas y solicitantes <span class="text-muted fs-8 d-block">Gestión de campañas y solicitudes</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="index.php?modulo=evidencias" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-images"></i></div>
+                            <span class="text-dark fw-medium small">Evidencias fotográficas <span class="text-muted fs-8 d-block">Consultar y gestionar evidencias de campañas</span></span>
                         </div>
                     </a>
                 </div>

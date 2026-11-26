@@ -41,17 +41,12 @@
                             <label for="id_campana" class="form-label">Campaña</label>
                             <select class="form-select" id="id_campana" name="id_campana" required>
                                 <option value="">Selecciona una campaña</option>
-                                <?php if ($resultadoCampanas): ?>
-                                    <?php while ($campana = $resultadoCampanas->fetch_assoc()): ?>
-                                        <?php
-                                        $idCampana = (int)$campana['IdCampana'];
-                                        $etiquetaCampana = htmlspecialchars($campana['CodigoCampana'] . ' - ' . $campana['NombreCampana']);
-                                        ?>
-                                        <option value="<?= $idCampana ?>" <?= $idCampanaSeleccionada === $idCampana ? 'selected' : '' ?>>
-                                            <?= $etiquetaCampana ?>
-                                        </option>
-                                    <?php endwhile; ?>
-                                <?php endif; ?>
+                                <?php foreach ($campanas as $campana): ?>
+                                    <?php $idCampana = (int)$campana['IdCampana']; ?>
+                                    <option value="<?= $idCampana ?>" <?= $idCampanaSeleccionada === $idCampana ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($campana['CodigoCampana'] . ' - ' . $campana['NombreCampana'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -68,7 +63,7 @@
                             <input class="form-control" type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp" required>
                         </div>
                     </div>
-                    <button class="btn btn-primary mt-3" type="submit" <?= !$resultadoCampanas || $resultadoCampanas->num_rows === 0 ? 'disabled' : '' ?>>Guardar evidencia</button>
+                    <button class="btn btn-primary mt-3" type="submit" <?= count($campanas) === 0 ? 'disabled' : '' ?>>Guardar evidencia</button>
                 </form>
             </div>
         </section>
@@ -78,12 +73,21 @@
             <section class="card shadow-sm mb-4">
                 <div class="card-header bg-white fw-semibold">Modificar evidencia</div>
                 <div class="card-body">
-                    <form action="<?= BASE_URL ?>index.php" method="POST">
+                    <form action="<?= BASE_URL ?>index.php" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="modulo" value="evidencias">
                         <input type="hidden" name="accion" value="actualizar_evidencia">
                         <input type="hidden" name="id_evidencia" value="<?= (int)$evidenciaEditar['IdEvidencia'] ?>">
-                        <input type="hidden" name="id_campana" value="<?= (int)$evidenciaEditar['IdCampana'] ?>">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                        <div class="mb-3">
+                            <label for="id_campana_editar" class="form-label">Campaña</label>
+                            <select class="form-select" id="id_campana_editar" name="id_campana" required>
+                                <?php foreach ($campanas as $campana): ?>
+                                    <option value="<?= (int)$campana['IdCampana'] ?>" <?= (int)$evidenciaEditar['IdCampana'] === (int)$campana['IdCampana'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($campana['CodigoCampana'] . ' - ' . $campana['NombreCampana'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <label for="tipo_actividad_editar" class="form-label">Tipo de actividad</label>
                         <select class="form-select" id="tipo_actividad_editar" name="tipo_actividad" required>
                             <?php foreach (['Inspección', 'Aplicación', 'Seguimiento'] as $tipoActividad): ?>
@@ -92,6 +96,15 @@
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <?php $rutaActual = BASE_URL . ltrim($evidenciaEditar['RutaArchivo'], '/\\'); ?>
+                        <div class="mt-3 mb-2">
+                            <label class="form-label" for="foto_editar">Reemplazar fotografía (opcional; JPEG, PNG o WebP; máximo 5 MB)</label>
+                            <input class="form-control" type="file" id="foto_editar" name="foto" accept="image/jpeg,image/png,image/webp">
+                        </div>
+                        <div class="mb-3">
+                            <span class="form-label d-block">Fotografía actual</span>
+                            <img src="<?= htmlspecialchars($rutaActual, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía actual de la evidencia" style="max-width: 180px; max-height: 130px;">
+                        </div>
                         <button class="btn btn-primary mt-3" type="submit">Guardar cambios</button>
                         <a class="btn btn-outline-secondary mt-3" href="<?= BASE_URL ?>index.php?modulo=evidencias&id_campana=<?= (int)$evidenciaEditar['IdCampana'] ?>">Cancelar</a>
                     </form>
@@ -99,14 +112,14 @@
             </section>
         <?php endif; ?>
 
-        <?php if ($idCampanaSeleccionada !== null): ?>
             <section class="card shadow-sm">
-                <div class="card-header bg-white fw-semibold">Evidencias registradas en esta campaña</div>
+                <div class="card-header bg-white fw-semibold">Todas las evidencias agregadas</div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped align-middle mb-0">
                             <thead>
                                 <tr>
+                                    <th>Campaña</th>
                                     <th>Fotografía</th>
                                     <th>Actividad</th>
                                     <th>Fecha de registro</th>
@@ -119,12 +132,17 @@
                                         <?php $ruta = BASE_URL . ltrim($evidencia['RutaFoto'], '/\\'); ?>
                                         <tr>
                                             <td>
+                                                <?= htmlspecialchars($evidencia['CodigoCampana'], ENT_QUOTES, 'UTF-8') ?>
+                                                -
+                                                <?= htmlspecialchars($evidencia['NombreCampana'], ENT_QUOTES, 'UTF-8') ?>
+                                            </td>
+                                            <td>
                                                 <a href="<?= htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
                                                     <img src="<?= htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8') ?>" alt="Evidencia de campaña" style="max-width: 120px; max-height: 90px;">
                                                 </a>
                                             </td>
-                                            <td><?= htmlspecialchars($evidencia['TipoActividad']) ?></td>
-                                            <td><?= htmlspecialchars($evidencia['FechaRegistro']) ?></td>
+                                            <td><?= htmlspecialchars($evidencia['TipoActividad'], ENT_QUOTES, 'UTF-8') ?></td>
+                                            <td><?= htmlspecialchars($evidencia['FechaRegistro'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td>
                                                 <?php if (appCan('evidencias', 'modificar')): ?>
                                                     <a class="btn btn-sm btn-primary" href="<?= BASE_URL ?>index.php?modulo=evidencias&accion=editar&id=<?= (int)$evidencia['IdEvidencia'] ?>">Editar</a>
@@ -134,7 +152,7 @@
                                                         <input type="hidden" name="modulo" value="evidencias">
                                                         <input type="hidden" name="accion" value="eliminar">
                                                         <input type="hidden" name="id" value="<?= (int)$evidencia['IdEvidencia'] ?>">
-                                                        <input type="hidden" name="id_campana" value="<?= (int)$idCampanaSeleccionada ?>">
+                                                        <input type="hidden" name="id_campana" value="<?= (int)$evidencia['IdCampana'] ?>">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
                                                         <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
                                                     </form>
@@ -143,8 +161,7 @@
                                         </tr>
                                     <?php endwhile; ?>
                                 <?php else: ?>
-                                    <tr><td colspan="4" class="text-center text-muted">Esta campaña aún no tiene evidencias.</td></tr>
-                                <?php endif; ?>
+                                    <tr><td colspan="5" class="text-center text-muted">Aún no hay evidencias registradas.</td></tr>
                             </tbody>
                         </table>
                     </div>

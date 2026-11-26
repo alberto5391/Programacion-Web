@@ -13,12 +13,14 @@ class ModelEvidencia {
         return $stmt->execute();
     }
 
-    // Buscar evidencias por ID de campaña
-    public function buscarEvidenciasPorCampana($id_campana) {
-        $stmt = $this->conexion->prepare("SELECT IdEvidencia, RutaArchivo AS RutaFoto, FechaSubida AS FechaRegistro, TipoActividad FROM EvidenciasFotograficas WHERE IdCampana = ? ORDER BY FechaSubida DESC");
-        $stmt->bind_param("i", $id_campana);
-        $stmt->execute();
-        return $stmt->get_result();
+    public function buscarTodasLasEvidencias() {
+        return $this->conexion->query(
+            "SELECT e.IdEvidencia, e.IdCampana, e.RutaArchivo AS RutaFoto, e.FechaSubida AS FechaRegistro,
+                    e.TipoActividad, c.CodigoCampana, c.NombreCampana
+             FROM EvidenciasFotograficas e
+             INNER JOIN Campanas c ON c.IdCampana = e.IdCampana
+             ORDER BY e.FechaSubida DESC, e.IdEvidencia DESC"
+        );
     }
 
     public function obtenerEvidenciaPorId($id_evidencia) {
@@ -28,9 +30,18 @@ class ModelEvidencia {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function actualizarTipoActividad($id_evidencia, $tipo_actividad) {
-        $stmt = $this->conexion->prepare("UPDATE EvidenciasFotograficas SET TipoActividad = ? WHERE IdEvidencia = ?");
-        $stmt->bind_param("si", $tipo_actividad, $id_evidencia);
+    public function actualizarEvidencia($id_evidencia, $id_campana, $tipo_actividad, $ruta_archivo = null) {
+        if ($ruta_archivo === null) {
+            $stmt = $this->conexion->prepare(
+                "UPDATE EvidenciasFotograficas SET IdCampana = ?, TipoActividad = ? WHERE IdEvidencia = ?"
+            );
+            $stmt->bind_param("isi", $id_campana, $tipo_actividad, $id_evidencia);
+        } else {
+            $stmt = $this->conexion->prepare(
+                "UPDATE EvidenciasFotograficas SET IdCampana = ?, TipoActividad = ?, RutaArchivo = ? WHERE IdEvidencia = ?"
+            );
+            $stmt->bind_param("issi", $id_campana, $tipo_actividad, $ruta_archivo, $id_evidencia);
+        }
         return $stmt->execute();
     }
 
