@@ -16,14 +16,33 @@ class ModelCampana {
         return $this->conexion->insert_id;
     }
 
-    // Obtener todas las campañas unidas con su zona correspondiente
-    public function obtenerCampanas() {
-        $query = "SELECT c.IdCampana, c.CodigoCampana, c.NombreCampana, c.FechaInicio, c.FechaFin, c.Estado, 
-                         z.CodigoZona, z.NombreZona 
-                  FROM Campanas c
-                  INNER JOIN Zonas z ON c.IdZona = z.IdZona
-                  ORDER BY c.IdCampana DESC";
-        return $this->conexion->query($query);
+    public function obtenerMunicipios() {
+        return $this->conexion->query(
+            "SELECT DISTINCT Municipio FROM Zonas ORDER BY Municipio"
+        );
+    }
+
+    public function obtenerCampanas($municipio = '', $busqueda = '') {
+        $stmt = $this->conexion->prepare(
+            "SELECT c.IdCampana, c.CodigoCampana, c.NombreCampana, c.FechaInicio, c.FechaFin, c.Estado,
+                    z.CodigoZona, z.NombreZona, z.Municipio
+             FROM Campanas c
+             INNER JOIN Zonas z ON c.IdZona = z.IdZona
+             WHERE (? = '' OR z.Municipio = ?)
+               AND (? = '' OR c.CodigoCampana LIKE CONCAT('%', ?, '%')
+                    OR c.NombreCampana LIKE CONCAT('%', ?, '%'))
+             ORDER BY c.IdCampana DESC"
+        );
+        $stmt->bind_param(
+            'sssss',
+            $municipio,
+            $municipio,
+            $busqueda,
+            $busqueda,
+            $busqueda
+        );
+        $stmt->execute();
+        return $stmt->get_result();
     }
 
     // Obtener una campaña específica por su ID
@@ -42,10 +61,75 @@ class ModelCampana {
         return $stmt->execute();
     }
 
-    public function actualizarEstadoCampana($idCampana, $estado) {
-        $stmt = $this->conexion->prepare("UPDATE Campanas SET Estado = ? WHERE IdCampana = ?");
-        $stmt->bind_param("si", $estado, $idCampana);
-        return $stmt->execute();
+    public function actualizarEstadoCampana($idCampana, $estado, $estadoActual, $usuarioId) {
+        $this->conexion->begin_transaction();
+
+        try {
+            $stmt = $this->conexion->prepare(
+                "UPDATE Campanas
+                 SET Estado = ?
+                 WHERE IdCampana = ? AND Estado = ?"
+            );
+            $stmt->bind_param('sis', $estado, $idCampana, $estadoActual);
+            if (!$stmt->execute()) {
+                throw new RuntimeException('No se pudo actualizar el estado de la campaña.');
+            }
+
+            if ($stmt->affected_rows !== 1) {
+                $this->conexion->rollback();
+                return 0;
+            }
+
+            $historial = $this->conexion->prepare(
+                "INSERT INTO historial_estados_campana
+                    (IdCampana, CodigoCampana, IdUsuario, EstadoAnterior, EstadoNuevo)
+                 SELECT c.IdCampana, c.CodigoCampana, ?, ?, ?
+                 FROM Campanas c
+                 WHERE c.IdCampana = ?"
+            );
+            $historial->bind_param(
+                'issi',
+                $usuarioId,
+                $estadoActual,
+                $estado,
+                $idCampana
+            );
+            if (!$historial->execute() || $historial->affected_rows !== 1) {
+                throw new RuntimeException('No se pudo guardar el historial del cambio de estado.');
+            }
+
+            $this->conexion->commit();
+            return 1;
+        } catch (Throwable $e) {
+            $this->conexion->rollback();
+            throw $e;
+        }
+    }
+
+    public function obtenerHistorialEstadosCampanas($municipio = '', $busqueda = '') {
+        $stmt = $this->conexion->prepare(
+            "SELECT h.IdCampana, h.EstadoAnterior, h.EstadoNuevo, h.FechaCambio,
+                    COALESCE(CONCAT(u.Nombre, ' ', u.Apellidos), CONCAT('Usuario #', h.IdUsuario)) AS Usuario
+             FROM historial_estados_campana h
+             LEFT JOIN Campanas c ON c.IdCampana = h.IdCampana
+             LEFT JOIN Zonas z ON z.IdZona = c.IdZona
+             LEFT JOIN Usuarios u ON u.IdUsuario = h.IdUsuario
+             WHERE h.IdCampana IS NOT NULL
+               AND (? = '' OR z.Municipio = ?)
+               AND (? = '' OR h.CodigoCampana LIKE CONCAT('%', ?, '%')
+                    OR c.NombreCampana LIKE CONCAT('%', ?, '%'))
+             ORDER BY h.FechaCambio DESC, h.IdHistorialEstado DESC"
+        );
+        $stmt->bind_param(
+            'sssss',
+            $municipio,
+            $municipio,
+            $busqueda,
+            $busqueda,
+            $busqueda
+        );
+        $stmt->execute();
+        return $stmt->get_result();
     }
 
     // Eliminar una campaña por su ID (Precaución: Borrado en cascada según BD)
