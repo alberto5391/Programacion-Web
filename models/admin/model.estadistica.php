@@ -78,6 +78,45 @@ class ModelEstadistica
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function obtenerPlagasPorPeriodo($fechaInicio, $fechaFin, $municipio)
+    {
+        $stmt = $this->conexion->prepare(
+            "SELECT DATE_FORMAT(a.FechaHora, '%Y-%m') AS Periodo,
+                    COUNT(pi.idplagasidentificadas) AS Identificaciones
+             FROM plagasidentificadas pi
+             INNER JOIN AccionesCampana a ON a.IdAccion = pi.IdAccion
+             INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
+             INNER JOIN Zonas z ON z.IdZona = c.IdZona
+             WHERE a.FechaHora >= CONCAT(?, ' 00:00:00')
+               AND a.FechaHora < DATE_ADD(?, INTERVAL 1 DAY)
+               AND (? = '' OR z.Municipio = ?)
+             GROUP BY DATE_FORMAT(a.FechaHora, '%Y-%m')
+             ORDER BY Periodo"
+        );
+        $stmt->bind_param('ssss', $fechaInicio, $fechaFin, $municipio, $municipio);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function obtenerResumenPlagas($fechaInicio, $fechaFin, $municipio)
+    {
+        $stmt = $this->conexion->prepare(
+            "SELECT COUNT(pi.idplagasidentificadas) AS TotalIdentificaciones,
+                    COUNT(DISTINCT pi.IdPlaga) AS Especies,
+                    COALESCE(SUM(pi.NivelInfestacion IN ('Alto', 'Crítico')), 0) AS AltasOCriticas
+             FROM plagasidentificadas pi
+             INNER JOIN AccionesCampana a ON a.IdAccion = pi.IdAccion
+             INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
+             INNER JOIN Zonas z ON z.IdZona = c.IdZona
+             WHERE a.FechaHora >= CONCAT(?, ' 00:00:00')
+               AND a.FechaHora < DATE_ADD(?, INTERVAL 1 DAY)
+               AND (? = '' OR z.Municipio = ?)"
+        );
+        $stmt->bind_param('ssss', $fechaInicio, $fechaFin, $municipio, $municipio);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     public function obtenerProductosMasUsados($fechaInicio, $fechaFin, $municipio)
     {
         $stmt = $this->conexion->prepare(
