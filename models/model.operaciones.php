@@ -229,19 +229,20 @@ class ModelOperaciones
     public function obtenerAccionesInspeccionDiagnostico()
     {
         return $this->conexion->query(
-            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, a.TipoAccion,
+            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, ta.Nombre AS TipoAccion,
                     a.FechaHora, a.DetallesResultados, a.Observaciones,
                     c.CodigoCampana, c.NombreCampana, z.NombreZona,
                     t.NumeroEmpleado, CONCAT(u.Nombre, ' ', u.Apellidos) AS Tecnico,
                     pi.IdPlaga, p.NombreComun AS Plaga, pi.NivelInfestacion
              FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
              INNER JOIN Zonas z ON z.IdZona = c.IdZona
              INNER JOIN Tecnicos t ON t.IdTecnico = a.IdTecnico
              INNER JOIN Usuarios u ON u.IdUsuario = t.IdUsuario
              LEFT JOIN PlagasIdentificadas pi ON pi.IdAccion = a.IdAccion
              LEFT JOIN Plagas p ON p.IdPlaga = pi.IdPlaga
-             WHERE a.TipoAccion IN ('Inspección', 'Diagnóstico')
+             WHERE ta.Nombre IN ('Inspección', 'Diagnóstico')
              ORDER BY a.FechaHora DESC, a.IdAccion DESC"
         );
     }
@@ -249,13 +250,14 @@ class ModelOperaciones
     public function obtenerAccionInspeccionDiagnosticoPorId($id)
     {
         $stmt = $this->conexion->prepare(
-            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, a.TipoAccion,
+            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, ta.Nombre AS TipoAccion,
                     a.FechaHora, a.DetallesResultados, a.Observaciones,
                     pi.IdPlaga, pi.NivelInfestacion
              FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              LEFT JOIN PlagasIdentificadas pi ON pi.IdAccion = a.IdAccion
              WHERE a.IdAccion = ?
-               AND a.TipoAccion IN ('Inspección', 'Diagnóstico')
+               AND ta.Nombre IN ('Inspección', 'Diagnóstico')
              LIMIT 1"
         );
         $stmt->bind_param('i', $id);
@@ -284,13 +286,14 @@ class ModelOperaciones
                     iu.IdProducto, iu.CantidadAplicada, iu.UnidadMedida,
                     p.NombreComercial AS Producto
              FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
              INNER JOIN Zonas z ON z.IdZona = c.IdZona
              INNER JOIN Tecnicos t ON t.IdTecnico = a.IdTecnico
              INNER JOIN Usuarios u ON u.IdUsuario = t.IdUsuario
              LEFT JOIN InsumosUsados iu ON iu.IdAccion = a.IdAccion
              LEFT JOIN Productos p ON p.IdProducto = iu.IdProducto
-             WHERE a.TipoAccion = 'Aplicación'
+             WHERE ta.Nombre = 'Aplicación'
              ORDER BY a.FechaHora DESC, a.IdAccion DESC"
         );
     }
@@ -302,8 +305,9 @@ class ModelOperaciones
                     a.DetallesResultados, a.Observaciones,
                     iu.IdProducto, iu.CantidadAplicada, iu.UnidadMedida
              FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              LEFT JOIN InsumosUsados iu ON iu.IdAccion = a.IdAccion
-             WHERE a.IdAccion = ? AND a.TipoAccion = 'Aplicación'
+             WHERE a.IdAccion = ? AND ta.Nombre = 'Aplicación'
              LIMIT 1"
         );
         $stmt->bind_param('i', $id);
@@ -372,16 +376,17 @@ class ModelOperaciones
     public function obtenerAccionesPorTipo($tipo)
     {
         $stmt = $this->conexion->prepare(
-            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, a.TipoAccion,
+            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, ta.Nombre AS TipoAccion,
                     a.FechaHora, a.DetallesResultados, a.Observaciones,
                     c.CodigoCampana, c.NombreCampana, z.NombreZona,
                     t.NumeroEmpleado, CONCAT(u.Nombre, ' ', u.Apellidos) AS Tecnico
              FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
              INNER JOIN Zonas z ON z.IdZona = c.IdZona
              INNER JOIN Tecnicos t ON t.IdTecnico = a.IdTecnico
              INNER JOIN Usuarios u ON u.IdUsuario = t.IdUsuario
-             WHERE a.TipoAccion = ?
+             WHERE ta.Nombre = ?
              ORDER BY a.FechaHora DESC, a.IdAccion DESC"
         );
         $stmt->bind_param('s', $tipo);
@@ -392,10 +397,11 @@ class ModelOperaciones
     public function obtenerAccionPorIdYTipo($id, $tipo)
     {
         $stmt = $this->conexion->prepare(
-            "SELECT IdAccion, IdCampana, IdTecnico, FechaHora,
-                    DetallesResultados, Observaciones
-             FROM AccionesCampana
-             WHERE IdAccion = ? AND TipoAccion = ?"
+            "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, a.FechaHora,
+                    a.DetallesResultados, a.Observaciones
+             FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
+             WHERE a.IdAccion = ? AND ta.Nombre = ?"
         );
         $stmt->bind_param('is', $id, $tipo);
         $stmt->execute();
@@ -406,20 +412,23 @@ class ModelOperaciones
     {
         $stmt = $this->conexion->prepare(
             "INSERT INTO AccionesCampana
-                (IdCampana, IdTecnico, TipoAccion, FechaHora, DetallesResultados, Observaciones)
-             VALUES (?, ?, ?, ?, ?, ?)"
+                (IdCampana, IdTecnico, idTipoAccion, FechaHora, DetallesResultados, Observaciones)
+             SELECT ?, ?, ta.idTipoAccion, ?, ?, ?
+             FROM tipoaccion ta
+             WHERE ta.Nombre = ?"
         );
-        $stmt->bind_param('iissss', $idCampana, $idTecnico, $tipo, $fechaHora, $detalles, $observaciones);
+        $stmt->bind_param('iissss', $idCampana, $idTecnico, $fechaHora, $detalles, $observaciones, $tipo);
         return $stmt->execute() && $stmt->affected_rows === 1;
     }
 
     public function actualizarAccion($id, $idCampana, $idTecnico, $tipo, $fechaHora, $detalles, $observaciones)
     {
         $stmt = $this->conexion->prepare(
-            "UPDATE AccionesCampana
-             SET IdCampana = ?, IdTecnico = ?, FechaHora = ?,
-                 DetallesResultados = ?, Observaciones = ?
-             WHERE IdAccion = ? AND TipoAccion = ?"
+            "UPDATE AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
+             SET a.IdCampana = ?, a.IdTecnico = ?, a.FechaHora = ?,
+                 a.DetallesResultados = ?, a.Observaciones = ?
+             WHERE a.IdAccion = ? AND ta.Nombre = ?"
         );
         $stmt->bind_param(
             'iisssis',
@@ -437,7 +446,9 @@ class ModelOperaciones
     public function eliminarAccionPorTipo($id, $tipo)
     {
         $stmt = $this->conexion->prepare(
-            "DELETE FROM AccionesCampana WHERE IdAccion = ? AND TipoAccion = ?"
+            "DELETE a FROM AccionesCampana a
+             INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
+             WHERE a.IdAccion = ? AND ta.Nombre = ?"
         );
         $stmt->bind_param('is', $id, $tipo);
         return $stmt->execute() && $stmt->affected_rows === 1;

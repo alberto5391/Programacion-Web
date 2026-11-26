@@ -92,6 +92,7 @@ if (($_GET['accion'] ?? '') === 'editar' && isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'actualizar_evidencia') {
     $idEvidenciaEntrada = $_POST['id_evidencia'] ?? '';
     $idCampanaEntrada = $_POST['id_campana'] ?? '';
+    $idTipoAccionEntrada = $_POST['id_tipo_accion'] ?? '';
     $tipoActividad = $_POST['tipo_actividad'] ?? null;
     if (
         !is_string($idEvidenciaEntrada)
@@ -100,16 +101,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'act
         || !is_string($idCampanaEntrada)
         || !ctype_digit($idCampanaEntrada)
         || (int)$idCampanaEntrada < 1
+        || !is_string($idTipoAccionEntrada)
+        || !ctype_digit($idTipoAccionEntrada)
+        || (int)$idTipoAccionEntrada < 1
         || !is_string($tipoActividad)
         || !in_array($tipoActividad, $tiposPermitidos, true)
     ) {
-        $mensaje = "<div class='alert alert-danger'>La evidencia, campaña o tipo de actividad no son válidos.</div>";
+        $mensaje = "<div class='alert alert-danger'>La evidencia, campaña o tipos de acción/actividad no son válidos.</div>";
     } else {
         $evidenciaActual = $modeloEvidencia->obtenerEvidenciaPorId((int)$idEvidenciaEntrada);
         $campanaNueva = $modeloCampana->obtenerCampanaPorId((int)$idCampanaEntrada);
+        $tipoAccionExiste = $modeloEvidencia->tipoAccionExiste((int)$idTipoAccionEntrada);
         if ($evidenciaActual) {
             $evidenciaEditar = $evidenciaActual;
             $evidenciaEditar['IdCampana'] = (int)$idCampanaEntrada;
+            $evidenciaEditar['idTipoAccion'] = (int)$idTipoAccionEntrada;
             $evidenciaEditar['TipoActividad'] = $tipoActividad;
         }
         $archivo = $_FILES['foto'] ?? null;
@@ -119,6 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'act
             $mensaje = "<div class='alert alert-danger'>No se encontró la evidencia para actualizar.</div>";
         } elseif (!$campanaNueva) {
             $mensaje = "<div class='alert alert-danger'>La campaña seleccionada no existe.</div>";
+        } elseif (!$tipoAccionExiste) {
+            $mensaje = "<div class='alert alert-danger'>El tipo de acción seleccionado no existe.</div>";
         } elseif (
             $archivo !== null
             && (!is_array($archivo) || !isset($archivo['error']) || !is_int($archivo['error']) || $archivo['error'] !== UPLOAD_ERR_NO_FILE)
@@ -130,11 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'act
             }
         }
 
-        if ($evidenciaActual && $campanaNueva && $mensaje === '') {
+        if ($evidenciaActual && $campanaNueva && $tipoAccionExiste && $mensaje === '') {
             try {
                 $actualizado = $modeloEvidencia->actualizarEvidencia(
                     (int)$idEvidenciaEntrada,
                     (int)$idCampanaEntrada,
+                    (int)$idTipoAccionEntrada,
                     $tipoActividad,
                     $rutaRelativaNueva
                 );
@@ -220,12 +229,20 @@ if (
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'guardar_evidencia' && $idCampanaSeleccionada !== null) {
     $campana = $modeloCampana->obtenerCampanaPorId($idCampanaSeleccionada);
+    $idTipoAccionEntrada = $_POST['id_tipo_accion'] ?? null;
     $tipoActividad = $_POST['tipo_actividad'] ?? null;
     $archivo = $_FILES['foto'] ?? null;
     $archivoGuardado = null;
 
     if (!$campana) {
         $mensaje = "<div class='alert alert-danger'>La campaña indicada no existe.</div>";
+    } elseif (
+        !is_string($idTipoAccionEntrada)
+        || !ctype_digit($idTipoAccionEntrada)
+        || (int)$idTipoAccionEntrada < 1
+        || !$modeloEvidencia->tipoAccionExiste((int)$idTipoAccionEntrada)
+    ) {
+        $mensaje = "<div class='alert alert-danger'>Selecciona un tipo de acción válido.</div>";
     } elseif (!is_string($tipoActividad) || !in_array($tipoActividad, $tiposPermitidos, true)) {
         $mensaje = "<div class='alert alert-danger'>Selecciona un tipo de actividad válido.</div>";
     } elseif (
@@ -277,7 +294,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'gua
             }
 
             $rutaRelativa = 'resources/uploads/evidencias/' . $nombreArchivo;
-            if (!$modeloEvidencia->registrarEvidencia($idCampanaSeleccionada, $rutaRelativa, $tipoActividad)) {
+            if (!$modeloEvidencia->registrarEvidencia(
+                $idCampanaSeleccionada,
+                (int)$idTipoAccionEntrada,
+                $rutaRelativa,
+                $tipoActividad
+            )) {
                 throw new RuntimeException('No se pudo registrar la evidencia en la campaña.');
             }
             $mensaje = "<div class='alert alert-success'>Evidencia registrada correctamente en la campaña.</div>";
@@ -305,6 +327,8 @@ if ($idCampanaSeleccionada !== null) {
 
 $resultadoCampanas = $modeloCampana->obtenerCampanas();
 $campanas = $resultadoCampanas ? $resultadoCampanas->fetch_all(MYSQLI_ASSOC) : [];
+$resultadoTiposAccion = $modeloEvidencia->obtenerTiposAccion();
+$tiposAccion = $resultadoTiposAccion ? $resultadoTiposAccion->fetch_all(MYSQLI_ASSOC) : [];
 $resultadoEvidencias = $modeloEvidencia->buscarTodasLasEvidencias();
 
 require_once VIEW_PATH . 'admin/evidencias.php';

@@ -22,7 +22,7 @@
     <main class="container py-4">
         <header class="mb-4">
             <h1 class="h3">Evidencias fotográficas</h1>
-            <p class="text-muted mb-0">Cada fotografía queda asociada a una campaña y a su tipo de actividad, sin fusionar sus registros.</p>
+            <p class="text-muted mb-0">Cada fotografía queda asociada a una campaña, un tipo de acción y una actividad.</p>
         </header>
 
         <?= $mensaje ?>
@@ -50,6 +50,17 @@
                             </select>
                         </div>
                         <div class="col-md-6">
+                            <label for="id_tipo_accion" class="form-label">Tipo de acción</label>
+                            <select class="form-select" id="id_tipo_accion" name="id_tipo_accion" required>
+                                <option value="">Selecciona el tipo de acción</option>
+                                <?php foreach ($tiposAccion as $tipoAccion): ?>
+                                    <option value="<?= (int)$tipoAccion['idTipoAccion'] ?>">
+                                        <?= htmlspecialchars($tipoAccion['Nombre'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                             <label for="tipo_actividad" class="form-label">Tipo de actividad</label>
                             <select class="form-select" id="tipo_actividad" name="tipo_actividad" required>
                                 <option value="">Selecciona la actividad</option>
@@ -63,7 +74,7 @@
                             <input class="form-control" type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp" required>
                         </div>
                     </div>
-                    <button class="btn btn-primary mt-3" type="submit" <?= count($campanas) === 0 ? 'disabled' : '' ?>>Guardar evidencia</button>
+                    <button class="btn btn-primary mt-3" type="submit" <?= count($campanas) === 0 || count($tiposAccion) === 0 ? 'disabled' : '' ?>>Guardar evidencia</button>
                 </form>
             </div>
         </section>
@@ -84,6 +95,16 @@
                                 <?php foreach ($campanas as $campana): ?>
                                     <option value="<?= (int)$campana['IdCampana'] ?>" <?= (int)$evidenciaEditar['IdCampana'] === (int)$campana['IdCampana'] ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($campana['CodigoCampana'] . ' - ' . $campana['NombreCampana'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_tipo_accion_editar" class="form-label">Tipo de acción</label>
+                            <select class="form-select" id="id_tipo_accion_editar" name="id_tipo_accion" required>
+                                <?php foreach ($tiposAccion as $tipoAccion): ?>
+                                    <option value="<?= (int)$tipoAccion['idTipoAccion'] ?>" <?= (int)$evidenciaEditar['idTipoAccion'] === (int)$tipoAccion['idTipoAccion'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($tipoAccion['Nombre'], ENT_QUOTES, 'UTF-8') ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -121,6 +142,7 @@
                                 <tr>
                                     <th>Campaña</th>
                                     <th>Fotografía</th>
+                                    <th>Tipo de acción</th>
                                     <th>Actividad</th>
                                     <th>Fecha de registro</th>
                                     <th>Acciones</th>
@@ -141,6 +163,7 @@
                                                     <img src="<?= htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8') ?>" alt="Evidencia de campaña" style="max-width: 120px; max-height: 90px;">
                                                 </a>
                                             </td>
+                                            <td><?= htmlspecialchars($evidencia['NombreTipoAccion'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td><?= htmlspecialchars($evidencia['TipoActividad'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td><?= htmlspecialchars($evidencia['FechaRegistro'], ENT_QUOTES, 'UTF-8') ?></td>
                                             <td>
@@ -161,7 +184,7 @@
                                         </tr>
                                     <?php endwhile; ?>
                                 <?php else: ?>
-                                    <tr><td colspan="5" class="text-center text-muted">Aún no hay evidencias registradas.</td></tr>
+                                    <tr><td colspan="6" class="text-center text-muted">Aún no hay evidencias registradas.</td></tr>
                             </tbody>
                         </table>
                     </div>
