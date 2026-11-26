@@ -14,7 +14,7 @@
         .form-group { margin-bottom: 10px; }
         .full-width { grid-column: span 2; }
         label { display: block; font-size: 0.88rem; margin-bottom: 6px; color: #444; font-weight: 500; }
-        input[type="text"], textarea, select { width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.92rem; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s; background-color: #fff; font-family: inherit; }
+        input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.92rem; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s; background-color: #fff; font-family: inherit; }
         textarea { resize: vertical; min-height: 80px; }
         input:focus, textarea:focus, select:focus { border-color: #3498db; outline: none; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15); }
         .button-group { display: flex; gap: 10px; margin-top: 15px; }
@@ -54,6 +54,8 @@
 
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="zonas">
+            <input type="hidden" name="accion" value="guardar_zona">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             
             <!-- Campo oculto para identificar si es actualización -->
             <?php if ($zonaEditar): ?>
@@ -79,6 +81,16 @@
                 <div class="form-group full-width">
                     <label for="referencias">Referencias de Ubicación:</label>
                     <textarea id="referencias" name="referencias" rows="3" placeholder="Descripción para ubicar la zona..." required><?= $zonaEditar ? htmlspecialchars($zonaEditar['Referencias']) : '' ?></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="latitud">Latitud (opcional):</label>
+                    <input type="number" id="latitud" name="latitud" min="-90" max="90" step="0.00000001"
+                           value="<?= $zonaEditar && $zonaEditar['Latitud'] !== null ? htmlspecialchars((string)$zonaEditar['Latitud']) : '' ?>">
+                </div>
+                <div class="form-group">
+                    <label for="longitud">Longitud (opcional):</label>
+                    <input type="number" id="longitud" name="longitud" min="-180" max="180" step="0.00000001"
+                           value="<?= $zonaEditar && $zonaEditar['Longitud'] !== null ? htmlspecialchars((string)$zonaEditar['Longitud']) : '' ?>">
                 </div>
                 
                 <!-- Mostrar campo de Estado solo si se está editando -->
@@ -113,6 +125,8 @@
                         <th>Nombre de la Zona</th>
                         <th>Municipio</th>
                         <th>Referencias</th>
+                        <th>Latitud</th>
+                        <th>Longitud</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -126,6 +140,8 @@
                             $nombre = htmlspecialchars($fila['NombreZona']);
                             $municipio = htmlspecialchars($fila['Municipio']);
                             $referencias = htmlspecialchars($fila['Referencias']);
+                            $latitud = $fila['Latitud'] !== null ? htmlspecialchars((string)$fila['Latitud']) : 'Sin registrar';
+                            $longitud = $fila['Longitud'] !== null ? htmlspecialchars((string)$fila['Longitud']) : 'Sin registrar';
                             $estado = htmlspecialchars($fila['Estado']);
                             $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
@@ -134,6 +150,8 @@
                                     <td>{$nombre}</td>
                                     <td>{$municipio}</td>
                                     <td>{$referencias}</td>
+                                    <td>{$latitud}</td>
+                                    <td>{$longitud}</td>
                                     <td>{$estado}</td>
                                     <td>
                                         <a href='" . BASE_URL . "index.php?modulo=zonas&accion=editar&id={$idZona}' class='btn-edit'>Editar</a>
@@ -148,7 +166,7 @@
                                   </tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='6' style='text-align: center; padding: 20px;'>No hay zonas registradas aún.</td></tr>";
+                        echo "<tr><td colspan='8' style='text-align: center; padding: 20px;'>No hay zonas registradas aún.</td></tr>";
                     }
                     ?>
                 </tbody>

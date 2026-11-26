@@ -62,6 +62,9 @@
     <div class="page-container">
         <h1>Gestión y Registro de Campañas</h1>
         <p class="module-desc">Módulo para dar de alta nuevas campañas de fumigación/inspección, asignarles una zona operativa y consultar su estado general.</p>
+        <?php if (($_SESSION['rol'] ?? '') === 'Administrador'): ?>
+            <p><a href="<?= BASE_URL ?>index.php?modulo=solicitantes">Administrar catálogo de solicitantes y orígenes</a></p>
+        <?php endif; ?>
 
         <h2><?= $campanaEditar ? 'Modificar Campaña: ' . htmlspecialchars($campanaEditar['CodigoCampana']) : 'Registrar / Programar Nueva Campaña' ?></h2>
         
@@ -71,6 +74,8 @@
         <!-- Formulario configurado para el Front Controller -->
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="campanas">
+            <input type="hidden" name="accion" value="guardar_campana">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
 
             <!-- Campo oculto para identificar si es actualización -->
             <?php if ($campanaEditar): ?>
@@ -109,6 +114,34 @@
                         }
                         ?>
                     </select>
+                </div>
+                <div class="form-group full-width">
+                    <label>Solicitantes / orígenes vinculados (opcional):</label>
+                    <div class="border rounded p-3">
+                        <?php if ($resultadoSolicitantes && $resultadoSolicitantes->num_rows > 0): ?>
+                            <?php while ($solicitante = $resultadoSolicitantes->fetch_assoc()): ?>
+                                <?php
+                                $idSolicitante = (int)$solicitante['IdSolicitante'];
+                                $solicitanteMarcado = array_key_exists($idSolicitante, $solicitantesSeleccionados);
+                                $fechaVinculo = $solicitantesSeleccionados[$idSolicitante] ?? date('Y-m-d');
+                                $nombreSolicitante = htmlspecialchars($solicitante['Nombre']);
+                                $tipoSolicitante = htmlspecialchars($solicitante['TipoOrigen']);
+                                $estadoSolicitante = $solicitante['Estado'];
+                                $solicitanteInactivoNoVinculado = $estadoSolicitante === 'Inactivo' && !$solicitanteMarcado;
+                                ?>
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    <label class="mb-0">
+                                        <input type="checkbox" name="solicitantes[]" value="<?= $idSolicitante ?>" <?= $solicitanteMarcado ? 'checked' : '' ?> <?= $solicitanteInactivoNoVinculado ? 'disabled' : '' ?>>
+                                        <?= $nombreSolicitante ?> — <?= $tipoSolicitante ?><?= $estadoSolicitante === 'Inactivo' ? ' (inactivo)' : '' ?>
+                                    </label>
+                                    <input type="date" name="fechas_solicitud[<?= $idSolicitante ?>]" value="<?= htmlspecialchars($fechaVinculo) ?>" aria-label="Fecha de solicitud de <?= $nombreSolicitante ?>">
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <p class="mb-0 text-muted">No hay solicitantes registrados. Administra el catálogo para poder asociarlos.</p>
+                        <?php endif; ?>
+                    </div>
+                    <small class="text-muted">Cada relación conserva su propia fecha de solicitud.</small>
                 </div>
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha de Inicio:</label>
@@ -181,8 +214,9 @@
                                     <td>
                                         <div class='action-buttons'>
                                             <a href='" . BASE_URL . "index.php?modulo=campanas&accion=historial&id_campana={$codigo}' class='btn btn-history'>Ver Actividades</a>
+                                            <a href='" . BASE_URL . "index.php?modulo=evidencias&id_campana={$idCampana}' class='btn btn-history'>Evidencias</a>
                                             <a href='" . BASE_URL . "index.php?modulo=campanas&accion=editar&id={$idCampana}' class='btn btn-edit'>Editar</a>
-                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¡ADVERTENCIA! ¿Estás seguro de eliminar la campaña {$codigo}? Esto borrará también TODAS las actividades, inspecciones y registros vinculados a esta campaña. Esta acción NO se puede deshacer.');\">
+                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¡ADVERTENCIA! ¿Estás seguro de eliminar la campaña {$codigo}? Esto borrará también sus actividades, solicitantes asociados, evidencias y fotografías. Esta acción NO se puede deshacer.');\">
                                                 <input type='hidden' name='modulo' value='campanas'>
                                                 <input type='hidden' name='accion' value='eliminar'>
                                                 <input type='hidden' name='id' value='{$idCampana}'>

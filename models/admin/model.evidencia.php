@@ -20,5 +20,12 @@ class ModelEvidencia {
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function obtenerRutasPorCampana($id_campana) {
+        $stmt = $this->conexion->prepare("SELECT RutaArchivo FROM EvidenciasFotograficas WHERE IdCampana = ?");
+        $stmt->bind_param("i", $id_campana);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
 ?>

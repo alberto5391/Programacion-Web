@@ -12,10 +12,20 @@ if (!isset($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token']) || st
 }
 $csrfToken = $_SESSION['csrf_token'];
 
+$accionesConCSRF = [
+    'eliminar',
+    'guardar_zona',
+    'actualizar_coordenadas',
+    'guardar_usuario',
+    'registrar_solicitante',
+    'guardar_campana',
+    'guardar_evidencia'
+];
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
     && isset($_POST['accion'])
-    && $_POST['accion'] === 'eliminar'
+    && is_string($_POST['accion'])
+    && in_array($_POST['accion'], $accionesConCSRF, true)
 ) {
     $csrfTokenEnviado = $_POST['csrf_token'] ?? null;
     if (!is_string($csrfTokenEnviado) || !hash_equals($csrfToken, $csrfTokenEnviado)) {

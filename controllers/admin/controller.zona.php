@@ -48,24 +48,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $nombre_zona = trim($_POST['nombre_zona']);
     $referencias = trim($_POST['referencias']);
     $estado = isset($_POST['estado']) ? trim($_POST['estado']) : 'Activa';
+    $latitudEntrada = $_POST['latitud'] ?? null;
+    $longitudEntrada = $_POST['longitud'] ?? null;
+    $coordenadasVacias = $latitudEntrada === '' && $longitudEntrada === '';
+    $coordenadasValidas = is_string($latitudEntrada)
+        && is_string($longitudEntrada)
+        && (
+            $coordenadasVacias
+            || ModelZona::coordenadasValidas($latitudEntrada, $longitudEntrada)
+        );
 
-    try {
-        if (!empty($_POST['id_zona'])) {
-            // Es una ACTUALIZACIÓN
-            $id_zona = intval($_POST['id_zona']);
-            $modeloZona->actualizarZona($id_zona, $codigo_zona, $nombre_zona, $municipio, $referencias, $estado);
-            $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Zona urbana actualizada con éxito.</div>";
-            $zonaEditar = null; // Limpiar el formulario después de actualizar
-        } else {
-            // Es un REGISTRO NUEVO
-            $modeloZona->registrarZona($codigo_zona, $nombre_zona, $municipio, $referencias);
-            $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Zona urbana registrada con éxito.</div>";
-        }
-    } catch (mysqli_sql_exception $e) {
-        if ($e->getCode() == 1062) {
-            $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error: El Código de Zona '{$codigo_zona}' ya está registrado. Usa uno diferente.</div>";
-        } else {
-            $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error de base de datos: " . $e->getMessage() . "</div>";
+    if (!$coordenadasValidas) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Las coordenadas deben estar vacías o incluir una latitud entre -90 y 90 y una longitud entre -180 y 180.</div>";
+    } else {
+        $latitud = $coordenadasVacias ? null : (float)$latitudEntrada;
+        $longitud = $coordenadasVacias ? null : (float)$longitudEntrada;
+
+        try {
+            if (!empty($_POST['id_zona'])) {
+                $id_zona = intval($_POST['id_zona']);
+                $modeloZona->actualizarZona($id_zona, $codigo_zona, $nombre_zona, $municipio, $referencias, $latitud, $longitud, $estado);
+                $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Zona urbana actualizada con éxito.</div>";
+                $zonaEditar = null;
+            } else {
+                $modeloZona->registrarZona($codigo_zona, $nombre_zona, $municipio, $referencias, $latitud, $longitud);
+                $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Zona urbana registrada con éxito.</div>";
+            }
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error: El Código de Zona '{$codigo_zona}' ya está registrado. Usa uno diferente.</div>";
+            } else {
+                $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error de base de datos al guardar la zona.</div>";
+            }
         }
     }
 }

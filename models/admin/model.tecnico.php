@@ -15,10 +15,11 @@ class ModelTecnico {
 
     // Obtener los usuarios activos que AÚN NO son técnicos
     public function obtenerUsuariosDisponibles() {
-        $query = "SELECT u.IdUsuario, u.Nombre, u.Apellidos 
+        $query = "SELECT u.IdUsuario, u.Nombre, u.Apellidos
                   FROM Usuarios u
+                  INNER JOIN Roles r ON u.IdRol = r.IdRol
                   LEFT JOIN Tecnicos t ON u.IdUsuario = t.IdUsuario
-                  WHERE u.Estado = 'Activo' AND t.IdTecnico IS NULL";
+                  WHERE u.Estado = 'Activo' AND r.NombreRol = 'Tecnico' AND t.IdTecnico IS NULL";
         return $this->conexion->query($query);
     }
 
@@ -43,10 +44,29 @@ class ModelTecnico {
         return $resultado->fetch_assoc();
     }
 
+    public function obtenerTecnicoPorUsuarioId($idUsuario) {
+        $stmt = $this->conexion->prepare("SELECT IdTecnico, IdUsuario, NumeroEmpleado, Especialidad FROM Tecnicos WHERE IdUsuario = ?");
+        $stmt->bind_param("i", $idUsuario);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     // Actualizar los datos de un técnico (No se actualiza el IdUsuario por integridad)
     public function actualizarTecnico($idTecnico, $numero_empleado,$especialidad) {
         $stmt =$this->conexion->prepare("UPDATE Tecnicos SET NumeroEmpleado = ?, Especialidad = ? WHERE IdTecnico = ?");
         $stmt->bind_param("ssi", $numero_empleado, $especialidad,$idTecnico);
+        return $stmt->execute();
+    }
+
+    public function actualizarTecnicoPorUsuarioId($idUsuario, $numero_empleado, $especialidad) {
+        $stmt = $this->conexion->prepare("UPDATE Tecnicos SET NumeroEmpleado = ?, Especialidad = ? WHERE IdUsuario = ?");
+        $stmt->bind_param("ssi", $numero_empleado, $especialidad, $idUsuario);
+        return $stmt->execute();
+    }
+
+    public function eliminarTecnicoPorUsuarioId($idUsuario) {
+        $stmt = $this->conexion->prepare("DELETE FROM Tecnicos WHERE IdUsuario = ?");
+        $stmt->bind_param("i", $idUsuario);
         return $stmt->execute();
     }
 

@@ -3,174 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLAGUE - Evidencias</title>
-    <style>
-        :root {
-            --fondo: #f8f9fa;
-            --blanco: #ffffff;
-            --texto: #212529;
-            --secundario: #637080;
-            --borde: #dee2e6;
-            --cabecera-tabla: #e9ecef;
-            --azul: #007bff;
-            --azul-hover: #0069d9;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background: var(--fondo);
-            color: var(--texto);
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-        .contenedor { width: min(1120px, calc(100% - 32px)); margin: 28px auto 44px; }
-        .encabezado-pagina { margin-bottom: 20px; }
-        .encabezado-pagina h1 { font-size: 25px; line-height: 1.25; margin: 0 0 7px; font-weight: 700; }
-        .encabezado-pagina p { color: var(--secundario); margin: 0; }
-        .tarjeta {
-            background: var(--blanco);
-            border: 1px solid #dddddd;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,.06);
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .tarjeta-titulo {
-            padding: 13px 20px;
-            margin: 0;
-            border-bottom: 1px solid var(--borde);
-            font-size: 16px;
-            font-weight: 700;
-            background: #fff;
-        }
-        .tarjeta-cuerpo { padding: 20px; }
-        .texto-ayuda { margin: 0 0 18px; color: var(--secundario); }
-        .campo { margin-bottom: 18px; }
-        .campo label { display: block; margin-bottom: 8px; }
-        .control {
-            display: block;
-            width: 100%;
-            min-height: 39px;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            background: #fff;
-            color: #343a40;
-            font: inherit;
-            transition: border-color .15s ease, box-shadow .15s ease;
-        }
-        textarea.control { resize: vertical; min-height: 125px; }
-        input[type="file"].control { padding: 7px 10px; }
-        .control::placeholder { color: #697a8e; opacity: 1; }
-        .control:focus { outline: none; border-color: #80bdff; box-shadow: 0 0 0 3px rgba(0,123,255,.16); }
-        .boton {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 38px;
-            padding: 8px 13px;
-            background: var(--azul);
-            border: 1px solid var(--azul);
-            border-radius: 4px;
-            color: #fff;
-            font: inherit;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .boton:hover { background: var(--azul-hover); border-color: #0062cc; }
-        .boton:focus-visible, .enlace-regreso:focus-visible, .enlace-mapa:focus-visible {
-            outline: 3px solid #80bdff; outline-offset: 2px;
-        }
-        .formulario-busqueda { display: flex; align-items: flex-end; gap: 12px; }
-        .formulario-busqueda .campo { margin: 0; flex: 1; min-width: 0; }
-        .tabla-scroll { width: 100%; overflow-x: auto; }
-        .tabla {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 15px;
-            text-align: left;
-        }
-        .tabla th, .tabla td { border: 1px solid #d9dfe5; padding: 12px; vertical-align: middle; }
-        .tabla th { background: var(--cabecera-tabla); font-weight: 700; color: #374151; }
-        .tabla tbody tr:nth-child(even) { background: #f0f0f0; }
-        .etiqueta { display: inline-block; padding: 2px 7px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; line-height: 1.3; }
-        .etiqueta-alta { background: #dc3545; }
-        .rejilla-reportes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-        .rejilla-reportes .tarjeta { margin-bottom: 0; }
-        .seccion-titulo { font-size: 20px; font-weight: 700; margin: 30px 0 14px; }
-        .multimedia { width: 100%; display: block; max-height: 390px; object-fit: contain; }
-        .marco-mapa { width: 100%; height: 340px; display: block; border: 1px solid var(--borde); border-radius: 4px; }
-        .enlace-mapa { display: inline-block; margin-top: 12px; color: #0069d9; text-decoration: none; }
-        .enlace-mapa:hover, .enlace-regreso:hover { text-decoration: underline; }
-        .pie-pagina { margin-top: 6px; }
-        .enlace-regreso { color: #0069d9; text-decoration: none; font-weight: 500; }
-        @media (max-width: 760px) {
-            .contenedor { width: min(100% - 24px, 1120px); margin-top: 20px; }
-            .encabezado-pagina h1 { font-size: 22px; }
-            .rejilla-reportes { grid-template-columns: 1fr; }
-            .tarjeta-cuerpo { padding: 16px; }
-            .tarjeta-titulo { padding: 12px 16px; }
-            .formulario-busqueda { flex-direction: column; align-items: stretch; }
-            .formulario-busqueda .boton { align-self: flex-start; }
-            .tabla { min-width: 430px; }
-        }
-    </style>
+    <title>Evidencias de campañas - PLAGUE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <main class="contenedor">
-        <header class="encabezado-pagina">
-            <h1>Módulo de Evidencias Fotográficas</h1>
-            <p>Registro y consulta de evidencias asociadas a campañas.</p>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <span class="navbar-brand">Evidencias de campañas</span>
+            <?php
+            $moduloRegreso = ($_SESSION['rol'] ?? '') === 'Tecnico'
+                ? 'tecnico_dashboard'
+                : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'dashboard');
+            ?>
+            <a class="btn btn-outline-light btn-sm" href="<?= BASE_URL ?>index.php?modulo=<?= htmlspecialchars($moduloRegreso) ?>">Volver al menú</a>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        <header class="mb-4">
+            <h1 class="h3">Evidencias fotográficas</h1>
+            <p class="text-muted mb-0">Cada fotografía queda asociada a una campaña y a su tipo de actividad, sin fusionar sus registros.</p>
         </header>
 
-        <section class="tarjeta" aria-labelledby="titulo-subir">
-            <h2 class="tarjeta-titulo" id="titulo-subir">Subir Nueva Evidencia</h2>
-            <div class="tarjeta-cuerpo">
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    <div class="campo">
-                        <label for="id-campana">ID Campaña:</label>
-                        <input class="control" type="text" id="id-campana" name="id_campana" placeholder="Ingrese el ID de la campaña" required>
+        <?= $mensaje ?>
+
+        <section class="card shadow-sm mb-4">
+            <div class="card-header bg-white fw-semibold">Registrar evidencia</div>
+            <div class="card-body">
+                <form action="<?= BASE_URL ?>index.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="modulo" value="evidencias">
+                    <input type="hidden" name="accion" value="guardar_evidencia">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="id_campana" class="form-label">Campaña</label>
+                            <select class="form-select" id="id_campana" name="id_campana" required>
+                                <option value="">Selecciona una campaña</option>
+                                <?php if ($resultadoCampanas): ?>
+                                    <?php while ($campana = $resultadoCampanas->fetch_assoc()): ?>
+                                        <?php
+                                        $idCampana = (int)$campana['IdCampana'];
+                                        $etiquetaCampana = htmlspecialchars($campana['CodigoCampana'] . ' - ' . $campana['NombreCampana']);
+                                        ?>
+                                        <option value="<?= $idCampana ?>" <?= $idCampanaSeleccionada === $idCampana ? 'selected' : '' ?>>
+                                            <?= $etiquetaCampana ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tipo_actividad" class="form-label">Tipo de actividad</label>
+                            <select class="form-select" id="tipo_actividad" name="tipo_actividad" required>
+                                <option value="">Selecciona la actividad</option>
+                                <option>Inspección</option>
+                                <option>Aplicación</option>
+                                <option>Seguimiento</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="foto" class="form-label">Fotografía (JPEG, PNG o WebP; máximo 5 MB)</label>
+                            <input class="form-control" type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp" required>
+                        </div>
                     </div>
-                    <div class="campo">
-                        <label for="foto">Seleccionar Foto:</label>
-                        <input class="control" type="file" id="foto" name="foto" accept="image/*" required>
-                    </div>
-                    <button class="boton" type="submit">Cargar Evidencia</button>
+                    <button class="btn btn-primary mt-3" type="submit" <?= !$resultadoCampanas || $resultadoCampanas->num_rows === 0 ? 'disabled' : '' ?>>Guardar evidencia</button>
                 </form>
             </div>
         </section>
 
-        <section class="tarjeta" aria-labelledby="titulo-consulta">
-            <h2 class="tarjeta-titulo" id="titulo-consulta">Consultar Evidencias</h2>
-            <div class="tarjeta-cuerpo">
-                <form class="formulario-busqueda" action="#" method="GET">
-                    <div class="campo">
-                        <label for="buscar-campana">Buscar por ID Campaña:</label>
-                        <input class="control" type="text" id="buscar-campana" name="buscar_campana" placeholder="Ingrese el ID de la campaña">
+        <?php if ($idCampanaSeleccionada !== null): ?>
+            <section class="card shadow-sm">
+                <div class="card-header bg-white fw-semibold">Evidencias registradas en esta campaña</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Fotografía</th>
+                                    <th>Actividad</th>
+                                    <th>Fecha de registro</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if ($resultadoEvidencias && $resultadoEvidencias->num_rows > 0): ?>
+                                    <?php while ($evidencia = $resultadoEvidencias->fetch_assoc()): ?>
+                                        <?php $ruta = BASE_URL . ltrim($evidencia['RutaFoto'], '/\\'); ?>
+                                        <tr>
+                                            <td>
+                                                <a href="<?= htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                                    <img src="<?= htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8') ?>" alt="Evidencia de campaña" style="max-width: 120px; max-height: 90px;">
+                                                </a>
+                                            </td>
+                                            <td><?= htmlspecialchars($evidencia['TipoActividad']) ?></td>
+                                            <td><?= htmlspecialchars($evidencia['FechaRegistro']) ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="3" class="text-center text-muted">Esta campaña aún no tiene evidencias.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <button class="boton" type="submit">Buscar</button>
-                </form>
-            </div>
-        </section>
-        
-        
-
-        <footer class="pie-pagina">
-            <?php
-           if (isset($_SESSION['rol'])) {
-                if ($_SESSION['rol'] === 'Administrador') {
-                    echo '<a class="enlace-regreso" href="index.php?modulo=admin_dashboard">← Volver al menú de administrador</a>';
-                } elseif ($_SESSION['rol'] === 'Supervisor') {
-                    echo '<a class="enlace-regreso" href="index.php?modulo=super_dashboard">← Volver al menú de supervisor</a>';
-                } elseif ($_SESSION['rol'] === 'Tecnico') {
-                    echo '<a class="enlace-regreso" href="index.php?modulo=tecnico_dashboard">← Volver al menú técnico</a>';
-                }
-            }
-            ?>
-            
-        </footer>
+                </div>
+            </section>
+        <?php endif; ?>
     </main>
 </body>
 </html>

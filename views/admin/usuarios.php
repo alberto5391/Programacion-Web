@@ -60,6 +60,8 @@
         <!-- Apunta al controlador mediante método POST -->
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="usuarios">
+            <input type="hidden" name="accion" value="guardar_usuario">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             
             <!-- Campo oculto para identificar si es actualización -->
             <?php if ($usuarioEditar): ?>
@@ -100,6 +102,27 @@
                         }
                         ?>
                     </select>
+                </div>
+
+                <div id="datos-tecnicos" class="form-group full-width" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="numero_empleado">Número de empleado:</label>
+                            <input type="text" id="numero_empleado" name="numero_empleado"
+                                   maxlength="20"
+                                   value="<?= $tecnicoEditar ? htmlspecialchars($tecnicoEditar['NumeroEmpleado']) : '' ?>"
+                                   disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="especialidad">Especialidad:</label>
+                            <select id="especialidad" name="especialidad" disabled>
+                                <option value="">Selecciona una especialidad</option>
+                                <option value="Inspección" <?= $tecnicoEditar && $tecnicoEditar['Especialidad'] === 'Inspección' ? 'selected' : '' ?>>Inspección</option>
+                                <option value="Aplicación" <?= $tecnicoEditar && $tecnicoEditar['Especialidad'] === 'Aplicación' ? 'selected' : '' ?>>Aplicación</option>
+                                <option value="Ambas" <?= $tecnicoEditar && $tecnicoEditar['Especialidad'] === 'Ambas' ? 'selected' : '' ?>>Ambas</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group full-width">
@@ -214,5 +237,23 @@
         </div>
     </div>
 
+    <script>
+        const roleSelect = document.getElementById('rol');
+        const technicalFields = document.getElementById('datos-tecnicos');
+        const employeeNumber = document.getElementById('numero_empleado');
+        const specialty = document.getElementById('especialidad');
+
+        function toggleTechnicalFields() {
+            const isTechnician = roleSelect.value === 'Administrador';
+            technicalFields.style.display = isTechnician ? 'block' : 'none';
+            employeeNumber.disabled = !isTechnician;
+            specialty.disabled = !isTechnician;
+            employeeNumber.required = isTechnician;
+            specialty.required = isTechnician;
+        }
+
+        roleSelect.addEventListener('change', toggleTechnicalFields);
+        toggleTechnicalFields();
+    </script>
 </body>
 </html>

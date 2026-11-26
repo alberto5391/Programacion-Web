@@ -10,7 +10,10 @@ class ModelCampana {
     public function registrarCampana($codigo, $nombre, $id_zona, $fecha_inicio, $fecha_fin, $estado) {
         $stmt = $this->conexion->prepare("INSERT INTO Campanas (CodigoCampana, NombreCampana, IdZona, FechaInicio, FechaFin, Estado) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssisss", $codigo, $nombre, $id_zona, $fecha_inicio, $fecha_fin, $estado);
-        return $stmt->execute();
+        if (!$stmt->execute()) {
+            return false;
+        }
+        return $this->conexion->insert_id;
     }
 
     // Obtener todas las campañas unidas con su zona correspondiente

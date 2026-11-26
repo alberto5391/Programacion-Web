@@ -26,7 +26,10 @@ class ModelUsuario {
     public function registrarUsuario($idRol, $nombre, $apellidos, $contacto, $correo, $curp, $rfc, $password_hash) {
         $stmt = $this->conexion->prepare("INSERT INTO Usuarios (IdRol, Nombre, Apellidos, Contacto, Correo, Curp, Rfc, Password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("isssssss", $idRol, $nombre, $apellidos, $contacto, $correo, $curp, $rfc, $password_hash);
-        return $stmt->execute();
+        if (!$stmt->execute()) {
+            return false;
+        }
+        return $this->conexion->insert_id;
     }
 
     // Obtener todos los usuarios para la tabla (RF04/RF05)

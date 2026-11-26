@@ -19,11 +19,33 @@ class ModelSolicitante {
         return $this->conexion->query($query);
     }
 
+    public function obtenerSolicitantesPorCampana($id_campana) {
+        $stmt = $this->conexion->prepare("SELECT s.IdSolicitante, s.TipoOrigen, s.NombreSolicitante, oc.FechaSolicitud FROM OrigenCampana oc INNER JOIN Solicitantes s ON s.IdSolicitante = oc.IdSolicitante WHERE oc.IdCampana = ? ORDER BY s.NombreSolicitante");
+        $stmt->bind_param("i", $id_campana);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     // 3. Vincular un solicitante a una campaña existente
     public function vincularCampana($id_campana, $id_solicitante, $fecha_solicitud) {
         $stmt = $this->conexion->prepare("INSERT INTO OrigenCampana (IdCampana, IdSolicitante, FechaSolicitud) VALUES (?, ?, ?)");
         $stmt->bind_param("iis", $id_campana, $id_solicitante, $fecha_solicitud);
         return $stmt->execute();
+    }
+
+    public function reemplazarSolicitantesCampana($id_campana, array $solicitantes) {
+        $stmtEliminar = $this->conexion->prepare("DELETE FROM OrigenCampana WHERE IdCampana = ?");
+        $stmtEliminar->bind_param("i", $id_campana);
+        if (!$stmtEliminar->execute()) {
+            return false;
+        }
+
+        foreach ($solicitantes as $id_solicitante => $fecha_solicitud) {
+            if (!$this->vincularCampana($id_campana, (int)$id_solicitante, $fecha_solicitud)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // 4. Obtener campañas activas para el <select>

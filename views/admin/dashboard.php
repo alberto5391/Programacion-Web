@@ -32,22 +32,9 @@
 
         <!-- Sección: Registrar / Acciones Principales -->
         <section class="mb-4">
-            <h6 class="text-uppercase text-muted fw-bold fs-7 mb-3">Registrar</h6>
+            <h6 class="text-uppercase text-muted fw-bold fs-7 mb-3">Actividad y auditoría</h6>
             <div class="row g-3">
-                <div class="col-md-6">
-                    <a href="index.php?modulo=coordenadas_gps" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="icon-box bg-success-subtle text-success fs-5">
-                                <i class="bi bi-geo"></i>
-                            </div>
-                             <div>
-                                 <h6 class="mb-1 text-dark fw-semibold">Coordenadas Gps</h6> 
-                                <p class="mb-0 text-muted small">Registrar ubicaciones en el sistema.</p> 
-                            </div> 
-                        </div> 
-                    </a>
-                </div>  
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <a href="index.php?modulo=bitacora" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-success-subtle text-success fs-5">
@@ -77,30 +64,12 @@
                     </a>
                 </div>
 
-                <div class="col">
-                    <a href="index.php?modulo=solicitantes" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-people"></i></div>
-                            <span class="text-dark fw-medium small">Gestión Solicitantes</span>
-                        </div>
-                    </a>
-                </div>
-
                 <!-- AQUÍ SE UNIFICAN LOS RF02, 03, 04 Y 05 EN UNA SOLA TARJETA -->
                 <div class="col">
                     <a href="index.php?modulo=usuarios" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-primary-subtle">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-primary-subtle text-primary fs-5"><i class="bi bi-person-gear"></i></div>
-                            <span class="text-dark fw-medium small">Gestión de Usuarios <span class="text-muted fs-8 d-block">Registro y Consulta (RF02-RF05)</span></span>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a href="index.php?modulo=zonas" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-map"></i></div>
-                            <span class="text-dark fw-medium small">RF07 Gestión del catálogo de zonas</span>
+                            <span class="text-dark fw-medium small">Usuarios y perfiles técnicos <span class="text-muted fs-8 d-block">Registro de técnico desde su usuario</span></span>
                         </div>
                     </a>
                 </div>
@@ -127,25 +96,25 @@
                     <a href="index.php?modulo=tecnicos" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-person-badge"></i></div>
-                            <span class="text-dark fw-medium small">RF11 Gestión del personal técnico</span>
+                            <span class="text-dark fw-medium small">Listado de técnicos <span class="text-muted fs-8 d-block">Consulta y mantenimiento de perfiles</span></span>
                         </div>
                     </a>
                 </div>  
 
                 <div class="col">
+                    <a href="index.php?modulo=zonas" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-geo-alt"></i></div>
+                            <span class="text-dark fw-medium small">Zonas y coordenadas GPS <span class="text-muted fs-8 d-block">Gestión territorial en un solo módulo</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
                     <a href="index.php?modulo=campanas" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-clock-history"></i></div>
-                            <span class="text-dark fw-medium small">RF22 Historial de campañas</span>
-                        </div>
-                    </a>
-                </div> 
-
-                <div class="col">
-                    <a href="index.php?modulo=evidencias" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-warning-subtle">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="icon-box bg-warning-subtle text-warning fs-5"><i class="bi bi-images"></i></div>
-                            <span class="text-dark fw-medium small">Evidencias <span class="text-muted fs-8 d-block">RF24, RF25</span></span>
+                            <span class="text-dark fw-medium small">Campañas, solicitantes y evidencias <span class="text-muted fs-8 d-block">Relaciones administradas desde el flujo de campaña</span></span>
                         </div>
                     </a>
                 </div>

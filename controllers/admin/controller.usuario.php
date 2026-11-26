@@ -7,9 +7,11 @@ if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'Administrador') {
 
 // 2. Cargar los modelos necesarios
 require_once MODEL_PATH . 'admin/model.rol.php';
+require_once MODEL_PATH . 'admin/model.tecnico.php';
 require_once MODEL_PATH . 'model.usuario.php'; 
 
 $modeloRol = new ModelRol($conexion);
+$modeloTecnico = new ModelTecnico($conexion);
 $modeloUsuario = new ModelUsuario($conexion); 
 
 $mensaje = "";
@@ -17,11 +19,15 @@ $esEliminacion = $_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['accion'] ?? n
 
 // 3. LÓGICA DE EDICIÓN (GET)
 $usuarioEditar = null;
+$tecnicoEditar = null;
 if (isset($_GET['accion']) && isset($_GET['id'])) {
     $id_get = intval($_GET['id']);
     
     if ($_GET['accion'] === 'editar') {
         $usuarioEditar = $modeloUsuario->obtenerUsuarioPorId($id_get);
+        if ($usuarioEditar) {
+            $tecnicoEditar = $modeloTecnico->obtenerTecnicoPorUsuarioId((int)$usuarioEditar['IdUsuario']);
+        }
     }
 }
 
@@ -54,34 +60,100 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !$esEliminacion) {
     $curp = trim($_POST['curp']);
     $rfc = trim($_POST['rfc']);
     $estado = isset($_POST['estado']) ? trim($_POST['estado']) : 'Activo';
+    $numeroEmpleadoEntrada = $_POST['numero_empleado'] ?? '';
+    $especialidadEntrada = $_POST['especialidad'] ?? '';
+    $numeroEmpleado = is_string($numeroEmpleadoEntrada) ? trim($numeroEmpleadoEntrada) : '';
+    $especialidad = is_string($especialidadEntrada) ? trim($especialidadEntrada) : '';
+    $esTecnico = $nombreRol === 'Tecnico';
     
     // Solo encriptar la contraseña si el usuario escribió algo
     $password_hash = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
 
-    try {
-        // Usamos el modeloRol para traducir el nombre del rol a su ID
-        $idRol = $modeloRol->obtenerIdRolPorNombre($nombreRol); 
+    if ($esTecnico && (
+        $numeroEmpleado === ''
+        || strlen($numeroEmpleado) > 20
+        || !in_array($especialidad, ['Inspección', 'Aplicación', 'Ambas'], true)
+    )) {
+        $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Para asignar el rol Técnico, ingresa un número de empleado de hasta 20 caracteres y selecciona una especialidad válida.</div>";
+    } else {
+        $transaccionIniciada = false;
+        try {
+            $idRol = $modeloRol->obtenerIdRolPorNombre($nombreRol);
 
-        if ($idRol) {
-            if (!empty($_POST['id_usuario'])) {
-                // Es una ACTUALIZACIÓN
-                $id_usuario = intval($_POST['id_usuario']);
-                $modeloUsuario->actualizarUsuario($id_usuario, $idRol, $nombre, $apellidos, $contacto, $correo, $curp, $rfc, $estado, $password_hash);
-                $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Usuario actualizado con éxito.</div>";
-                $usuarioEditar = null; // Limpiar el formulario
+            if (!$idRol) {
+                $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error: El rol seleccionado no existe.</div>";
             } else {
-                // Es un REGISTRO NUEVO
-                $modeloUsuario->registrarUsuario($idRol, $nombre, $apellidos, $contacto, $correo, $curp, $rfc, $password_hash);
-                $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Usuario registrado con éxito.</div>";
+                $conexion->begin_transaction();
+                $transaccionIniciada = true;
+
+                if (!empty($_POST['id_usuario'])) {
+                    $idUsuarioEntrada = $_POST['id_usuario'];
+                    if (!is_string($idUsuarioEntrada) || !ctype_digit($idUsuarioEntrada) || (int)$idUsuarioEntrada < 1) {
+                        throw new RuntimeException('El usuario seleccionado no es válido.');
+                    }
+                    $id_usuario = (int)$idUsuarioEntrada;
+                    $usuarioActual = $modeloUsuario->obtenerUsuarioPorId($id_usuario);
+                    if (!$usuarioActual) {
+                        throw new RuntimeException('El usuario ya no existe.');
+                    }
+                    $perfilTecnico = $modeloTecnico->obtenerTecnicoPorUsuarioId($id_usuario);
+
+                    if (!$modeloUsuario->actualizarUsuario($id_usuario, $idRol, $nombre, $apellidos, $contacto, $correo, $curp, $rfc, $estado, $password_hash)) {
+                        throw new RuntimeException('No se pudo actualizar el usuario.');
+                    }
+
+                    if ($esTecnico) {
+                        if ($perfilTecnico) {
+                            $guardadoTecnico = $modeloTecnico->actualizarTecnicoPorUsuarioId($id_usuario, $numeroEmpleado, $especialidad);
+                        } else {
+                            $guardadoTecnico = $modeloTecnico->registrarTecnico($id_usuario, $numeroEmpleado, $especialidad);
+                        }
+                        if (!$guardadoTecnico) {
+                            throw new RuntimeException('No se pudo guardar el perfil técnico.');
+                        }
+                    } elseif (
+                        $perfilTecnico
+                        && $usuarioActual['NombreRol'] === 'Tecnico'
+                        && !$modeloTecnico->eliminarTecnicoPorUsuarioId($id_usuario)
+                    ) {
+                        throw new RuntimeException('No se pudo retirar el perfil técnico.');
+                    }
+
+                    $conexion->commit();
+                    $transaccionIniciada = false;
+                    $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Usuario actualizado con éxito.</div>";
+                    $usuarioEditar = null;
+                    $tecnicoEditar = null;
+                } else {
+                    $id_usuario = $modeloUsuario->registrarUsuario($idRol, $nombre, $apellidos, $contacto, $correo, $curp, $rfc, $password_hash);
+                    if (!$id_usuario) {
+                        throw new RuntimeException('No se pudo registrar el usuario.');
+                    }
+                    if ($esTecnico && !$modeloTecnico->registrarTecnico((int)$id_usuario, $numeroEmpleado, $especialidad)) {
+                        throw new RuntimeException('No se pudo registrar el perfil técnico.');
+                    }
+
+                    $conexion->commit();
+                    $transaccionIniciada = false;
+                    $mensaje = "<div style='color: #155724; background-color: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Usuario registrado con éxito.</div>";
+                }
             }
-        } else {
-            $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error: El rol seleccionado no existe.</div>";
-        }
-    } catch (mysqli_sql_exception $e) {
-        if ($e->getCode() == 1062) {
-            $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error: El Correo, CURP o RFC ya está registrado. Verifica los datos.</div>";
-        } else {
-            $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error de base de datos: " . $e->getMessage() . "</div>";
+        } catch (mysqli_sql_exception $e) {
+            if ($transaccionIniciada) {
+                $conexion->rollback();
+            }
+            if ($e->getCode() == 1062) {
+                $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error: El correo, CURP, RFC o número de empleado ya está registrado.</div>";
+            } elseif ($e->getCode() == 1451) {
+                $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>No se puede cambiar el rol porque el perfil técnico tiene acciones de campaña vinculadas.</div>";
+            } else {
+                $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>Error de base de datos al guardar el usuario y su perfil.</div>";
+            }
+        } catch (RuntimeException $e) {
+            if ($transaccionIniciada) {
+                $conexion->rollback();
+            }
+            $mensaje = "<div style='color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;'>" . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</div>";
         }
     }
 }
