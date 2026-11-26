@@ -19,13 +19,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="<?= BASE_URL ?>index.php?modulo=dashboard">
-            <i class="bi bi-shield-check me-2"></i> Bitácora Auditoría
+            <i class="bi bi-shield-check mr-2"></i> Bitácora de auditoría
         </a>
 
-        <div class="d-flex align-items-center gap-2">
-           <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-light btn-sm mr-2">
-            <i class="bi bi-arrow-left"></i> Inicio 
-            </a> 
+        <div class="d-flex align-items-center">
+            <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="btn btn-outline-light btn-sm mr-2">
+                <i class="bi bi-arrow-left"></i> Inicio
+            </a>
             <a href="<?= BASE_URL ?>index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
                 <i class="bi bi-bell"></i> Notificaciones
             </a>
@@ -39,8 +39,9 @@
         <h2>Bitácora de auditoría y seguridad (RF45)</h2>
 
         <p class="text-muted">
-            Consulta las acciones que están registradas en la bitácora. El esquema actual guarda usuario,
-            módulo, tipo de acción y fechas; no almacena el detalle ni el registro afectado.
+            Se registra la actividad de las solicitudes permitidas en los módulos conectados; las notificaciones
+            quedan excluidas. La base actual conserva usuario, módulo, tipo de acción y fechas, pero no los campos
+            modificados ni el resultado de validaciones de negocio.
         </p>
 
 
@@ -63,11 +64,11 @@
                             <label for="usuario">Usuario responsable</label>
                             <select id="usuario" name="usuario" class="form-control">
                                 <option value="0">Todos los usuarios</option>
-                                <?php while ($usuario = $usuarios->fetch_assoc()): ?>
+                                <?php foreach ($usuarios as $usuario): ?>
                                     <option value="<?= (int)$usuario['IdUsuario'] ?>" <?= $usuarioId === (int)$usuario['IdUsuario'] ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($usuario['Nombre'] . ' ' . $usuario['Apellidos'], ENT_QUOTES, 'UTF-8') ?>
                                     </option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -77,11 +78,11 @@
                             <label for="modulo_filtro">Módulo</label>
                             <select id="modulo_filtro" name="modulo_filtro" class="form-control">
                                 <option value="0">Todos los módulos</option>
-                                <?php while ($modulo = $modulos->fetch_assoc()): ?>
+                                <?php foreach ($modulos as $modulo): ?>
                                     <option value="<?= (int)$modulo['IdModulo'] ?>" <?= $moduloId === (int)$modulo['IdModulo'] ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($modulo['NombreModulo'], ENT_QUOTES, 'UTF-8') ?>
                                     </option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -91,7 +92,7 @@
                             <label for="accion">Tipo de acción</label>
                             <select id="accion" name="accion" class="form-control">
                                 <option value="">Todas las acciones</option>
-                                <?php foreach (['Creación', 'Modificación', 'Desactivación', 'Eliminación lógica'] as $tipoAccion): ?>
+                                <?php foreach ($tiposAccion as $tipoAccion): ?>
                                     <option value="<?= htmlspecialchars($tipoAccion, ENT_QUOTES, 'UTF-8') ?>" <?= $accion === $tipoAccion ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($tipoAccion, ENT_QUOTES, 'UTF-8') ?>
                                     </option>
@@ -135,7 +136,7 @@
 
         <!-- TABLA -->
         <h3 class="mb-3">
-            Registro de acciones
+            Registro de acciones (<?= (int) $registros->num_rows ?>)
         </h3>
 
         <div class="table-responsive">
@@ -182,12 +183,12 @@
         <!-- BOTONES -->
         <div class="mt-3 mb-5">
 
-            <a href="#" class="btn btn-success" onclick="alert('Funcionalidad de exportación pendiente.')">
-                Exportar bitácora
+            <a href="<?= htmlspecialchars(BASE_URL . 'index.php?' . http_build_query(array_merge($filtrosConsulta, ['exportar' => 'csv'])), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-success">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Exportar CSV
             </a>
 
-            <a href="#" class="btn btn-primary" onclick="alert('Generación de PDF pendiente.')">
-                Generar reporte
+            <a href="<?= htmlspecialchars(BASE_URL . 'index.php?' . http_build_query(array_merge($filtrosConsulta, ['reporte' => '1'])), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary">
+                <i class="bi bi-printer"></i> Generar reporte / Guardar PDF
             </a>
             <br><br>
             <a href="<?= BASE_URL ?>index.php?modulo=dashboard" class="font-weight-bold">← Regresar al menú</a>

@@ -76,6 +76,53 @@ require_once RESOURCE_PATH . 'class/class.connection.php';
 $objConexion = new Connection();
 $conexion = $objConexion->getConexion();
 
+require_once MODEL_PATH . 'admin/model.bitacora.php';
+if (
+    isset($_SESSION['id_usuario'])
+    && PermissionPolicy::governs($modulo)
+    && ModelBitacora::soportaModulo($modulo)
+) {
+    $modeloAuditoria = new ModelBitacora($conexion);
+    $usuarioAuditoria = (int) $_SESSION['id_usuario'];
+    $moduloAuditoria = $modulo;
+    $accionAuditoria = ModelBitacora::tipoAccionParaSolicitud(
+        $modulo,
+        $_SERVER['REQUEST_METHOD'],
+        $_GET,
+        $_POST
+    );
+    $inicioAuditoria = date('Y-m-d H:i:s');
+
+    register_shutdown_function(static function () use (
+        $modeloAuditoria,
+        $usuarioAuditoria,
+        $moduloAuditoria,
+        $accionAuditoria,
+        $inicioAuditoria
+    ) {
+        $error = error_get_last();
+        $erroresFatales = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR];
+        if (
+            http_response_code() >= 400
+            || ($error !== null && in_array($error['type'], $erroresFatales, true))
+        ) {
+            return;
+        }
+
+        try {
+            $modeloAuditoria->registrarSolicitud(
+                $usuarioAuditoria,
+                $moduloAuditoria,
+                $accionAuditoria,
+                $inicioAuditoria,
+                date('Y-m-d H:i:s')
+            );
+        } catch (Throwable $e) {
+            error_log('No se pudo guardar la acción en la bitácora: ' . $e->getMessage());
+        }
+    });
+}
+
 // 5. Enrutador (Switch) - Llama al controlador adecuado según el módulo
 switch ($modulo) {
 
