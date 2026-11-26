@@ -98,6 +98,7 @@
         .tabla tbody tr:nth-child(even) { background: #f0f0f0; }
         .etiqueta { display: inline-block; padding: 2px 7px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: 700; line-height: 1.3; }
         .etiqueta-alta { background: #dc3545; }
+        .mensaje { margin: 0 0 16px; padding: 10px 12px; border-radius: 4px; background: #e8f4fd; color: #174a70; }
         .rejilla-reportes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
         .rejilla-reportes .tarjeta { margin-bottom: 0; }
         .seccion-titulo { font-size: 20px; font-weight: 700; margin: 30px 0 14px; }
@@ -123,30 +124,108 @@
     <main class="contenedor">
         <header class="encabezado-pagina">
             <h1>Registro de Incidencias</h1>
-            <p>Formulario para registrar incidencias detectadas en inspecciones o tratamientos.</p>
+            <p>Registro y consulta de incidencias relacionadas con campañas.</p>
         </header>
 
+        <?php if ($mensaje !== ''): ?>
+            <p class="mensaje"><?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') ?></p>
+        <?php endif; ?>
+
+        <?php if (appCan('incidencias', $incidenciaEditar ? 'modificar' : 'registrar')): ?>
         <section class="tarjeta" aria-labelledby="titulo-registro">
-            <h2 class="tarjeta-titulo" id="titulo-registro">Registrar Nueva Incidencia</h2>
+            <h2 class="tarjeta-titulo" id="titulo-registro"><?= $incidenciaEditar ? 'Modificar Incidencia' : 'Registrar Nueva Incidencia' ?></h2>
             <div class="tarjeta-cuerpo">
-                <form action="#" method="POST">
+                <form action="index.php" method="POST">
+                    <input type="hidden" name="modulo" value="incidencias">
+                    <input type="hidden" name="accion" value="guardar_incidencia">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                    <?php if ($incidenciaEditar): ?>
+                        <input type="hidden" name="id_incidencia" value="<?= (int)$incidenciaEditar['IdIncidencia'] ?>">
+                    <?php endif; ?>
                     <div class="campo">
-                        <label for="campana">Campaña / Zona:</label>
-                        <input class="control" type="text" id="campana" name="campana" placeholder="Nombre de campaña o zona" required>
+                        <label for="id_campana">Campaña:</label>
+                        <select class="control" id="id_campana" name="id_campana" required>
+                            <option value="">Selecciona una campaña</option>
+                            <?php while ($campana = $resultadoCampanas->fetch_assoc()): ?>
+                                <option value="<?= (int)$campana['IdCampana'] ?>" <?= $incidenciaEditar && (int)$incidenciaEditar['IdCampana'] === (int)$campana['IdCampana'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($campana['CodigoCampana'] . ' — ' . $campana['NombreCampana'] . ' (' . $campana['NombreZona'] . ')', ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="actividad">Actividad relacionada:</label>
+                        <select class="control" id="actividad" name="actividad" required>
+                            <?php foreach (['Inspección', 'Aplicación', 'Seguimiento'] as $actividad): ?>
+                                <option value="<?= htmlspecialchars($actividad, ENT_QUOTES, 'UTF-8') ?>" <?= $incidenciaEditar && $incidenciaEditar['ActividadRelacionada'] === $actividad ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($actividad, ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="campo">
                         <label for="detalle">Detalle de la incidencia:</label>
-                        <textarea class="control" id="detalle" name="detalle" rows="5" placeholder="Describa la incidencia detectada" required></textarea>
+                        <textarea class="control" id="detalle" name="detalle" rows="5" placeholder="Describa la incidencia detectada" required><?= $incidenciaEditar ? htmlspecialchars($incidenciaEditar['Descripcion'], ENT_QUOTES, 'UTF-8') : '' ?></textarea>
                     </div>
-                    <button class="boton" type="submit">Guardar Incidencia Localmente</button>
+                    <button class="boton" type="submit"><?= $incidenciaEditar ? 'Guardar cambios' : 'Registrar incidencia' ?></button>
                 </form>
+            </div>
+        </section>
+        <?php endif; ?>
+
+        <section class="tarjeta" aria-labelledby="titulo-consulta">
+            <h2 class="tarjeta-titulo" id="titulo-consulta">Incidencias registradas</h2>
+            <div class="tarjeta-cuerpo tabla-scroll">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Campaña</th>
+                            <th>Zona</th>
+                            <th>Actividad</th>
+                            <th>Detalle</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($resultadoIncidencias && $resultadoIncidencias->num_rows > 0): ?>
+                            <?php while ($incidencia = $resultadoIncidencias->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($incidencia['CodigoCampana'] . ' — ' . $incidencia['NombreCampana'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($incidencia['Zona'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($incidencia['ActividadRelacionada'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($incidencia['Descripcion'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($incidencia['FechaRegistro'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td>
+                                        <?php if (appCan('incidencias', 'modificar')): ?>
+                                            <a class="boton" href="index.php?modulo=incidencias&accion=editar&id=<?= (int)$incidencia['IdIncidencia'] ?>">Editar</a>
+                                        <?php endif; ?>
+                                        <?php if (appCan('incidencias', 'eliminar')): ?>
+                                            <form action="index.php" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar esta incidencia?');">
+                                                <input type="hidden" name="modulo" value="incidencias">
+                                                <input type="hidden" name="accion" value="eliminar">
+                                                <input type="hidden" name="id" value="<?= (int)$incidencia['IdIncidencia'] ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                                                <button class="boton" type="submit">Eliminar</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr><td colspan="6">Todavía no hay incidencias registradas.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </section>
 
         <footer class="pie-pagina">
             <?php
             if (isset($_SESSION['rol'])) {
-                if ($_SESSION['rol'] === 'Supervisor') {
+                if ($_SESSION['rol'] === 'Administrador') {
+                    echo '<a class="enlace-regreso" href="index.php?modulo=dashboard">← Volver al menú de administración</a>';
+                } elseif ($_SESSION['rol'] === 'Supervisor') {
                     echo '<a class="enlace-regreso" href="index.php?modulo=super_dashboard">← Volver al menú de supervisor</a>';
                 } elseif ($_SESSION['rol'] === 'Tecnico') {
                     echo '<a class="enlace-regreso" href="index.php?modulo=tecnico_dashboard">← Volver al menú técnico</a>';

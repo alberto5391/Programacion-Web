@@ -42,6 +42,12 @@ class ModelCampana {
         return $stmt->execute();
     }
 
+    public function actualizarEstadoCampana($idCampana, $estado) {
+        $stmt = $this->conexion->prepare("UPDATE Campanas SET Estado = ? WHERE IdCampana = ?");
+        $stmt->bind_param("si", $estado, $idCampana);
+        return $stmt->execute();
+    }
+
     // Eliminar una campaña por su ID (Precaución: Borrado en cascada según BD)
     public function eliminarCampana($idCampana) {
         $stmt = $this->conexion->prepare("DELETE FROM Campanas WHERE IdCampana = ?");

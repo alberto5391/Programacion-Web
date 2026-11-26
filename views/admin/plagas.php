@@ -48,11 +48,10 @@
 
     <div class="header-link">
         <?php 
-        if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador') {
-            echo '<a href="index.php?modulo=dashboard">← Volver al Panel de Administración</a>';
-        } else {
-            echo '<a href="index.php?modulo=super_dashboard">← Volver al Panel de Supervisor</a>';
-        }
+        $moduloRegreso = ($_SESSION['rol'] ?? '') === 'Administrador'
+            ? 'dashboard'
+            : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'tecnico_dashboard');
+        echo '<a href="index.php?modulo=' . htmlspecialchars($moduloRegreso, ENT_QUOTES, 'UTF-8') . '">← Volver al panel</a>';
         ?>
         <!-- <a href="index.php?modulo=dashboard">← Volver al Panel Principal</a> -->
     </div>
@@ -67,8 +66,11 @@
         <?= $mensaje ?>
 
         <!-- Apuntamos a index.php con el módulo oculto -->
+        <?php if (appCan('plagas', $plagaEditar ? 'modificar' : 'registrar')): ?>
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="plagas">
+            <input type="hidden" name="accion" value="guardar_plaga">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
 
             <!-- Campo oculto para identificar si es actualización -->
             <?php if ($plagaEditar): ?>
@@ -121,6 +123,7 @@
                 <?php endif; ?>
             </div>
         </form>
+        <?php endif; ?>
 
         <h2>Consulta de Plagas Registradas</h2>
         
@@ -154,6 +157,20 @@
                             $estado = htmlspecialchars($fila['Estado']);
                             $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
+                            $acciones = '';
+                            if (appCan('plagas', 'modificar')) {
+                                $acciones .= "<a href='" . BASE_URL . "index.php?modulo=plagas&accion=editar&id={$idPlaga}' class='btn btn-edit'>Editar</a>";
+                            }
+                            if (appCan('plagas', 'eliminar')) {
+                                $acciones .= "<form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar la plaga {$codigo}? Esta acción no se puede deshacer.');\">
+                                    <input type='hidden' name='modulo' value='plagas'>
+                                    <input type='hidden' name='accion' value='eliminar'>
+                                    <input type='hidden' name='id' value='{$idPlaga}'>
+                                    <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                    <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                </form>";
+                            }
+
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
                                     <td>{$nombreComun}</td>
@@ -162,16 +179,7 @@
                                     <td>{$tratamientoRecomendado}</td>
                                     <td>{$estado}</td>
                                     <td>
-                                        <div class='action-buttons'>
-                                            <a href='" . BASE_URL . "index.php?modulo=plagas&accion=editar&id={$idPlaga}' class='btn btn-edit'>Editar</a>
-                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar la plaga {$codigo}? Esta acción no se puede deshacer.');\">
-                                                <input type='hidden' name='modulo' value='plagas'>
-                                                <input type='hidden' name='accion' value='eliminar'>
-                                                <input type='hidden' name='id' value='{$idPlaga}'>
-                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
-                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
-                                            </form>
-                                        </div>
+                                        <div class='action-buttons'>{$acciones}</div>
                                     </td>
                                   </tr>";
                         }

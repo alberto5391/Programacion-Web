@@ -27,6 +27,7 @@
 
         <?= $mensaje ?>
 
+        <?php if (appCan('evidencias', 'registrar')): ?>
         <section class="card shadow-sm mb-4">
             <div class="card-header bg-white fw-semibold">Registrar evidencia</div>
             <div class="card-body">
@@ -71,6 +72,32 @@
                 </form>
             </div>
         </section>
+        <?php endif; ?>
+
+        <?php if ($evidenciaEditar && appCan('evidencias', 'modificar')): ?>
+            <section class="card shadow-sm mb-4">
+                <div class="card-header bg-white fw-semibold">Modificar evidencia</div>
+                <div class="card-body">
+                    <form action="<?= BASE_URL ?>index.php" method="POST">
+                        <input type="hidden" name="modulo" value="evidencias">
+                        <input type="hidden" name="accion" value="actualizar_evidencia">
+                        <input type="hidden" name="id_evidencia" value="<?= (int)$evidenciaEditar['IdEvidencia'] ?>">
+                        <input type="hidden" name="id_campana" value="<?= (int)$evidenciaEditar['IdCampana'] ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                        <label for="tipo_actividad_editar" class="form-label">Tipo de actividad</label>
+                        <select class="form-select" id="tipo_actividad_editar" name="tipo_actividad" required>
+                            <?php foreach (['Inspección', 'Aplicación', 'Seguimiento'] as $tipoActividad): ?>
+                                <option value="<?= htmlspecialchars($tipoActividad, ENT_QUOTES, 'UTF-8') ?>" <?= $evidenciaEditar['TipoActividad'] === $tipoActividad ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tipoActividad, ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button class="btn btn-primary mt-3" type="submit">Guardar cambios</button>
+                        <a class="btn btn-outline-secondary mt-3" href="<?= BASE_URL ?>index.php?modulo=evidencias&id_campana=<?= (int)$evidenciaEditar['IdCampana'] ?>">Cancelar</a>
+                    </form>
+                </div>
+            </section>
+        <?php endif; ?>
 
         <?php if ($idCampanaSeleccionada !== null): ?>
             <section class="card shadow-sm">
@@ -83,6 +110,7 @@
                                     <th>Fotografía</th>
                                     <th>Actividad</th>
                                     <th>Fecha de registro</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -97,10 +125,25 @@
                                             </td>
                                             <td><?= htmlspecialchars($evidencia['TipoActividad']) ?></td>
                                             <td><?= htmlspecialchars($evidencia['FechaRegistro']) ?></td>
+                                            <td>
+                                                <?php if (appCan('evidencias', 'modificar')): ?>
+                                                    <a class="btn btn-sm btn-primary" href="<?= BASE_URL ?>index.php?modulo=evidencias&accion=editar&id=<?= (int)$evidencia['IdEvidencia'] ?>">Editar</a>
+                                                <?php endif; ?>
+                                                <?php if (appCan('evidencias', 'eliminar')): ?>
+                                                    <form action="<?= BASE_URL ?>index.php" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta evidencia fotográfica?');">
+                                                        <input type="hidden" name="modulo" value="evidencias">
+                                                        <input type="hidden" name="accion" value="eliminar">
+                                                        <input type="hidden" name="id" value="<?= (int)$evidencia['IdEvidencia'] ?>">
+                                                        <input type="hidden" name="id_campana" value="<?= (int)$idCampanaSeleccionada ?>">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                                                        <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
+                                                    </form>
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endwhile; ?>
                                 <?php else: ?>
-                                    <tr><td colspan="3" class="text-center text-muted">Esta campaña aún no tiene evidencias.</td></tr>
+                                    <tr><td colspan="4" class="text-center text-muted">Esta campaña aún no tiene evidencias.</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>

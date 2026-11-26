@@ -32,6 +32,10 @@ class ModelZona {
         return $this->conexion->query("SELECT IdZona, CodigoZona, NombreZona, Municipio, Referencias, Latitud, Longitud, Estado FROM Zonas WHERE Estado = 'Activa' ORDER BY NombreZona");
     }
 
+    public function obtenerZonasSinCoordenadasActivas() {
+        return $this->conexion->query("SELECT IdZona, CodigoZona, NombreZona, Municipio, Referencias, Latitud, Longitud, Estado FROM Zonas WHERE Estado = 'Activa' AND Latitud IS NULL AND Longitud IS NULL ORDER BY NombreZona");
+    }
+
     // Obtener una zona específica por su ID
     public function obtenerZonaPorId($idZona) {
         $stmt = $this->conexion->prepare("SELECT IdZona, CodigoZona, NombreZona, Municipio, Referencias, Latitud, Longitud, Estado FROM Zonas WHERE IdZona = ?");
@@ -49,9 +53,9 @@ class ModelZona {
     }
 
     public function actualizarCoordenadas($idZona, $latitud, $longitud) {
-        $stmt = $this->conexion->prepare("UPDATE Zonas SET Latitud = ?, Longitud = ? WHERE IdZona = ?");
+        $stmt = $this->conexion->prepare("UPDATE Zonas SET Latitud = ?, Longitud = ? WHERE IdZona = ? AND Latitud IS NULL AND Longitud IS NULL AND Estado = 'Activa'");
         $stmt->bind_param("ddi", $latitud, $longitud, $idZona);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows === 1;
     }
 
     // Eliminar una zona por su ID

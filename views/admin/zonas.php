@@ -40,7 +40,12 @@
 <body>
 
     <div class="header-link">
-        <a href="<?= BASE_URL ?>index.php?modulo=dashboard">← Volver al Panel Principal</a>
+        <?php
+        $moduloRegreso = ($_SESSION['rol'] ?? '') === 'Administrador'
+            ? 'dashboard'
+            : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'tecnico_dashboard');
+        ?>
+        <a href="<?= BASE_URL ?>index.php?modulo=<?= htmlspecialchars($moduloRegreso) ?>">← Volver al Panel Principal</a>
     </div>
 
     <div class="page-container">
@@ -52,6 +57,7 @@
         <!-- Bloque para mostrar errores o éxitos del registro provenientes del controlador -->
         <?= $mensaje ?>
 
+        <?php if (appCan('zonas', $zonaEditar ? 'modificar' : 'registrar')): ?>
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="zonas">
             <input type="hidden" name="accion" value="guardar_zona">
@@ -114,6 +120,7 @@
                 <?php endif; ?>
             </div>
         </form>
+        <?php endif; ?>
 
         <h2>Zonas Registradas</h2>
         
@@ -145,6 +152,20 @@
                             $estado = htmlspecialchars($fila['Estado']);
                             $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
+                            $acciones = '';
+                            if (appCan('zonas', 'modificar')) {
+                                $acciones .= "<a href='" . BASE_URL . "index.php?modulo=zonas&accion=editar&id={$idZona}' class='btn-edit'>Editar</a>";
+                            }
+                            if (appCan('zonas', 'eliminar')) {
+                                $acciones .= "<form action='" . BASE_URL . "index.php' method='POST' style='display:inline; margin:0;' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar la zona {$codigo}? Esta acción no se puede deshacer.');\">
+                                    <input type='hidden' name='modulo' value='zonas'>
+                                    <input type='hidden' name='accion' value='eliminar'>
+                                    <input type='hidden' name='id' value='{$idZona}'>
+                                    <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                    <button type='submit' class='btn-delete'>Eliminar</button>
+                                </form>";
+                            }
+
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
                                     <td>{$nombre}</td>
@@ -154,14 +175,7 @@
                                     <td>{$longitud}</td>
                                     <td>{$estado}</td>
                                     <td>
-                                        <a href='" . BASE_URL . "index.php?modulo=zonas&accion=editar&id={$idZona}' class='btn-edit'>Editar</a>
-                                        <form action='" . BASE_URL . "index.php' method='POST' style='display:inline; margin:0;' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar la zona {$codigo}? Esta acción no se puede deshacer.');\">
-                                            <input type='hidden' name='modulo' value='zonas'>
-                                            <input type='hidden' name='accion' value='eliminar'>
-                                            <input type='hidden' name='id' value='{$idZona}'>
-                                            <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
-                                            <button type='submit' class='btn-delete'>Eliminar</button>
-                                        </form>
+                                        {$acciones}
                                     </td>
                                   </tr>";
                         }

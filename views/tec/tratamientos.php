@@ -8,108 +8,130 @@
     <title>Aplicación de Tratamientos</title>
 </head>
 <body>
-    <!-- Barra Superior de Navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                Aplicación de Tratamientos
-            </a>
+            <a class="navbar-brand" href="#">Aplicación de Tratamientos</a>
             <div class="d-flex align-items-center gap-2">
-                <a href="index.php?modulo=home" class="btn btn-outline-light btn-sm">
-                    ← Inicio
-                </a>
-                <a href="index.php?modulo=notificaciones" class="btn btn-primary btn-sm">
-                    Notificaciones
-                </a>
+                <a href="index.php?modulo=home" class="btn btn-outline-light btn-sm">Inicio</a>
+                <a href="index.php?modulo=notificaciones" class="btn btn-primary btn-sm">Notificaciones</a>
             </div>
         </div>
     </nav>
-    <div class="container">
-        <h2 class="mb-4">Aplicación de Tratamientos</h2>
-        <form method="post">
-            <!-- Registro de aplicación de tratamiento -->
-            <fieldset class="border rounded p-4 mb-4 shadow-sm">
-                <legend class="float-none w-auto px-2">
-                    Registro de aplicación de tratamiento (RF16)
-                </legend>
+
+    <main class="container">
+        <h2 class="mb-4">Aplicaciones registradas</h2>
+        <?php if ($mensaje !== ''): ?>
+            <div class="alert alert-info"><?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
+
+        <?php if (appCan('tratamientos', $aplicacionEditar ? 'modificar' : 'registrar')): ?>
+            <form method="POST" action="index.php" class="mb-5">
+                <input type="hidden" name="modulo" value="tratamientos">
+                <input type="hidden" name="accion" value="guardar_aplicacion">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                <?php if ($aplicacionEditar): ?>
+                    <input type="hidden" name="id_accion" value="<?= (int)$aplicacionEditar['IdAccion'] ?>">
+                <?php endif; ?>
+
                 <div class="mb-3">
-                    <label for="zona_tratamiento" class="form-label">
-                        Zona atendida:
-                    </label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="zona_tratamiento"
-                        name="zona_tratamiento"
-                        placeholder="Ingrese la zona atendida">
+                    <label class="form-label" for="id_campana">Campaña</label>
+                    <select class="form-select" id="id_campana" name="id_campana" required>
+                        <option value="">Selecciona una campaña</option>
+                        <?php while ($campana = $resultadoCampanas->fetch_assoc()): ?>
+                            <option value="<?= (int)$campana['IdCampana'] ?>" <?= $aplicacionEditar && (int)$aplicacionEditar['IdCampana'] === (int)$campana['IdCampana'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($campana['CodigoCampana'] . ' — ' . $campana['NombreCampana'] . ' (' . $campana['NombreZona'] . ')', ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <?php if (($_SESSION['rol'] ?? '') === 'Tecnico'): ?>
+                    <p class="form-text">La aplicación se asociará automáticamente con tu perfil técnico.</p>
+                <?php else: ?>
+                    <div class="mb-3">
+                        <label class="form-label" for="id_tecnico">Técnico responsable</label>
+                        <select class="form-select" id="id_tecnico" name="id_tecnico" required>
+                            <option value="">Selecciona un técnico</option>
+                            <?php while ($tecnico = $resultadoTecnicos->fetch_assoc()): ?>
+                                <option value="<?= (int)$tecnico['IdTecnico'] ?>" <?= $aplicacionEditar && (int)$aplicacionEditar['IdTecnico'] === (int)$tecnico['IdTecnico'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tecnico['NumeroEmpleado'] . ' — ' . $tecnico['NombreCompleto'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                <?php endif; ?>
+
+                <div class="mb-3">
+                    <label class="form-label" for="fecha_hora">Fecha y hora</label>
+                    <input class="form-control" type="datetime-local" id="fecha_hora" name="fecha_hora"
+                           value="<?= $aplicacionEditar ? htmlspecialchars(date('Y-m-d\TH:i', strtotime($aplicacionEditar['FechaHora'])), ENT_QUOTES, 'UTF-8') : '' ?>" required>
                 </div>
                 <div class="mb-3">
-                    <label for="fecha_tratamiento" class="form-label">
-                        Fecha:
-                    </label>
-                    <input
-                        type="date"
-                        class="form-control"
-                        id="fecha_tratamiento"
-                        name="fecha_tratamiento">
-                </div>
-                <div class="mb-3">
-                    <label for="personal_resp" class="form-label">
-                        Personal responsable:
-                    </label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="personal_resp"
-                        name="personal_resp"
-                        placeholder="Ingrese el nombre del responsable">
-                </div>
-            </fieldset>
-            <!-- Asociación de productos con aplicaciones -->
-            <fieldset class="border rounded p-4 mb-4 shadow-sm">
-                <legend class="float-none w-auto px-2">
-                    Asociación de productos con aplicaciones (RF18)
-                </legend>
-                <div class="mb-3">
-                    <label for="producto_usado" class="form-label">
-                        Producto utilizado:
-                    </label>
-                    <select
-                        class="form-select"
-                        id="producto_usado"
-                        name="producto_usado">
-                        <option value="prod1">Producto A</option>
-                        <option value="prod2">Producto B</option>
+                    <label class="form-label" for="id_producto">Producto utilizado</label>
+                    <select class="form-select" id="id_producto" name="id_producto" required>
+                        <option value="">Selecciona un producto</option>
+                        <?php while ($producto = $resultadoProductos->fetch_assoc()): ?>
+                            <option value="<?= (int)$producto['IdProducto'] ?>" <?= $aplicacionEditar && (int)$aplicacionEditar['IdProducto'] === (int)$producto['IdProducto'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($producto['NombreComercial'] . ' (' . $producto['UnidadMedida'] . ')', ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endwhile; ?>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="cantidad_prod" class="form-label">
-                        Cantidad aplicada:
-                    </label>
-                    <input
-                        type="number"
-                        class="form-control"
-                        id="cantidad_prod"
-                        name="cantidad_prod"
-                        placeholder="Ingrese la cantidad aplicada"
-                        min="0"
-                        step="any">
+                    <label class="form-label" for="cantidad">Cantidad aplicada</label>
+                    <input class="form-control" type="number" id="cantidad" name="cantidad" min="0.01" step="0.01" required
+                           value="<?= $aplicacionEditar ? htmlspecialchars((string)$aplicacionEditar['CantidadAplicada'], ENT_QUOTES, 'UTF-8') : '' ?>">
                 </div>
-            </fieldset>
-            <!-- Botones -->
-            <div class="d-flex flex-wrap gap-2 mt-4 mb-4">
-                <button
-                    type="submit"
-                    formaction="index.php?modulo=tecnico_dashboard"
-                    class="btn btn-primary">
-                    Guardar
-                </button>
-                <a href="index.php?modulo=tecnico_dashboard"
-                   class="btn btn-outline-secondary">
-                    ← Regresar al menú
-                </a>
-            </div>
-        </form>
-    </div>
+                <div class="mb-3">
+                    <label class="form-label" for="observaciones">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones"><?= $aplicacionEditar ? htmlspecialchars($aplicacionEditar['Observaciones'] ?? '', ENT_QUOTES, 'UTF-8') : '' ?></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit"><?= $aplicacionEditar ? 'Guardar cambios' : 'Registrar aplicación' ?></button>
+                <?php if ($aplicacionEditar): ?>
+                    <a class="btn btn-outline-secondary" href="index.php?modulo=tratamientos">Cancelar</a>
+                <?php endif; ?>
+            </form>
+        <?php endif; ?>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white">
+                <thead class="table-dark">
+                    <tr><th>Campaña</th><th>Zona</th><th>Fecha</th><th>Técnico</th><th>Producto</th><th>Cantidad</th><th>Observaciones</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <?php if ($resultadoAplicaciones->num_rows > 0): ?>
+                        <?php while ($aplicacion = $resultadoAplicaciones->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($aplicacion['CodigoCampana'] . ' — ' . $aplicacion['NombreCampana'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($aplicacion['NombreZona'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($aplicacion['FechaHora'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($aplicacion['NumeroEmpleado'] . ' — ' . $aplicacion['Tecnico'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($aplicacion['Producto'] ?? 'Sin producto', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars((string)($aplicacion['CantidadAplicada'] ?? ''), ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($aplicacion['UnidadMedida'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($aplicacion['Observaciones'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td>
+                                    <?php if (appCan('tratamientos', 'modificar')): ?>
+                                        <a class="btn btn-sm btn-primary" href="index.php?modulo=tratamientos&accion=editar&id=<?= (int)$aplicacion['IdAccion'] ?>">Editar</a>
+                                    <?php endif; ?>
+                                    <?php if (appCan('tratamientos', 'eliminar')): ?>
+                                        <form method="POST" action="index.php" class="d-inline" onsubmit="return confirm('¿Eliminar esta aplicación?');">
+                                            <input type="hidden" name="modulo" value="tratamientos">
+                                            <input type="hidden" name="accion" value="eliminar">
+                                            <input type="hidden" name="id" value="<?= (int)$aplicacion['IdAccion'] ?>">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                                            <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="8">No hay aplicaciones registradas.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <a href="index.php?modulo=<?= ($_SESSION['rol'] ?? '') === 'Administrador' ? 'dashboard' : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'tecnico_dashboard') ?>" class="btn btn-outline-secondary mb-4">Regresar al menú</a>
+    </main>
 </body>
 </html>

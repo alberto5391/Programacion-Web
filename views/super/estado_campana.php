@@ -1,79 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/supervisor.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estados_Campaña</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Estado de campañas</title>
 </head>
-<body>
-
-
-        <!-- Barra Superior de Navegación -->
+<body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="bi bi-shield-check me-2"></i>Actualizar campaña</a>
-            <div class="d-flex align-items-center gap-2">
-                <a href="index.php?modulo=home" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Inicio</a>
-                <a href="index.php?modulo=notificaciones" class="btn btn-primary btn-sm position-relative">
-                    <i class="bi bi-bell"></i> Notificaciones
-                </a>
-            </div>
+            <a class="navbar-brand" href="#">Estado de campañas</a>
+            <a href="index.php?modulo=notificaciones" class="btn btn-primary btn-sm">Notificaciones</a>
         </div>
     </nav>
 
+    <main class="container">
+        <h1 class="h3 mb-4">Actualización del estado de una campaña (RF27)</h1>
+        <?php if ($mensaje !== ''): ?>
+            <div class="alert alert-info"><?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
 
-<!--     <div class="titulo-pagina">
-                <h2 class="text-center"> Actualizar campaña</h2>
-    </div> -->
-    
-    <div class="container">
+        <?php if (appCan('estado_campana', 'modificar')): ?>
+            <form action="index.php" method="POST" class="card card-body mb-4">
+                <input type="hidden" name="modulo" value="estado_campana">
+                <input type="hidden" name="accion" value="actualizar_estado_campana">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+                <div class="mb-3">
+                    <label class="form-label" for="id_campana">Campaña</label>
+                    <select class="form-select" id="id_campana" name="id_campana" required>
+                        <option value="">Selecciona una campaña</option>
+                        <?php foreach ($campanas as $campana): ?>
+                            <option value="<?= (int)$campana['IdCampana'] ?>">
+                                <?= htmlspecialchars($campana['CodigoCampana'] . ' — ' . $campana['NombreCampana'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="estado_campana">Nuevo estado</label>
+                    <select class="form-select" id="estado_campana" name="estado_campana" required>
+                        <option value="">Selecciona un estado</option>
+                        <?php foreach (['Programada', 'En Curso', 'Finalizada', 'Cancelada'] as $estado): ?>
+                            <option value="<?= htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($estado, ENT_QUOTES, 'UTF-8') ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Actualizar estado</button>
+            </form>
+        <?php endif; ?>
 
-    <h5>Actualización del estado de una campaña (RF27)</h5>
-    
-    <!-- 1. Agregamos el action aquí y el método POST -->
-    <form action="index.php?modulo=super_dashboard" method="POST">
-
-        <div class="mb-3">
-            <label for="select_campana">Seleccionar Campaña:</label>
-            <select class="form-select mt-4" aria-label="Default select example" id="select_campana" name="select_campana">
-                <option selected>Seleccionar campaña</option>
-                <option value="c1">Campaña #01</option>
-                <option value="c2">Campaña #02</option>
-            </select>
+        <h2 class="h4">Campañas registradas</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white">
+                <thead class="table-dark">
+                    <tr><th>Campaña</th><th>Zona</th><th>Periodo</th><th>Estado</th></tr>
+                </thead>
+                <tbody>
+                    <?php if ($campanas): ?>
+                        <?php foreach ($campanas as $campana): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($campana['CodigoCampana'] . ' — ' . $campana['NombreCampana'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($campana['NombreZona'] . ' (' . $campana['CodigoZona'] . ')', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($campana['FechaInicio'] . ' — ' . ($campana['FechaFin'] ?? 'Sin definir'), ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($campana['Estado'], ENT_QUOTES, 'UTF-8') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr><td colspan="4">No hay campañas registradas.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-
-        <div class="mb-3">
-            <label for="estado_campana">Nuevo Estado:</label>
-            <select class="form-select mt-4" aria-label="Default select example" id="estado_campana" name="estado_campana">
-                <option selected>Estado de la campaña</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="proceso">En proceso</option>
-                <option value="inspeccionada">Inspeccionada</option>
-                <option value="tratada">Tratada</option>
-                <option value="seguimiento">En seguimiento</option>
-                <option value="finalizada">Finalizada</option>
-            </select>
-        </div>
-
-        <!-- 2. Se eliminó la etiqueta <form> extra que estaba aquí --> 
-        <!-- 3. Ya no necesitas formaction en el botón si lo pones en el action del form -->
-        <button type="submit" class="btn btn-primary mt-4">Actualizar Estado</button>
-        
-    </form>
-    </form>
-
-        <div class="mt-4">
-
-            <a href="index.php?modulo=super_dashboard" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i>
-                Regresar al menú
-            </a>
-
-        </div>
-
-
-    
+        <a href="index.php?modulo=<?= ($_SESSION['rol'] ?? '') === 'Administrador' ? 'dashboard' : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'tecnico_dashboard') ?>" class="btn btn-outline-secondary mb-4">Regresar al menú</a>
+    </main>
 </body>
 </html>

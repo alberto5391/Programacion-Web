@@ -46,11 +46,10 @@
 
     <div class="header-link">
         <?php
-        if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador') {
-            echo '<a href="index.php?modulo=dashboard">← Volver al Panel de Administración</a>';
-        } else {
-            echo '<a href="index.php?modulo=super_dashboard">← Volver al Panel de Supervisor</a>';
-        }
+        $moduloRegreso = ($_SESSION['rol'] ?? '') === 'Administrador'
+            ? 'dashboard'
+            : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'tecnico_dashboard');
+        echo '<a href="index.php?modulo=' . htmlspecialchars($moduloRegreso, ENT_QUOTES, 'UTF-8') . '">← Volver al panel</a>';
         ?>
         <!-- <a href="index.php?modulo=dashboard">← Volver al Panel Principal</a> -->
     </div>
@@ -64,8 +63,11 @@
         <?= $mensaje ?>
 
         <!-- Apuntamos a index.php enviando por POST con campo oculto -->
+        <?php if (appCan('tecnicos', $tecnicoEditar ? 'modificar' : 'registrar')): ?>
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="tecnicos">
+            <input type="hidden" name="accion" value="guardar_tecnico">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
 
             <!-- Campo oculto para identificar si es actualización -->
             <?php if ($tecnicoEditar): ?>
@@ -130,6 +132,7 @@
                 <?php endif; ?>
             </div>
         </form>
+        <?php endif; ?>
 
         <h2>Consulta y Administración de Técnicos</h2>
         
@@ -160,6 +163,20 @@
                             $selectedActivo = ($estado == 'Activo') ? 'selected' : '';
                             $selectedInactivo = ($estado == 'Inactivo') ? 'selected' : '';
 
+                            $acciones = "<button type='button' class='btn btn-history'>Ver historial</button>";
+                            if (appCan('tecnicos', 'modificar')) {
+                                $acciones .= "<a href='" . BASE_URL . "index.php?modulo=tecnicos&accion=editar&id={$idTecnico}' class='btn btn-edit'>Editar</a>";
+                            }
+                            if (appCan('tecnicos', 'eliminar')) {
+                                $acciones .= "<form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar a este técnico? Esto NO borrará su usuario del sistema, solo su perfil técnico.');\">
+                                    <input type='hidden' name='modulo' value='tecnicos'>
+                                    <input type='hidden' name='accion' value='eliminar'>
+                                    <input type='hidden' name='id' value='{$idTecnico}'>
+                                    <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                    <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                </form>";
+                            }
+
                             echo "<tr>
                                     <td><strong>{$noEmpleado}</strong></td>
                                     <td>{$nombreCompleto}</td>
@@ -172,17 +189,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <div class='action-buttons'>
-                                            <button type='button' class='btn btn-history'>Ver historial</button>
-                                            <a href='" . BASE_URL . "index.php?modulo=tecnicos&accion=editar&id={$idTecnico}' class='btn btn-edit'>Editar</a>
-                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar a este técnico? Esto NO borrará su usuario del sistema, solo su perfil técnico.');\">
-                                                <input type='hidden' name='modulo' value='tecnicos'>
-                                                <input type='hidden' name='accion' value='eliminar'>
-                                                <input type='hidden' name='id' value='{$idTecnico}'>
-                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
-                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
-                                            </form>
-                                        </div>
+                                        <div class='action-buttons'>{$acciones}</div>
                                     </td>
                                   </tr>";
                         }

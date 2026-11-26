@@ -1,5 +1,8 @@
 <?php
-if (isset($_SESSION['id_usuario']) && ($_SESSION['rol'] ?? '') === 'Administrador') {
+if (
+    isset($_SESSION['id_usuario'])
+    && in_array($_SESSION['rol'] ?? '', ['Administrador', 'Supervisor'], true)
+) {
     header("Location: index.php?modulo=zonas");
     exit();
 }
@@ -35,12 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'act
             $mensaje = "<div class='alert alert-danger'>Selecciona una zona activa válida.</div>";
         } else {
             try {
-                $modeloZona->actualizarCoordenadas(
+                $guardado = $modeloZona->actualizarCoordenadas(
                     $zonaSeleccionada,
                     (float)$latitudEntrada,
                     (float)$longitudEntrada
                 );
-                $mensaje = "<div class='alert alert-success'>Coordenadas de la zona actualizadas correctamente.</div>";
+                $mensaje = $guardado
+                    ? "<div class='alert alert-success'>Coordenadas registradas correctamente en la zona.</div>"
+                    : "<div class='alert alert-warning'>Esta zona ya tiene coordenadas. Solo Administración o Supervisión puede modificarlas.</div>";
             } catch (mysqli_sql_exception $e) {
                 $mensaje = "<div class='alert alert-danger'>No se pudieron guardar las coordenadas. Inténtalo nuevamente.</div>";
             }
@@ -48,6 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'act
     }
 }
 
-$resultadoZonas = $modeloZona->obtenerZonasActivas();
+$resultadoZonas = $modeloZona->obtenerZonasSinCoordenadasActivas();
 require_once VIEW_PATH . 'admin/coordenadas_gps.php';
 ?>

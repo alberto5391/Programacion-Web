@@ -39,10 +39,8 @@
         <h2>Bitácora de auditoría y seguridad (RF45)</h2>
 
         <p class="text-muted">
-            El sistema registra de forma automática y transparente todas las
-            acciones realizadas en los módulos y catálogos, permitiendo conocer
-            qué usuario realizó la acción, cuándo se realizó y qué información
-            fue modificada.
+            Consulta las acciones que están registradas en la bitácora. El esquema actual guarda usuario,
+            módulo, tipo de acción y fechas; no almacena el detalle ni el registro afectado.
         </p>
 
 
@@ -64,10 +62,12 @@
                         <div class="form-group col-md-3">
                             <label for="usuario">Usuario responsable</label>
                             <select id="usuario" name="usuario" class="form-control">
-                                <option>Todos los usuarios</option>
-                                <option>Administrador</option>
-                                <option>Supervisor</option>
-                                <option>Técnico</option>
+                                <option value="0">Todos los usuarios</option>
+                                <?php while ($usuario = $usuarios->fetch_assoc()): ?>
+                                    <option value="<?= (int)$usuario['IdUsuario'] ?>" <?= $usuarioId === (int)$usuario['IdUsuario'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($usuario['Nombre'] . ' ' . $usuario['Apellidos'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endwhile; ?>
                             </select>
                         </div>
 
@@ -76,13 +76,12 @@
                         <div class="form-group col-md-3">
                             <label for="modulo_filtro">Módulo</label>
                             <select id="modulo_filtro" name="modulo_filtro" class="form-control">
-                                <option>Todos los módulos</option>
-                                <option>Usuarios</option>
-                                <option>Campañas</option>
-                                <option>Inspecciones</option>
-                                <option>Aplicaciones</option>
-                                <option>Seguimientos</option>
-                                <option>Catálogos</option>
+                                <option value="0">Todos los módulos</option>
+                                <?php while ($modulo = $modulos->fetch_assoc()): ?>
+                                    <option value="<?= (int)$modulo['IdModulo'] ?>" <?= $moduloId === (int)$modulo['IdModulo'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($modulo['NombreModulo'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endwhile; ?>
                             </select>
                         </div>
 
@@ -91,11 +90,12 @@
                         <div class="form-group col-md-3">
                             <label for="accion">Tipo de acción</label>
                             <select id="accion" name="accion" class="form-control">
-                                <option>Todas las acciones</option>
-                                <option>Creación</option>
-                                <option>Modificación</option>
-                                <option>Desactivación</option>
-                                <option>Eliminación lógica</option>
+                                <option value="">Todas las acciones</option>
+                                <?php foreach (['Creación', 'Modificación', 'Desactivación', 'Eliminación lógica'] as $tipoAccion): ?>
+                                    <option value="<?= htmlspecialchars($tipoAccion, ENT_QUOTES, 'UTF-8') ?>" <?= $accion === $tipoAccion ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($tipoAccion, ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -103,7 +103,7 @@
                         <!-- Botón -->
                         <div class="form-group col-md-3">
                             <label>&nbsp;</label>
-                            <button type="button" class="btn btn-info btn-block" onclick="alert('Funcionalidad de filtro lista para conectar a BD.')">
+                            <button type="submit" class="btn btn-info btn-block">
                                 Consultar bitácora
                             </button>
                         </div>
@@ -115,13 +115,13 @@
 
                         <div class="form-group col-md-3">
                             <label for="fechaInicio">Fecha inicial</label>
-                            <input type="date" id="fechaInicio" name="fechaInicio" class="form-control">
+                            <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="<?= htmlspecialchars($fechaInicio, ENT_QUOTES, 'UTF-8') ?>">
                         </div>
 
 
                         <div class="form-group col-md-3">
                             <label for="fechaFin">Fecha final</label>
-                            <input type="date" id="fechaFin" name="fechaFin" class="form-control">
+                            <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="<?= htmlspecialchars($fechaFin, ENT_QUOTES, 'UTF-8') ?>">
                         </div>
 
                     </div>
@@ -147,86 +147,30 @@
                     <tr>
                         <th>ID</th>
                         <th>Usuario</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
                         <th>Módulo</th>
                         <th>Acción</th>
-                        <th>Registro afectado</th>
-                        <th>Detalle del cambio</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
                     </tr>
 
                 </thead>
 
                 <tbody>
 
-                    <tr>
-                        <td>0001</td>
-                        <td>Administrador</td>
-                        <td>15/09/2026</td>
-                        <td>08:15:32</td>
-                        <td>Usuarios</td>
-                        <td>
-                            <span class="badge badge-success">Creación</span>
-                        </td>
-                        <td>Usuario #105</td>
-                        <td>Se creó un nuevo usuario con rol de Supervisor.</td>
-                    </tr>
-
-
-                    <tr>
-                        <td>0002</td>
-                        <td>Supervisor</td>
-                        <td>15/09/2026</td>
-                        <td>09:20:18</td>
-                        <td>Campañas</td>
-                        <td>
-                            <span class="badge badge-info">Modificación</span>
-                        </td>
-                        <td>Campaña #024</td>
-                        <td>Se modificó la fecha de inicio de la campaña.</td>
-                    </tr>
-
-
-                    <tr>
-                        <td>0003</td>
-                        <td>Administrador</td>
-                        <td>15/09/2026</td>
-                        <td>10:05:41</td>
-                        <td>Catálogos</td>
-                        <td>
-                            <span class="badge badge-warning">Desactivación</span>
-                        </td>
-                        <td>Producto #018</td>
-                        <td>El producto fue desactivado del catálogo.</td>
-                    </tr>
-
-
-                    <tr>
-                        <td>0004</td>
-                        <td>Técnico</td>
-                        <td>15/09/2026</td>
-                        <td>11:32:07</td>
-                        <td>Inspecciones</td>
-                        <td>
-                            <span class="badge badge-danger">Eliminación lógica</span>
-                        </td>
-                        <td>Inspección #458</td>
-                        <td>La inspección fue marcada como eliminada lógicamente.</td>
-                    </tr>
-
-
-                    <tr>
-                        <td>0005</td>
-                        <td>Supervisor</td>
-                        <td>15/09/2026</td>
-                        <td>12:10:55</td>
-                        <td>Aplicaciones</td>
-                        <td>
-                            <span class="badge badge-info">Modificación</span>
-                        </td>
-                        <td>Aplicación #327</td>
-                        <td>Se modificaron las observaciones y el responsable.</td>
-                    </tr>
+                    <?php if ($registros && $registros->num_rows > 0): ?>
+                        <?php while ($registro = $registros->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= (int)$registro['IdBitacora'] ?></td>
+                                <td><?= htmlspecialchars($registro['Usuario'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($registro['NombreModulo'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($registro['TipoAccion'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($registro['FechaInicioBit'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($registro['FechaFinBit'] ?? 'En curso', ENT_QUOTES, 'UTF-8') ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="6" class="text-center">No hay acciones registradas con esos filtros.</td></tr>
+                    <?php endif; ?>
 
                 </tbody>
 

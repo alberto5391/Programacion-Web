@@ -46,11 +46,10 @@
 
     <div class="header-link">
         <?php
-        if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador') {
-            echo '<a href="index.php?modulo=dashboard">← Volver al Panel de Administración</a>';
-        } else {
-            echo '<a href="index.php?modulo=super_dashboard">← Volver al Panel de Supervisor</a>';
-        }
+        $moduloRegreso = ($_SESSION['rol'] ?? '') === 'Administrador'
+            ? 'dashboard'
+            : (($_SESSION['rol'] ?? '') === 'Supervisor' ? 'super_dashboard' : 'tecnico_dashboard');
+        echo '<a href="index.php?modulo=' . htmlspecialchars($moduloRegreso, ENT_QUOTES, 'UTF-8') . '">← Volver al panel</a>';
         ?>
         <!-- <a href="index.php?modulo=dashboard">← Volver al Panel Principal</a> -->
     </div>
@@ -64,8 +63,11 @@
         <!-- Mensaje de éxito o error -->
         <?= $mensaje ?>
 
+        <?php if (appCan('productos', $productoEditar ? 'modificar' : 'registrar')): ?>
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="productos">
+            <input type="hidden" name="accion" value="guardar_producto">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
 
             <!-- Campo oculto para identificar si es actualización -->
             <?php if ($productoEditar): ?>
@@ -125,6 +127,7 @@
                 <?php endif; ?>
             </div>
         </form>
+        <?php endif; ?>
 
         <h2>Consulta y Administración de Productos</h2>
         
@@ -152,6 +155,20 @@
                             $estado = htmlspecialchars($fila['Estado']);
                             $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
+                            $acciones = "<button type='button' class='btn btn-history'>Ver historial</button>";
+                            if (appCan('productos', 'modificar')) {
+                                $acciones .= "<a href='" . BASE_URL . "index.php?modulo=productos&accion=editar&id={$idProducto}' class='btn btn-edit'>Editar</a>";
+                            }
+                            if (appCan('productos', 'eliminar')) {
+                                $acciones .= "<form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');\">
+                                    <input type='hidden' name='modulo' value='productos'>
+                                    <input type='hidden' name='accion' value='eliminar'>
+                                    <input type='hidden' name='id' value='{$idProducto}'>
+                                    <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                    <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                </form>";
+                            }
+
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
                                     <td>{$nombre}</td>
@@ -159,17 +176,7 @@
                                     <td>{$ingrediente}</td>
                                     <td>{$estado}</td>
                                     <td>
-                                        <div class='action-buttons'>
-                                            <button type='button' class='btn btn-history'>Ver historial</button>
-                                            <a href='" . BASE_URL . "index.php?modulo=productos&accion=editar&id={$idProducto}' class='btn btn-edit'>Editar</a>
-                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');\">
-                                                <input type='hidden' name='modulo' value='productos'>
-                                                <input type='hidden' name='accion' value='eliminar'>
-                                                <input type='hidden' name='id' value='{$idProducto}'>
-                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
-                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
-                                            </form>
-                                        </div>
+                                        <div class='action-buttons'>{$acciones}</div>
                                     </td>
                                   </tr>";
                         }

@@ -19,6 +19,25 @@ class ModelSolicitante {
         return $this->conexion->query($query);
     }
 
+    public function obtenerSolicitantePorId($id) {
+        $stmt = $this->conexion->prepare("SELECT IdSolicitante, TipoOrigen, NombreSolicitante, TelefonoSolicitante, DescripcionSolicitud, EstadoSolicitud FROM Solicitantes WHERE IdSolicitante = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function actualizarSolicitante($id, $tipo, $nombre, $contacto, $descripcion, $estado) {
+        $stmt = $this->conexion->prepare("UPDATE Solicitantes SET TipoOrigen = ?, NombreSolicitante = ?, TelefonoSolicitante = ?, DescripcionSolicitud = ?, EstadoSolicitud = ? WHERE IdSolicitante = ?");
+        $stmt->bind_param("sssssi", $tipo, $nombre, $contacto, $descripcion, $estado, $id);
+        return $stmt->execute();
+    }
+
+    public function eliminarSolicitante($id) {
+        $stmt = $this->conexion->prepare("DELETE FROM Solicitantes WHERE IdSolicitante = ?");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute() && $stmt->affected_rows === 1;
+    }
+
     public function obtenerSolicitantesPorCampana($id_campana) {
         $stmt = $this->conexion->prepare("SELECT s.IdSolicitante, s.TipoOrigen, s.NombreSolicitante, oc.FechaSolicitud FROM OrigenCampana oc INNER JOIN Solicitantes s ON s.IdSolicitante = oc.IdSolicitante WHERE oc.IdCampana = ? ORDER BY s.NombreSolicitante");
         $stmt->bind_param("i", $id_campana);

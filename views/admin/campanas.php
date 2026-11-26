@@ -50,9 +50,11 @@
         //determinamos la URL de regreso según el rol del usuario
         if (isset($_SESSION['rol'])){
             if ($_SESSION['rol'] === 'Administrador') {
-                echo '<a href="index.php?modulo=admin_dashboard">← Volver al Panel de Administración</a>';
+                echo '<a href="index.php?modulo=dashboard">← Volver al Panel de Administración</a>';
             } elseif ($_SESSION['rol'] === 'Supervisor') {
                 echo '<a href="index.php?modulo=super_dashboard">← Volver al Panel de Supervisor</a>';
+            } elseif ($_SESSION['rol'] === 'Tecnico') {
+                echo '<a href="index.php?modulo=tecnico_dashboard">← Volver al Panel Técnico</a>';
             }
         }
         ?>
@@ -62,7 +64,7 @@
     <div class="page-container">
         <h1>Gestión y Registro de Campañas</h1>
         <p class="module-desc">Módulo para dar de alta nuevas campañas de fumigación/inspección, asignarles una zona operativa y consultar su estado general.</p>
-        <?php if (($_SESSION['rol'] ?? '') === 'Administrador'): ?>
+        <?php if (appCan('solicitantes', 'consultar')): ?>
             <p><a href="<?= BASE_URL ?>index.php?modulo=solicitantes">Administrar catálogo de solicitantes y orígenes</a></p>
         <?php endif; ?>
 
@@ -72,6 +74,7 @@
         <?= $mensaje ?>
 
         <!-- Formulario configurado para el Front Controller -->
+        <?php if (appCan('campanas', $campanaEditar ? 'modificar' : 'registrar')): ?>
         <form action="<?= BASE_URL ?>index.php" method="POST">
             <input type="hidden" name="modulo" value="campanas">
             <input type="hidden" name="accion" value="guardar_campana">
@@ -174,6 +177,7 @@
                 <?php endif; ?>
             </div>
         </form>
+        <?php endif; ?>
 
         <h2>Campañas Registradas</h2>
         
@@ -205,6 +209,21 @@
                             $estado = htmlspecialchars($fila['Estado']);
                             $csrfTokenHtml = htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8');
 
+                            $acciones = "<a href='" . BASE_URL . "index.php?modulo=campanas&accion=historial&id_campana={$codigo}' class='btn btn-history'>Ver Actividades</a>
+                                <a href='" . BASE_URL . "index.php?modulo=evidencias&id_campana={$idCampana}' class='btn btn-history'>Evidencias</a>";
+                            if (appCan('campanas', 'modificar')) {
+                                $acciones .= "<a href='" . BASE_URL . "index.php?modulo=campanas&accion=editar&id={$idCampana}' class='btn btn-edit'>Editar</a>";
+                            }
+                            if (appCan('campanas', 'eliminar')) {
+                                $acciones .= "<form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¡ADVERTENCIA! ¿Estás seguro de eliminar la campaña {$codigo}? Esto borrará también sus actividades, solicitantes asociados, evidencias y fotografías. Esta acción NO se puede deshacer.');\">
+                                    <input type='hidden' name='modulo' value='campanas'>
+                                    <input type='hidden' name='accion' value='eliminar'>
+                                    <input type='hidden' name='id' value='{$idCampana}'>
+                                    <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
+                                    <button type='submit' class='btn btn-delete'>Eliminar</button>
+                                </form>";
+                            }
+
                             echo "<tr>
                                     <td><strong>{$codigo}</strong></td>
                                     <td>{$nombre}</td>
@@ -212,18 +231,7 @@
                                     <td><small>De:</small> {$fInicio} <br><small>A:</small> {$fFin}</td>
                                     <td>{$estado}</td>
                                     <td>
-                                        <div class='action-buttons'>
-                                            <a href='" . BASE_URL . "index.php?modulo=campanas&accion=historial&id_campana={$codigo}' class='btn btn-history'>Ver Actividades</a>
-                                            <a href='" . BASE_URL . "index.php?modulo=evidencias&id_campana={$idCampana}' class='btn btn-history'>Evidencias</a>
-                                            <a href='" . BASE_URL . "index.php?modulo=campanas&accion=editar&id={$idCampana}' class='btn btn-edit'>Editar</a>
-                                            <form action='" . BASE_URL . "index.php' method='POST' onsubmit=\"return confirm('¡ADVERTENCIA! ¿Estás seguro de eliminar la campaña {$codigo}? Esto borrará también sus actividades, solicitantes asociados, evidencias y fotografías. Esta acción NO se puede deshacer.');\">
-                                                <input type='hidden' name='modulo' value='campanas'>
-                                                <input type='hidden' name='accion' value='eliminar'>
-                                                <input type='hidden' name='id' value='{$idCampana}'>
-                                                <input type='hidden' name='csrf_token' value='{$csrfTokenHtml}'>
-                                                <button type='submit' class='btn btn-delete'>Eliminar</button>
-                                            </form>
-                                        </div>
+                                        <div class='action-buttons'>{$acciones}</div>
                                     </td>
                                   </tr>";
                         }

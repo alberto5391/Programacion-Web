@@ -15,11 +15,23 @@ $csrfToken = $_SESSION['csrf_token'];
 $accionesConCSRF = [
     'eliminar',
     'guardar_zona',
+    'guardar_plaga',
+    'guardar_producto',
+    'guardar_tecnico',
     'actualizar_coordenadas',
     'guardar_usuario',
     'registrar_solicitante',
+    'guardar_solicitante',
     'guardar_campana',
-    'guardar_evidencia'
+    'guardar_evidencia',
+    'actualizar_evidencia',
+    'guardar_incidencia',
+    'guardar_seguimiento',
+    'guardar_accion',
+    'guardar_aplicacion',
+    'guardar_responsable',
+    'modificar_responsable',
+    'actualizar_estado_campana'
 ];
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
@@ -37,15 +49,32 @@ if (
 // 2. Cargar las constantes de los directorios absolutos
 require_once 'directorios.php';
 
-// 3. Cargar e inicializar la conexión a la Base de Datos
+// 3. Aplicar permisos antes de ejecutar controladores y abrir la conexión
+$modulo = $_REQUEST['modulo'] ?? 'home';
+if (!is_string($modulo)) {
+    http_response_code(400);
+    exit('Módulo no válido.');
+}
+
+require_once RESOURCE_PATH . 'class/class.permissions.php';
+if (
+    isset($_SESSION['id_usuario'])
+    && PermissionPolicy::governs($modulo)
+    && !PermissionPolicy::can(
+        $_SESSION['rol'] ?? '',
+        $modulo,
+        PermissionPolicy::requestedAction($modulo, $_SERVER['REQUEST_METHOD'], $_GET, $_POST)
+    )
+) {
+    http_response_code(403);
+    exit('No tienes permiso para realizar esta acción.');
+}
+
+// 4. Cargar e inicializar la conexión a la Base de Datos
 // Al hacerlo aquí, la variable $conexion estará disponible para todos los controladores y modelos
 require_once RESOURCE_PATH . 'class/class.connection.php';
 $objConexion = new Connection();
 $conexion = $objConexion->getConexion();
-
-// 4. Capturar el módulo solicitado
-// Usamos $_REQUEST para que lea 'modulo' tanto de la URL (?modulo=x) como de formularios POST ocultos
-$modulo = isset($_REQUEST['modulo']) ? $_REQUEST['modulo'] : 'home';
 
 // 5. Enrutador (Switch) - Llama al controlador adecuado según el módulo
 switch ($modulo) {

@@ -23,6 +23,73 @@ if ($idCampanaEntrada !== null && $idCampanaEntrada !== '') {
     }
 }
 
+$tiposPermitidos = ['Inspección', 'Aplicación', 'Seguimiento'];
+$evidenciaEditar = null;
+if (($_GET['accion'] ?? '') === 'editar' && isset($_GET['id'])) {
+    $idEvidenciaEntrada = $_GET['id'];
+    if (is_string($idEvidenciaEntrada) && ctype_digit($idEvidenciaEntrada) && (int)$idEvidenciaEntrada > 0) {
+        $evidenciaEditar = $modeloEvidencia->obtenerEvidenciaPorId((int)$idEvidenciaEntrada);
+        if ($evidenciaEditar) {
+            $idCampanaSeleccionada = (int)$evidenciaEditar['IdCampana'];
+        }
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'actualizar_evidencia') {
+    $idEvidenciaEntrada = $_POST['id_evidencia'] ?? '';
+    $tipoActividad = $_POST['tipo_actividad'] ?? null;
+    if (
+        !is_string($idEvidenciaEntrada)
+        || !ctype_digit($idEvidenciaEntrada)
+        || (int)$idEvidenciaEntrada < 1
+        || !is_string($tipoActividad)
+        || !in_array($tipoActividad, $tiposPermitidos, true)
+    ) {
+        $mensaje = "<div class='alert alert-danger'>La evidencia o su tipo de actividad no son válidos.</div>";
+    } else {
+        $evidenciaActual = $modeloEvidencia->obtenerEvidenciaPorId((int)$idEvidenciaEntrada);
+        if (!$evidenciaActual) {
+            $mensaje = "<div class='alert alert-danger'>No se encontró la evidencia para actualizar.</div>";
+        } elseif (!$modeloEvidencia->actualizarTipoActividad((int)$idEvidenciaEntrada, $tipoActividad)) {
+            $mensaje = "<div class='alert alert-danger'>No se pudo actualizar la evidencia.</div>";
+        } else {
+            $idCampanaSeleccionada = (int)$evidenciaActual['IdCampana'];
+            $mensaje = "<div class='alert alert-success'>Tipo de actividad actualizado.</div>";
+        }
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'eliminar') {
+    $idEvidenciaEntrada = $_POST['id'] ?? '';
+    if (!is_string($idEvidenciaEntrada) || !ctype_digit($idEvidenciaEntrada) || (int)$idEvidenciaEntrada < 1) {
+        $mensaje = "<div class='alert alert-danger'>La evidencia seleccionada no es válida.</div>";
+    } else {
+        $evidenciaEliminar = $modeloEvidencia->obtenerEvidenciaPorId((int)$idEvidenciaEntrada);
+        if (!$evidenciaEliminar || !$modeloEvidencia->eliminarEvidencia((int)$idEvidenciaEntrada)) {
+            $mensaje = "<div class='alert alert-danger'>No se encontró la evidencia para eliminar.</div>";
+        } else {
+            $idCampanaSeleccionada = (int)$evidenciaEliminar['IdCampana'];
+            $ruta = $evidenciaEliminar['RutaArchivo'];
+            if (
+                is_string($ruta)
+                && preg_match('#^resources/uploads/evidencias/[a-f0-9]{32}\.(jpg|png|webp)$#D', $ruta)
+            ) {
+                $nombreArchivo = substr($ruta, strlen('resources/uploads/evidencias/'));
+                $rutaAbsoluta = RESOURCE_PATH . 'uploads' . DIRECTORY_SEPARATOR . 'evidencias' . DIRECTORY_SEPARATOR . $nombreArchivo;
+                if (is_file($rutaAbsoluta) && !unlink($rutaAbsoluta)) {
+                    error_log('No se pudo eliminar el archivo de una evidencia borrada.');
+                    $mensaje = "<div class='alert alert-warning'>La evidencia se quitó de la base de datos, pero no se pudo borrar su archivo.</div>";
+                } else {
+                    $mensaje = "<div class='alert alert-success'>Evidencia eliminada correctamente.</div>";
+                }
+            } else {
+                error_log('Se encontró una ruta inesperada al borrar una evidencia.');
+                $mensaje = "<div class='alert alert-warning'>La evidencia se quitó de la base de datos, pero su archivo no se borró por tener una ruta no reconocida.</div>";
+            }
+        }
+    }
+}
+
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['accion'] ?? null) === 'guardar_evidencia'
@@ -35,7 +102,6 @@ if (
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? null) === 'guardar_evidencia' && $idCampanaSeleccionada !== null) {
     $campana = $modeloCampana->obtenerCampanaPorId($idCampanaSeleccionada);
     $tipoActividad = $_POST['tipo_actividad'] ?? null;
-    $tiposPermitidos = ['Inspección', 'Aplicación', 'Seguimiento'];
     $archivo = $_FILES['foto'] ?? null;
     $archivoGuardado = null;
 

@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_SESSION['id_usuario']) || !in_array($_SESSION['rol'], ['Administrador', 'Supervisor'])) {
+if (!isset($_SESSION['id_usuario']) || !in_array($_SESSION['rol'], ['Administrador', 'Supervisor', 'Tecnico'], true)) {
     header("Location: index.php?modulo=login");
     exit();
 }
