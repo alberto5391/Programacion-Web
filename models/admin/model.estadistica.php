@@ -122,6 +122,26 @@ class ModelEstadistica
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function obtenerIncidenciasPorTipo($fechaInicio, $fechaFin, $municipio)
+    {
+        $stmt = $this->conexion->prepare(
+            "SELECT COALESCE(ti.Nombre, 'Sin clasificar') AS Tipo,
+                    COUNT(i.IdIncidencia) AS TotalIncidencias
+             FROM Incidencias i
+             INNER JOIN Campanas c ON c.IdCampana = i.IdCampana
+             INNER JOIN Zonas z ON z.IdZona = c.IdZona
+             LEFT JOIN tipoincidencia ti ON ti.IdTipoIncidencia = i.IdTipoIncidencia
+             WHERE i.FechaRegistro >= CONCAT(?, ' 00:00:00')
+               AND i.FechaRegistro < DATE_ADD(?, INTERVAL 1 DAY)
+               AND (? = '' OR z.Municipio = ?)
+             GROUP BY ti.IdTipoIncidencia, ti.Nombre
+             ORDER BY TotalIncidencias DESC, Tipo"
+        );
+        $stmt->bind_param('ssss', $fechaInicio, $fechaFin, $municipio, $municipio);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function obtenerEstadisticasZonas($fechaInicio, $fechaFin, $municipio)
     {
         $stmt = $this->conexion->prepare(

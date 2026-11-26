@@ -19,6 +19,15 @@ class ModelOperaciones
         );
     }
 
+    public function obtenerTiposIncidencia()
+    {
+        return $this->conexion->query(
+            "SELECT IdTipoIncidencia, Nombre
+             FROM tipoincidencia
+             ORDER BY Nombre"
+        );
+    }
+
     public function campanaOperativa($idCampana)
     {
         $stmt = $this->conexion->prepare(
@@ -32,10 +41,12 @@ class ModelOperaciones
     public function obtenerIncidencias()
     {
         return $this->conexion->query(
-            "SELECT i.IdIncidencia, i.IdCampana, i.Zona, i.ActividadRelacionada,
+            "SELECT i.IdIncidencia, i.IdCampana, i.IdTipoIncidencia,
+                    ti.Nombre AS TipoIncidencia, i.Zona, i.ActividadRelacionada,
                     i.Descripcion, i.FechaRegistro, c.CodigoCampana, c.NombreCampana
              FROM Incidencias i
              INNER JOIN Campanas c ON c.IdCampana = i.IdCampana
+             LEFT JOIN tipoincidencia ti ON ti.IdTipoIncidencia = i.IdTipoIncidencia
              ORDER BY i.FechaRegistro DESC, i.IdIncidencia DESC"
         );
     }
@@ -43,7 +54,7 @@ class ModelOperaciones
     public function obtenerIncidenciaPorId($id)
     {
         $stmt = $this->conexion->prepare(
-            "SELECT IdIncidencia, IdCampana, ActividadRelacionada, Descripcion
+            "SELECT IdIncidencia, IdCampana, IdTipoIncidencia, ActividadRelacionada, Descripcion
              FROM Incidencias
              WHERE IdIncidencia = ?"
         );
@@ -52,20 +63,22 @@ class ModelOperaciones
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function registrarIncidencia($idCampana, $actividad, $descripcion)
+    public function registrarIncidencia($idCampana, $actividad, $descripcion, $idTipoIncidencia)
     {
         $stmt = $this->conexion->prepare(
-            "INSERT INTO Incidencias (IdCampana, Zona, ActividadRelacionada, Descripcion)
-             SELECT c.IdCampana, z.NombreZona, ?, ?
+            "INSERT INTO Incidencias (
+                IdCampana, Zona, ActividadRelacionada, IdTipoIncidencia, Descripcion
+             )
+             SELECT c.IdCampana, z.NombreZona, ?, ?, ?
              FROM Campanas c
              INNER JOIN Zonas z ON z.IdZona = c.IdZona
              WHERE c.IdCampana = ?"
         );
-        $stmt->bind_param('ssi', $actividad, $descripcion, $idCampana);
+        $stmt->bind_param('sisi', $actividad, $idTipoIncidencia, $descripcion, $idCampana);
         return $stmt->execute() && $stmt->affected_rows === 1;
     }
 
-    public function actualizarIncidencia($id, $idCampana, $actividad, $descripcion)
+    public function actualizarIncidencia($id, $idCampana, $actividad, $descripcion, $idTipoIncidencia)
     {
         $stmt = $this->conexion->prepare(
             "UPDATE Incidencias i
@@ -74,10 +87,11 @@ class ModelOperaciones
              SET i.IdCampana = c.IdCampana,
                  i.Zona = z.NombreZona,
                  i.ActividadRelacionada = ?,
+             i.IdTipoIncidencia = ?,
                  i.Descripcion = ?
              WHERE i.IdIncidencia = ?"
         );
-        $stmt->bind_param('issi', $idCampana, $actividad, $descripcion, $id);
+        $stmt->bind_param('isisi', $idCampana, $actividad, $idTipoIncidencia, $descripcion, $id);
         return $stmt->execute();
     }
 

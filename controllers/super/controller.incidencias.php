@@ -9,6 +9,8 @@ if (
 
 require_once MODEL_PATH . 'model.operaciones.php';
 $modeloOperaciones = new ModelOperaciones($conexion);
+$tiposIncidencia = $modeloOperaciones->obtenerTiposIncidencia()->fetch_all(MYSQLI_ASSOC);
+$idsTiposIncidencia = array_map('intval', array_column($tiposIncidencia, 'IdTipoIncidencia'));
 $mensaje = '';
 $incidenciaEditar = null;
 
@@ -27,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($accion === 'guardar_incidencia') {
         $idCampanaEntrada = $_POST['id_campana'] ?? '';
         $actividad = $_POST['actividad'] ?? '';
+        $idTipoIncidenciaEntrada = $_POST['id_tipo_incidencia'] ?? '';
         $descripcionEntrada = $_POST['detalle'] ?? '';
         $descripcion = is_string($descripcionEntrada) ? trim($descripcionEntrada) : '';
         $idEntrada = $_POST['id_incidencia'] ?? '';
@@ -36,28 +39,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             && (int)$idCampanaEntrada > 0;
         $idValido = $idEntrada === ''
             || (is_string($idEntrada) && ctype_digit($idEntrada) && (int)$idEntrada > 0);
+        $tipoIncidenciaValido = is_string($idTipoIncidenciaEntrada)
+            && ctype_digit($idTipoIncidenciaEntrada)
+            && (int)$idTipoIncidenciaEntrada > 0
+            && in_array((int)$idTipoIncidenciaEntrada, $idsTiposIncidencia, true);
 
         if (
             !$idCampanaValido
             || !$idValido
+            || !$tipoIncidenciaValido
             || !is_string($actividad)
             || !in_array($actividad, $actividadesPermitidas, true)
             || $descripcion === ''
         ) {
-            $mensaje = 'Completa una campaña, actividad y descripción válidas.';
+            $mensaje = 'Completa una campaña, actividad, tipo de incidencia y descripción válidos.';
         } else {
             if ($idEntrada === '') {
                 $guardado = $modeloOperaciones->registrarIncidencia(
                     (int)$idCampanaEntrada,
                     $actividad,
-                    $descripcion
+                    $descripcion,
+                    (int)$idTipoIncidenciaEntrada
                 );
             } else {
                 $guardado = $modeloOperaciones->actualizarIncidencia(
                     (int)$idEntrada,
                     (int)$idCampanaEntrada,
                     $actividad,
-                    $descripcion
+                    $descripcion,
+                    (int)$idTipoIncidenciaEntrada
                 );
             }
 

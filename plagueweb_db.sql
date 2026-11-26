@@ -217,9 +217,17 @@ CREATE TABLE `evidenciasfotograficas` (
   CONSTRAINT `fk_idtipoaccion` FOREIGN KEY (`idTipoAccion`) REFERENCES `tipoaccion` (`idTipoAccion`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `tipoincidencia` (
+  `IdTipoIncidencia` int(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(100) NOT NULL,
+  PRIMARY KEY (`IdTipoIncidencia`),
+  UNIQUE KEY `Nombre` (`Nombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `incidencias` (
   `IdIncidencia` int(11) NOT NULL AUTO_INCREMENT,
   `IdCampana` int(11) NOT NULL,
+  `IdTipoIncidencia` int(11) DEFAULT NULL,
   `Zona` varchar(100) NOT NULL,
   `ActividadRelacionada` enum('Inspección','Aplicación','Seguimiento') NOT NULL,
   `Descripcion` text NOT NULL,
@@ -227,7 +235,9 @@ CREATE TABLE `incidencias` (
   `SincronizadoOffline` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`IdIncidencia`),
   KEY `fk_incidencia_campana` (`IdCampana`),
-  CONSTRAINT `fk_incidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_incidencia_tipo` (`IdTipoIncidencia`),
+  CONSTRAINT `fk_incidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_incidencia_tipo` FOREIGN KEY (`IdTipoIncidencia`) REFERENCES `tipoincidencia` (`IdTipoIncidencia`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `accionescampana` (
@@ -974,6 +984,16 @@ INSERT INTO `evidenciasfotograficas` (`IdEvidencia`, `IdCampana`, `idTipoAccion`
 (48, 56, 6, 'Aplicación', 'uploads/evidencias/2026/11/evidencia_048.jpg', '2026-11-19 08:30:00'),
 (49, 57, 1, 'Inspección', 'uploads/evidencias/2026/12/evidencia_049.jpg', '2026-12-02 09:55:00'),
 (50, 58, 2, 'Seguimiento', 'uploads/evidencias/2026/12/evidencia_050.jpg', '2026-12-06 10:15:00');
+
+INSERT INTO `tipoincidencia` (`IdTipoIncidencia`, `Nombre`) VALUES
+(1, 'Presencia de plagas'),
+(2, 'Saneamiento y atrayentes'),
+(3, 'Infraestructura del sitio'),
+(4, 'Condiciones ambientales'),
+(5, 'Acceso y restricciones'),
+(6, 'Equipo o insumos'),
+(7, 'Seguridad operativa'),
+(8, 'Otro');
 
 INSERT INTO `incidencias` (`IdIncidencia`, `IdCampana`, `Zona`, `ActividadRelacionada`, `Descripcion`, `FechaRegistro`, `SincronizadoOffline`) VALUES
 (1, 9, 'Centro Histórico, Huimanguillo', 'Inspección', 'Patio con acumulación de agua en recipientes abiertos y acceso restringido en dos predios.', '2026-01-07 09:10:00', 1),

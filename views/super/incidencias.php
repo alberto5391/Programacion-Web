@@ -164,6 +164,17 @@
                         </select>
                     </div>
                     <div class="campo">
+                        <label for="id_tipo_incidencia">Tipo de incidencia:</label>
+                        <select class="control" id="id_tipo_incidencia" name="id_tipo_incidencia" required>
+                            <option value="">Selecciona un tipo</option>
+                            <?php foreach ($tiposIncidencia as $tipoIncidencia): ?>
+                                <option value="<?= (int)$tipoIncidencia['IdTipoIncidencia'] ?>" <?= $incidenciaEditar && (int)($incidenciaEditar['IdTipoIncidencia'] ?? 0) === (int)$tipoIncidencia['IdTipoIncidencia'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tipoIncidencia['Nombre'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="campo">
                         <label for="detalle">Detalle de la incidencia:</label>
                         <textarea class="control" id="detalle" name="detalle" rows="5" placeholder="Describa la incidencia detectada" required><?= $incidenciaEditar ? htmlspecialchars($incidenciaEditar['Descripcion'], ENT_QUOTES, 'UTF-8') : '' ?></textarea>
                     </div>
@@ -182,6 +193,7 @@
                             <th>Campaña</th>
                             <th>Zona</th>
                             <th>Actividad</th>
+                            <th>Tipo</th>
                             <th>Detalle</th>
                             <th>Fecha</th>
                             <th>Acciones</th>
@@ -194,6 +206,7 @@
                                     <td><?= htmlspecialchars($incidencia['CodigoCampana'] . ' — ' . $incidencia['NombreCampana'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($incidencia['Zona'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($incidencia['ActividadRelacionada'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars($incidencia['TipoIncidencia'] ?? 'Sin clasificar', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($incidencia['Descripcion'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($incidencia['FechaRegistro'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td>
@@ -213,7 +226,7 @@
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <tr><td colspan="6">Todavía no hay incidencias registradas.</td></tr>
+                            <tr><td colspan="7">Todavía no hay incidencias registradas.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
