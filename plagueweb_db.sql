@@ -1,183 +1,30 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 24-11-2026 a las 07:48:21
--- Versión del servidor: 11.5.2-MariaDB
--- Versión de PHP: 8.3.14
+-- Base de datos: `plagueweb_db`
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Base de datos: `plagueweb_db`
---
 CREATE DATABASE IF NOT EXISTS `plagueweb_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `plagueweb_db`;
 
--- Este archivo es solo para instalar en una base vacía; no es una migración.
-DELIMITER //
-DROP PROCEDURE IF EXISTS `plagueweb_assert_empty_database`//
-CREATE PROCEDURE `plagueweb_assert_empty_database`()
-BEGIN
-  IF EXISTS (
-    SELECT 1
-    FROM information_schema.tables
-    WHERE table_schema = DATABASE()
-  ) THEN
-    SIGNAL SQLSTATE '45000'
-      SET MESSAGE_TEXT = 'Importación cancelada: plagueweb_db ya contiene tablas. Usa una base vacía para no modificar datos existentes.';
-  END IF;
-END//
-DELIMITER ;
-CALL `plagueweb_assert_empty_database`();
-DROP PROCEDURE `plagueweb_assert_empty_database`;
+-- ========================================================
+-- 1. CREACIÓN DE TABLAS (CON PK, UNIQUE Y FOREIGN KEYS)
+-- ========================================================
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `accionescampana`
---
-
-CREATE TABLE IF NOT EXISTS `accionescampana` (
-  `IdAccion` int(11) NOT NULL AUTO_INCREMENT,
-  `IdCampana` int(11) NOT NULL,
-  `IdTecnico` int(11) NOT NULL,
-  `TipoAccion` enum('Inspección','Diagnóstico','Aplicación','Seguimiento') NOT NULL,
-  `FechaHora` datetime NOT NULL,
-  `DetallesResultados` text NOT NULL,
-  `Observaciones` text DEFAULT NULL,
-  PRIMARY KEY (`IdAccion`),
-  KEY `fk_accion_campana` (`IdCampana`),
-  KEY `fk_accion_tecnico` (`IdTecnico`)
+CREATE TABLE `roles` (
+  `IdRol` int(11) NOT NULL AUTO_INCREMENT,
+  `NombreRol` varchar(50) NOT NULL,
+  PRIMARY KEY (`IdRol`),
+  UNIQUE KEY `NombreRol` (`NombreRol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bitacora`
---
-
-CREATE TABLE IF NOT EXISTS `bitacora` (
-  `IdBitacora` int(11) NOT NULL AUTO_INCREMENT,
-  `IdUsuario` int(11) NOT NULL,
-  `IdModulo` int(11) NOT NULL,
-  `TipoAccion` varchar(50) NOT NULL,
-  `FechaInicioBit` datetime NOT NULL DEFAULT current_timestamp(),
-  `FechaFinBit` datetime DEFAULT NULL,
-  PRIMARY KEY (`IdBitacora`),
-  KEY `fk_bitacora_usuario` (`IdUsuario`),
-  KEY `fk_bitacora_modulo` (`IdModulo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `campanas`
---
-
-CREATE TABLE IF NOT EXISTS `campanas` (
-  `IdCampana` int(11) NOT NULL AUTO_INCREMENT,
-  `CodigoCampana` varchar(50) NOT NULL,
-  `NombreCampana` varchar(150) NOT NULL,
-  `IdZona` int(11) NOT NULL,
-  `FechaInicio` date NOT NULL,
-  `FechaFin` date DEFAULT NULL,
-  `Estado` enum('Programada','En Curso','Finalizada','Cancelada') DEFAULT 'Programada',
-  PRIMARY KEY (`IdCampana`),
-  UNIQUE KEY `CodigoCampana` (`CodigoCampana`),
-  KEY `fk_campana_zona` (`IdZona`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `campanas`
---
-
-INSERT INTO `campanas` (`IdCampana`, `CodigoCampana`, `NombreCampana`, `IdZona`, `FechaInicio`, `FechaFin`, `Estado`) VALUES
-(1, 'CAMP-2026-0100', 'Prevencion de dengue ITVH', 1, '2026-10-28', '2026-10-31', 'Programada'),
-(2, '3456', 'sdfgh', 1, '2026-11-03', NULL, 'En Curso'),
-(3, 'smd, edi', 'asmnd', 3, '2026-11-23', '2026-11-17', 'Programada'),
-(8, '1234566754', 'noviembre', 3, '2026-11-11', '2026-11-30', 'En Curso');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `campanatecnicos`
---
-
-CREATE TABLE IF NOT EXISTS `campanatecnicos` (
-  `IdCampana` int(11) NOT NULL,
-  `IdUsuario` int(11) NOT NULL,
-  PRIMARY KEY (`IdCampana`,`IdUsuario`),
-  KEY `fk_ct_usuario` (`IdUsuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `evidenciasfotograficas`
---
-
-CREATE TABLE IF NOT EXISTS `evidenciasfotograficas` (
-  `IdEvidencia` int(11) NOT NULL AUTO_INCREMENT,
-  `IdCampana` int(11) NOT NULL,
-  `IdAccion` int(11) DEFAULT NULL,
-  `TipoActividad` enum('Inspección','Aplicación','Seguimiento') NOT NULL,
-  `RutaArchivo` varchar(255) NOT NULL,
-  `FechaSubida` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`IdEvidencia`),
-  KEY `fk_evidencia_campana` (`IdCampana`),
-  KEY `fk_evidencia_accion` (`IdAccion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `incidencias`
---
-
-CREATE TABLE IF NOT EXISTS `incidencias` (
-  `IdIncidencia` int(11) NOT NULL AUTO_INCREMENT,
-  `IdCampana` int(11) NOT NULL,
-  `Zona` varchar(100) NOT NULL,
-  `ActividadRelacionada` enum('Inspección','Aplicación','Seguimiento') NOT NULL,
-  `Descripcion` text NOT NULL,
-  `FechaRegistro` datetime DEFAULT current_timestamp(),
-  `SincronizadoOffline` tinyint(1) DEFAULT 1,
-  PRIMARY KEY (`IdIncidencia`),
-  KEY `fk_incidencia_campana` (`IdCampana`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `insumosusados`
---
-
-CREATE TABLE IF NOT EXISTS `insumosusados` (
-  `IdAccion` int(11) NOT NULL,
-  `IdProducto` int(11) NOT NULL,
-  `CantidadAplicada` decimal(10,2) NOT NULL,
-  `UnidadMedida` varchar(20) NOT NULL,
-  PRIMARY KEY (`IdAccion`,`IdProducto`),
-  KEY `fk_iu_producto` (`IdProducto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `modulos`
---
-
-CREATE TABLE IF NOT EXISTS `modulos` (
+CREATE TABLE `modulos` (
   `IdModulo` int(11) NOT NULL AUTO_INCREMENT,
   `NombreModulo` varchar(100) NOT NULL,
   `EstadoModulo` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
@@ -185,29 +32,13 @@ CREATE TABLE IF NOT EXISTS `modulos` (
   UNIQUE KEY `NombreModulo` (`NombreModulo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `origencampana`
---
-
-CREATE TABLE IF NOT EXISTS `origencampana` (
-  `IdOrigenCampana` int(11) NOT NULL AUTO_INCREMENT,
-  `IdCampana` int(11) NOT NULL,
-  `IdSolicitante` int(11) NOT NULL,
-  `FechaSolicitud` date NOT NULL,
-  PRIMARY KEY (`IdOrigenCampana`),
-  KEY `fk_origencampana_campana` (`IdCampana`),
-  KEY `fk_origencampana_solicitante` (`IdSolicitante`)
+CREATE TABLE `tipoaccion` (
+  `idTipoAccion` int(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(255) NOT NULL,
+  PRIMARY KEY (`idTipoAccion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `plagas`
---
-
-CREATE TABLE IF NOT EXISTS `plagas` (
+CREATE TABLE `plagas` (
   `IdPlaga` int(11) NOT NULL AUTO_INCREMENT,
   `CodigoPlaga` varchar(20) NOT NULL,
   `NombreComun` varchar(100) NOT NULL,
@@ -217,38 +48,9 @@ CREATE TABLE IF NOT EXISTS `plagas` (
   `Estado` enum('Activa','Inactiva') DEFAULT 'Activa',
   PRIMARY KEY (`IdPlaga`),
   UNIQUE KEY `CodigoPlaga` (`CodigoPlaga`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `plagas`
---
-
-INSERT INTO `plagas` (`IdPlaga`, `CodigoPlaga`, `NombreComun`, `NombreCientifico`, `Descripcion`, `TratamientoRecomendado`, `Estado`) VALUES
-(3, 'sdrfghjkl', 'sxcvbn', 'dfghj', 'wswdfghjk', 'sdfghjk', 'Activa'),
-(4, 'PGG001', 'Abejas', 'ghujiop', '´<ghijowmefkogwnroj', 'incendio', 'Activa');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `plagasidentificadas`
---
-
-CREATE TABLE IF NOT EXISTS `plagasidentificadas` (
-  `IdAccion` int(11) NOT NULL,
-  `IdPlaga` int(11) NOT NULL,
-  `NivelInfestacion` enum('Bajo','Medio','Alto','Crítico') DEFAULT NULL,
-  `Observaciones` text DEFAULT NULL,
-  PRIMARY KEY (`IdAccion`,`IdPlaga`),
-  KEY `fk_pi_plaga` (`IdPlaga`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `productos`
---
-
-CREATE TABLE IF NOT EXISTS `productos` (
+CREATE TABLE `productos` (
   `IdProducto` int(11) NOT NULL AUTO_INCREMENT,
   `CodigoProducto` varchar(20) NOT NULL,
   `NombreComercial` varchar(150) NOT NULL,
@@ -259,25 +61,33 @@ CREATE TABLE IF NOT EXISTS `productos` (
   `Estado` enum('Activo','Inactivo') DEFAULT 'Activo',
   PRIMARY KEY (`IdProducto`),
   UNIQUE KEY `CodigoProducto` (`CodigoProducto`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `productos`
---
+CREATE TABLE `solicitantes` (
+  `IdSolicitante` int(11) NOT NULL AUTO_INCREMENT,
+  `TipoOrigen` enum('Reporte ciudadano','Cliente privado','Programa de salud público','Institución','Solicitud interna','Otro') NOT NULL,
+  `NombreSolicitante` varchar(150) NOT NULL,
+  `TelefonoSolicitante` varchar(20) DEFAULT NULL,
+  `DescripcionSolicitud` text NOT NULL,
+  `EstadoSolicitud` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
+  PRIMARY KEY (`IdSolicitante`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `productos` (`IdProducto`, `CodigoProducto`, `NombreComercial`, `IngredienteActivo`, `TipoProducto`, `UnidadMedida`, `PresentacionDosis`, `Estado`) VALUES
-(1, 'PROD-001', 'Paracetamol genérico', 'Acetaminofén', 'Insecticida', 'Caja', '500 mg', 'Activo'),
-(2, 'PROD-002', 'Amoxil', 'Amoxicilina trihidratada', 'Rodenticida', 'Frasco', '250 mg/5ml', 'Activo'),
-(3, 'wertyui', 'xfcgvb', 'cfgvhbjn', 'Larvicida', 'Por Definir', 'cvbnm', 'Activo'),
-(4, 'bvc', 'coca', 'fd', 'Otro', 'Por Definir', 'gfd', 'Activo');
+CREATE TABLE `zonas` (
+  `IdZona` int(11) NOT NULL AUTO_INCREMENT,
+  `CodigoZona` varchar(20) NOT NULL,
+  `NombreZona` varchar(150) NOT NULL,
+  `Municipio` varchar(100) NOT NULL,
+  `Referencias` text NOT NULL,
+  `Latitud` decimal(10,8) DEFAULT NULL,
+  `Longitud` decimal(11,8) DEFAULT NULL,
+  `Estado` enum('Activa','Inactiva') DEFAULT 'Activa',
+  `FechaRegistro` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`IdZona`),
+  UNIQUE KEY `CodigoZona` (`CodigoZona`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `recuperacioncontrasena`
---
-
-CREATE TABLE IF NOT EXISTS `recuperacioncontrasena` (
+CREATE TABLE `recuperacioncontrasena` (
   `IdRecuperacion` int(11) NOT NULL AUTO_INCREMENT,
   `CorreoContrasena` varchar(150) NOT NULL,
   `CodigoRecuperacion` varchar(255) NOT NULL,
@@ -288,92 +98,7 @@ CREATE TABLE IF NOT EXISTS `recuperacioncontrasena` (
   PRIMARY KEY (`IdRecuperacion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `roles`
---
-
-CREATE TABLE IF NOT EXISTS `roles` (
-  `IdRol` int(11) NOT NULL AUTO_INCREMENT,
-  `NombreRol` varchar(50) NOT NULL,
-  PRIMARY KEY (`IdRol`),
-  UNIQUE KEY `NombreRol` (`NombreRol`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `roles`
---
-
-INSERT INTO `roles` (`IdRol`, `NombreRol`) VALUES
-(1, 'Administrador'),
-(2, 'Supervisor'),
-(3, 'Tecnico');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `rolpermisos`
---
-
-CREATE TABLE IF NOT EXISTS `rolpermisos` (
-  `IdRolPermisos` int(11) NOT NULL AUTO_INCREMENT,
-  `IdUsuario` int(11) NOT NULL,
-  `Consultar` tinyint(1) NOT NULL DEFAULT 0,
-  `Registrar` tinyint(1) NOT NULL DEFAULT 0,
-  `Modificar` tinyint(1) NOT NULL DEFAULT 0,
-  `Eliminar` tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`IdRolPermisos`),
-  UNIQUE KEY `IdUsuario` (`IdUsuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `solicitantes`
---
-
-CREATE TABLE IF NOT EXISTS `solicitantes` (
-  `IdSolicitante` int(11) NOT NULL AUTO_INCREMENT,
-  `TipoOrigen` enum('Reporte ciudadano','Cliente privado','Programa de salud público','Institución','Solicitud interna','Otro') NOT NULL,
-  `NombreSolicitante` varchar(150) NOT NULL,
-  `TelefonoSolicitante` varchar(20) DEFAULT NULL,
-  `DescripcionSolicitud` text NOT NULL,
-  `EstadoSolicitud` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
-  PRIMARY KEY (`IdSolicitante`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tecnicos`
---
-
-CREATE TABLE IF NOT EXISTS `tecnicos` (
-  `IdTecnico` int(11) NOT NULL AUTO_INCREMENT,
-  `IdUsuario` int(11) NOT NULL,
-  `NumeroEmpleado` varchar(20) NOT NULL,
-  `Especialidad` enum('Inspección','Aplicación','Ambas') NOT NULL,
-  PRIMARY KEY (`IdTecnico`),
-  UNIQUE KEY `IdUsuario` (`IdUsuario`),
-  UNIQUE KEY `NumeroEmpleado` (`NumeroEmpleado`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `tecnicos`
---
-
-INSERT INTO `tecnicos` (`IdTecnico`, `IdUsuario`, `NumeroEmpleado`, `Especialidad`) VALUES
-(1, 4, 'TEC-001', 'Inspección'),
-(5, 2, 'TEC-004', 'Ambas');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
-
-CREATE TABLE IF NOT EXISTS `usuarios` (
+CREATE TABLE `usuarios` (
   `IdUsuario` int(11) NOT NULL AUTO_INCREMENT,
   `IdRol` int(11) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
@@ -389,55 +114,48 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `Correo` (`Correo`),
   UNIQUE KEY `Curp` (`Curp`),
   UNIQUE KEY `Rfc` (`Rfc`),
-  KEY `fk_usuario_rol` (`IdRol`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `fk_usuario_rol` (`IdRol`),
+  CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`IdRol`) REFERENCES `roles` (`IdRol`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `usuarios`
---
+CREATE TABLE `rolpermisos` (
+  `IdRolPermisos` int(11) NOT NULL AUTO_INCREMENT,
+  `IdUsuario` int(11) NOT NULL,
+  `Consultar` tinyint(1) NOT NULL DEFAULT 0,
+  `Registrar` tinyint(1) NOT NULL DEFAULT 0,
+  `Modificar` tinyint(1) NOT NULL DEFAULT 0,
+  `Eliminar` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`IdRolPermisos`),
+  UNIQUE KEY `IdUsuario` (`IdUsuario`),
+  CONSTRAINT `fk_rol_permisos_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `usuarios` (`IdUsuario`, `IdRol`, `Nombre`, `Apellidos`, `Contacto`, `Correo`, `Curp`, `Rfc`, `Password`, `Estado`, `FechaCreacion`) VALUES
-(1, 1, 'Admin', 'Root', '1234567890', 'root@root.com', 'root123', 'root123', '$2y$12$kC1gQgG4I96wkLMA0CUStOHAUFUMB9znUjWHC197AbmLOyaexZa4G', 'Activo', '2026-10-23 06:14:13'),
-(2, 2, 'root2', 'root2', 'root2', 'root2@root2.com', 'root2', 'root2', '$2y$12$Fa834aRyCbfNh2IrhDc0p.HQYrT5INjmD3FqGLOeIpSmj.Ri1ws2K', 'Activo', '2026-10-23 15:55:25'),
-(3, 3, 'root3', 'root3', 'root3', 'root3@root3.com', 'root3', 'root3', '$2y$12$Diph8QyGt/JlJvyuGeYlTOfYtCWwPuii1qLf0XMNu5cbhgSIqj4hC', 'Activo', '2026-10-23 15:52:02'),
-(4, 1, 'JOSE ALBERTO', 'RODRIGUEZ perez', '1234567890', 'alberto@gmail.com', 'ROGA', 'ROGA', '$2y$10$HQFCz/N1zaLN.Syd8ZFEBu6fkWFV.P9VJ8uH74okCtpsGEyxvZRBm', 'Activo', '2026-10-27 19:43:35'),
-(5, 2, 'EDUARDO ALBERTO', 'RODRIGUEZ GERONIMO', '123456789', 'prueba1@itvh.tecnm.mx.com', '123456789', '123456789', '$2y$10$kC3HFoaYZX5Hgatg4BbaLe1kITs.tjGIdqnPM1Sq2DwAdodJUVv4u', 'Activo', '2026-10-28 16:26:45');
+CREATE TABLE `tecnicos` (
+  `IdTecnico` int(11) NOT NULL AUTO_INCREMENT,
+  `IdUsuario` int(11) NOT NULL,
+  `NumeroEmpleado` varchar(20) NOT NULL,
+  `Especialidad` enum('Inspección','Aplicación','Ambas') NOT NULL,
+  PRIMARY KEY (`IdTecnico`),
+  UNIQUE KEY `IdUsuario` (`IdUsuario`),
+  UNIQUE KEY `NumeroEmpleado` (`NumeroEmpleado`),
+  CONSTRAINT `fk_tecnico_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
+CREATE TABLE `bitacora` (
+  `IdBitacora` int(11) NOT NULL AUTO_INCREMENT,
+  `IdUsuario` int(11) NOT NULL,
+  `IdModulo` int(11) NOT NULL,
+  `TipoAccion` varchar(50) NOT NULL,
+  `FechaInicioBit` datetime NOT NULL DEFAULT current_timestamp(),
+  `FechaFinBit` datetime DEFAULT NULL,
+  PRIMARY KEY (`IdBitacora`),
+  KEY `fk_bitacora_usuario` (`IdUsuario`),
+  KEY `fk_bitacora_modulo` (`IdModulo`),
+  CONSTRAINT `fk_bitacora_modulo` FOREIGN KEY (`IdModulo`) REFERENCES `modulos` (`IdModulo`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_bitacora_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Estructura de tabla para la tabla `zonas`
---
-
-CREATE TABLE IF NOT EXISTS `zonas` (
-  `IdZona` int(11) NOT NULL AUTO_INCREMENT,
-  `CodigoZona` varchar(20) NOT NULL,
-  `NombreZona` varchar(150) NOT NULL,
-  `Municipio` varchar(100) NOT NULL,
-  `Referencias` text NOT NULL,
-  `Latitud` decimal(10,8) DEFAULT NULL,
-  `Longitud` decimal(11,8) DEFAULT NULL,
-  `Estado` enum('Activa','Inactiva') DEFAULT 'Activa',
-  `FechaRegistro` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`IdZona`),
-  UNIQUE KEY `CodigoZona` (`CodigoZona`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `zonas`
---
-
-INSERT INTO `zonas` (`IdZona`, `CodigoZona`, `NombreZona`, `Municipio`, `Referencias`, `Latitud`, `Longitud`, `Estado`, `FechaRegistro`) VALUES
-(1, 'ZN-001', 'Indeco', 'Centro', 'Por el colegip', NULL, NULL, 'Activa', '2026-10-28 07:07:00'),
-(3, 'gfchv', 'kne', 'gb-lk', 'a,sasdfs', NULL, NULL, 'Activa', '2026-10-28 16:27:23');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `zonasprioritarias`
---
-
-CREATE TABLE IF NOT EXISTS `zonasprioritarias` (
+CREATE TABLE `zonasprioritarias` (
   `IdZonaPrioritaria` int(11) NOT NULL AUTO_INCREMENT,
   `IdZona` int(11) NOT NULL,
   `IdPlaga` int(11) NOT NULL,
@@ -445,98 +163,1076 @@ CREATE TABLE IF NOT EXISTS `zonasprioritarias` (
   `FechaFinalPrioritaria` date NOT NULL,
   PRIMARY KEY (`IdZonaPrioritaria`),
   KEY `fk_zp_zona` (`IdZona`),
-  KEY `fk_zp_plaga` (`IdPlaga`)
-) ;
+  KEY `fk_zp_plaga` (`IdPlaga`),
+  CONSTRAINT `fk_zp_plaga` FOREIGN KEY (`IdPlaga`) REFERENCES `plagas` (`IdPlaga`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_zp_zona` FOREIGN KEY (`IdZona`) REFERENCES `zonas` (`IdZona`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Restricciones para tablas volcadas
---
+CREATE TABLE `campanas` (
+  `IdCampana` int(11) NOT NULL AUTO_INCREMENT,
+  `CodigoCampana` varchar(50) NOT NULL,
+  `NombreCampana` varchar(150) NOT NULL,
+  `IdZona` int(11) NOT NULL,
+  `FechaInicio` date NOT NULL,
+  `FechaFin` date DEFAULT NULL,
+  `Estado` enum('Programada','En Curso','Finalizada','Cancelada') DEFAULT 'Programada',
+  PRIMARY KEY (`IdCampana`),
+  UNIQUE KEY `CodigoCampana` (`CodigoCampana`),
+  KEY `fk_campana_zona` (`IdZona`),
+  CONSTRAINT `fk_campana_zona` FOREIGN KEY (`IdZona`) REFERENCES `zonas` (`IdZona`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `accionescampana`
---
-ALTER TABLE `accionescampana`
-  ADD CONSTRAINT `fk_accion_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_accion_tecnico` FOREIGN KEY (`IdTecnico`) REFERENCES `tecnicos` (`IdTecnico`) ON UPDATE CASCADE;
+CREATE TABLE `campanatecnicos` (
+  `IdCampana` int(11) NOT NULL,
+  `IdUsuario` int(11) NOT NULL,
+  PRIMARY KEY (`IdCampana`,`IdUsuario`),
+  KEY `fk_ct_usuario` (`IdUsuario`),
+  CONSTRAINT `fk_ct_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ct_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  ADD CONSTRAINT `fk_bitacora_modulo` FOREIGN KEY (`IdModulo`) REFERENCES `modulos` (`IdModulo`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_bitacora_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON UPDATE CASCADE;
+CREATE TABLE `origencampana` (
+  `IdOrigenCampana` int(11) NOT NULL AUTO_INCREMENT,
+  `IdCampana` int(11) NOT NULL,
+  `IdSolicitante` int(11) NOT NULL,
+  `FechaSolicitud` date NOT NULL,
+  PRIMARY KEY (`IdOrigenCampana`),
+  KEY `fk_origencampana_campana` (`IdCampana`),
+  KEY `fk_origencampana_solicitante` (`IdSolicitante`),
+  CONSTRAINT `fk_origencampana_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_origencampana_solicitante` FOREIGN KEY (`IdSolicitante`) REFERENCES `solicitantes` (`IdSolicitante`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `campanas`
---
-ALTER TABLE `campanas`
-  ADD CONSTRAINT `fk_campana_zona` FOREIGN KEY (`IdZona`) REFERENCES `zonas` (`IdZona`) ON UPDATE CASCADE;
+CREATE TABLE `evidenciasfotograficas` (
+  `IdEvidencia` int(11) NOT NULL AUTO_INCREMENT,
+  `IdCampana` int(11) NOT NULL,
+  `idTipoAccion` int(11) NOT NULL,
+  `TipoActividad` enum('Inspección','Aplicación','Seguimiento') NOT NULL,
+  `RutaArchivo` varchar(255) NOT NULL,
+  `FechaSubida` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`IdEvidencia`),
+  KEY `fk_evidencia_campana` (`IdCampana`),
+  KEY `fk_idtipoaccion` (`idTipoAccion`),
+  CONSTRAINT `fk_evidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_idtipoaccion` FOREIGN KEY (`idTipoAccion`) REFERENCES `tipoaccion` (`idTipoAccion`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `campanatecnicos`
---
-ALTER TABLE `campanatecnicos`
-  ADD CONSTRAINT `fk_ct_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_ct_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE `incidencias` (
+  `IdIncidencia` int(11) NOT NULL AUTO_INCREMENT,
+  `IdCampana` int(11) NOT NULL,
+  `Zona` varchar(100) NOT NULL,
+  `ActividadRelacionada` enum('Inspección','Aplicación','Seguimiento') NOT NULL,
+  `Descripcion` text NOT NULL,
+  `FechaRegistro` datetime DEFAULT current_timestamp(),
+  `SincronizadoOffline` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`IdIncidencia`),
+  KEY `fk_incidencia_campana` (`IdCampana`),
+  CONSTRAINT `fk_incidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `evidenciasfotograficas`
---
-ALTER TABLE `evidenciasfotograficas`
-  ADD CONSTRAINT `fk_evidencia_accion` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_evidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE `accionescampana` (
+  `IdAccion` int(11) NOT NULL AUTO_INCREMENT,
+  `IdCampana` int(11) NOT NULL,
+  `IdTecnico` int(11) NOT NULL,
+  `idTipoAccion` int(11) NOT NULL,
+  `FechaHora` datetime NOT NULL,
+  `DetallesResultados` text NOT NULL,
+  `Observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`IdAccion`),
+  KEY `fk_accion_campana` (`IdCampana`),
+  KEY `fk_accion_tecnico` (`IdTecnico`),
+  KEY `fk_TipoAccion` (`idTipoAccion`),
+  CONSTRAINT `fk_TipoAccion` FOREIGN KEY (`idTipoAccion`) REFERENCES `tipoaccion` (`idTipoAccion`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_accion_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_accion_tecnico` FOREIGN KEY (`IdTecnico`) REFERENCES `tecnicos` (`IdTecnico`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `incidencias`
---
-ALTER TABLE `incidencias`
-  ADD CONSTRAINT `fk_incidencia_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE `insumosusados` (
+  `IdInsumoUsado` int(11) NOT NULL AUTO_INCREMENT,
+  `IdAccion` int(11) NOT NULL,
+  `IdProducto` int(11) NOT NULL,
+  `CantidadAplicada` decimal(10,2) NOT NULL,
+  `UnidadMedida` varchar(20) NOT NULL,
+  PRIMARY KEY (`IdInsumoUsado`),
+  KEY `fk_insumosusados_accion_v2` (`IdAccion`),
+  KEY `fk_insumosusados_producto_v2` (`IdProducto`),
+  CONSTRAINT `fk_insumosusados_accion_v2` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_insumosusados_producto_v2` FOREIGN KEY (`IdProducto`) REFERENCES `productos` (`IdProducto`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `insumosusados`
---
-ALTER TABLE `insumosusados`
-  ADD CONSTRAINT `fk_iu_accion` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_iu_producto` FOREIGN KEY (`IdProducto`) REFERENCES `productos` (`IdProducto`) ON UPDATE CASCADE;
+CREATE TABLE `plagasidentificadas` (
+  `idplagasidentificadas` int(11) NOT NULL AUTO_INCREMENT,
+  `IdAccion` int(11) NOT NULL,
+  `IdPlaga` int(11) NOT NULL,
+  `NivelInfestacion` enum('Bajo','Medio','Alto','Crítico') DEFAULT NULL,
+  `Observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`idplagasidentificadas`),
+  KEY `fk_plagasident_accion_new` (`IdAccion`),
+  KEY `fk_plagasident_plaga_new` (`IdPlaga`),
+  CONSTRAINT `fk_plagasident_accion_new` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_plagasident_plaga_new` FOREIGN KEY (`IdPlaga`) REFERENCES `plagas` (`IdPlaga`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Filtros para la tabla `origencampana`
---
-ALTER TABLE `origencampana`
-  ADD CONSTRAINT `fk_origencampana_campana` FOREIGN KEY (`IdCampana`) REFERENCES `campanas` (`IdCampana`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_origencampana_solicitante` FOREIGN KEY (`IdSolicitante`) REFERENCES `solicitantes` (`IdSolicitante`) ON DELETE CASCADE ON UPDATE CASCADE;
+-- ========================================================
+-- 2. INSERCIÓN DE DATOS (EN ORDEN DE DEPENDENCIAS)
+-- ========================================================
 
---
--- Filtros para la tabla `plagasidentificadas`
---
-ALTER TABLE `plagasidentificadas`
-  ADD CONSTRAINT `fk_pi_accion` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_pi_plaga` FOREIGN KEY (`IdPlaga`) REFERENCES `plagas` (`IdPlaga`) ON UPDATE CASCADE;
+INSERT INTO `roles` (`IdRol`, `NombreRol`) VALUES
+(1, 'Administrador'),
+(2, 'Supervisor'),
+(3, 'Tecnico');
 
---
--- Filtros para la tabla `rolpermisos`
---
-ALTER TABLE `rolpermisos`
-  ADD CONSTRAINT `fk_rol_permisos_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+INSERT INTO `modulos` (`IdModulo`, `NombreModulo`, `EstadoModulo`) VALUES
+(1, 'Dashboard General', 'Activo'),
+(2, 'Gestión de Usuarios', 'Activo'),
+(3, 'Roles y Permisos', 'Activo'),
+(4, 'Módulos del Sistema', 'Activo'),
+(5, 'Gestión de Zonas', 'Activo'),
+(6, 'Zonas Prioritarias', 'Activo'),
+(7, 'Gestión de Plagas', 'Activo'),
+(8, 'Campañas de Control', 'Activo'),
+(9, 'Registro de Acciones', 'Activo'),
+(10, 'Gestión de Técnicos', 'Activo'),
+(11, 'Programación de Visitas', 'Activo'),
+(12, 'Órdenes de Servicio', 'Activo'),
+(13, 'Inspecciones en Campo', 'Activo'),
+(14, 'Diagnósticos Técnicos', 'Activo'),
+(15, 'Aplicaciones de Control', 'Activo'),
+(16, 'Seguimiento y Monitoreo', 'Activo'),
+(17, 'Reportes Estadísticos', 'Activo'),
+(18, 'Exportación de Datos', 'Activo'),
+(19, 'Bitácora del Sistema', 'Activo'),
+(20, 'Auditoría de Accesos', 'Activo'),
+(21, 'Catálogo de Productos', 'Activo'),
+(22, 'Inventario de Insumos', 'Activo'),
+(23, 'Movimientos de Almacén', 'Activo'),
+(24, 'Proveedores', 'Activo'),
+(25, 'Compras y Reabastecimiento', 'Activo'),
+(26, 'Equipos y Herramientas', 'Activo'),
+(27, 'Mantenimiento de Equipos', 'Activo'),
+(28, 'Vehículos y Rutas', 'Activo'),
+(29, 'Mapa Georreferenciado', 'Activo'),
+(30, 'Alertas y Notificaciones', 'Activo'),
+(31, 'Historial de Incidencias', 'Activo'),
+(32, 'Evidencias Fotográficas', 'Activo'),
+(33, 'Dictámenes y Certificados', 'Activo'),
+(34, 'Clientes y Predios', 'Activo'),
+(35, 'Contratos de Servicio', 'Activo'),
+(36, 'Agenda de Técnicos', 'Activo'),
+(37, 'Evaluación de Calidad', 'Activo'),
+(38, 'Capacitación Técnica', 'Activo'),
+(39, 'Normativas y Protocolos', 'Activo'),
+(40, 'Configuración General', 'Activo'),
+(41, 'Parámetros del Sistema', 'Activo'),
+(42, 'Respaldos de Base de Datos', 'Activo'),
+(43, 'Soporte Técnico', 'Activo'),
+(44, 'Preguntas Frecuentes', 'Activo'),
+(45, 'Manual de Usuario', 'Activo'),
+(46, 'Mensajería Interna', 'Inactivo'),
+(47, 'Facturación y Cobranza', 'Inactivo'),
+(48, 'Encuestas de Satisfacción', 'Inactivo'),
+(49, 'API e Integraciones', 'Inactivo'),
+(50, 'Modo Mantenimiento', 'Inactivo');
 
---
--- Filtros para la tabla `tecnicos`
---
-ALTER TABLE `tecnicos`
-  ADD CONSTRAINT `fk_tecnico_usuario` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+INSERT INTO `tipoaccion` (`idTipoAccion`, `Nombre`) VALUES
+(1, 'Inspección'),
+(2, 'Diagnóstico'),
+(3, 'Aplicación'),
+(4, 'Seguimiento'),
+(5, 'Monitoreo'),
+(6, 'Prevención'),
+(7, 'Control de criaderos'),
+(8, 'Nebulización'),
+(9, 'Sanitización'),
+(10, 'Trampeo y captura'),
+(11, 'Eliminación de foco'),
+(12, 'Cierre y verificación');
 
---
--- Filtros para la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`IdRol`) REFERENCES `roles` (`IdRol`) ON UPDATE CASCADE;
+INSERT INTO `plagas` (`IdPlaga`, `CodigoPlaga`, `NombreComun`, `NombreCientifico`, `Descripcion`, `TratamientoRecomendado`, `Estado`) VALUES
+(13, 'PLG-001', 'Mosquito del dengue', 'Aedes aegypti', 'Vector principal de dengue, zika y chikungunya; se reproduce en agua limpia estancada.', 'Eliminación de criaderos, aplicación de larvicidas (temefos) y nebulización espacial.', 'Activa'),
+(14, 'PLG-002', 'Mosquito común', 'Culex quinquefasciatus', 'Mosquito nocturno que se cría en aguas residuales, drenajes y charcos estancados.', 'Control larvario en drenajes, limpieza de canales y aplicación de insecticidas residuales.', 'Activa'),
+(15, 'PLG-003', 'Mosquito de la malaria', 'Anopheles albimanus', 'Vector de paludismo en zonas húmedas y tropicales; activo principalmente al anochecer.', 'Rociado residual intradomiciliario y control biológico en cuerpos de agua.', 'Activa'),
+(16, 'PLG-004', 'Cucaracha alemana', 'Blattella germanica', 'Plaga doméstica y comercial de rápida reproducción en cocinas, grietas y electrodomésticos.', 'Aplicación de geles insecticidas con fipronil o hidrametilnona y sanitización profunda.', 'Activa'),
+(17, 'PLG-005', 'Cucaracha americana', 'Periplaneta americana', 'Cucaracha de gran tamaño que habita en alcantarillas, registros sanitarios y bodegas húmedas.', 'Aspersión residual en registros, drenajes y perímetros exteriores con piretroides.', 'Activa'),
+(18, 'PLG-006', 'Cucaracha oriental', 'Blatta orientalis', 'Insecto de color oscuro que prefiere sótanos, desagües y lugares frescos con alta humedad.', 'Sellado de grietas, reducción de humedad y aplicación de cebos en zonas bajas.', 'Activa'),
+(19, 'PLG-007', 'Rata de alcantarilla', 'Rattus norvegicus', 'Roedor robusto excavador que habita en drenajes, madrigueras subterráneas y almacenes.', 'Estaciones cebaderas con rodenticidas anticoagulantes de segunda generación y trampeo.', 'Activa'),
+(20, 'PLG-008', 'Rata de los tejados', 'Rattus rattus', 'Roedor ágil trepador que anida en techos, árboles, entretechos y zonas altas de bodegas.', 'Cebos parafinados en altura, poda de ramas cercanas a techos y sellado de accesos.', 'Activa'),
+(21, 'PLG-009', 'Ratón doméstico', 'Mus musculus', 'Pequeño roedor altamente adaptable que contamina alimentos y daña cableado en interiores.', 'Trampas de captura múltiple, estaciones de control perimetral y hermeticidad en almacenes.', 'Activa'),
+(22, 'PLG-010', 'Termita subterránea', 'Reticulitermes flavipes', 'Insecto xilófago que construye túneles de barro desde el suelo para devorar madera estructural.', 'Barreras químicas en cimentación con termiticidas no repelentes y estaciones de cebado.', 'Activa'),
+(23, 'PLG-011', 'Termita de madera seca', 'Cryptotermes brevis', 'Termita que vive completamente dentro de muebles y vigas sin requerir contacto con el suelo.', 'Inyección directa de insecticida en galerías, tratamiento preventivo en madera o fumigación.', 'Activa'),
+(24, 'PLG-012', 'Hormiga de fuego', 'Solenopsis invicta', 'Hormiga agresiva que construye montículos en jardines y campos; su picadura causa pústulas.', 'Aplicación de cebos granulados de acción lenta alrededor de los hormigueros.', 'Activa'),
+(25, 'PLG-013', 'Hormiga faraón', 'Monomorium pharaonis', 'Pequeña hormiga amarilla que forma múltiples colonias en hospitales, cocinas y viviendas.', 'Uso exclusivo de cebos dulces y proteicos con reguladores de crecimiento (IGR).', 'Activa'),
+(26, 'PLG-014', 'Hormiga carpintera', 'Camponotus spp.', 'Hormiga grande que excava galerías en madera húmeda para anidar, debilitando estructuras.', 'Localización y eliminación del nido principal, reparación de fugas y aspersión perimetral.', 'Activa'),
+(27, 'PLG-015', 'Mosca doméstica', 'Musca domestica', 'Insecto transmisor de patógenos mecánicos asociado a basura y materia orgánica en descomposición.', 'Manejo adecuado de residuos, trampas de luz UV y cebos granulados con feromonas.', 'Activa'),
+(28, 'PLG-016', 'Mosca de la fruta', 'Drosophila melanogaster', 'Pequeña mosca atraída por frutas maduras, fermentos y residuos líquidos en cocinas.', 'Limpieza de desagües con enzimas, eliminación de fruta sobremadura y trampas de vinagre.', 'Activa'),
+(29, 'PLG-017', 'Mosca de los drenajes', 'Psychoda alternata', 'Mosca pequeña de aspecto peludo que se reproduce en la película orgánica de coladeras.', 'Cepillado mecánico de tuberías y aplicación de limpiadores biológicos enzimáticos.', 'Activa'),
+(30, 'PLG-018', 'Pulga del gato', 'Ctenocephalides felis', 'Ectoparásito hematófago que infesta mascotas, alfombras y patios sombreados.', 'Tratamiento veterinario en mascotas, aspirado profundo y aspersión con adulticida + IGR.', 'Activa'),
+(31, 'PLG-019', 'Garrapata café del perro', 'Rhipicephalus sanguineus', 'Ácaro vector de ehrlichiosis y rickettsiosis; se oculta en grietas de muros y perreras.', 'Baños garrapaticidas en animales y aspersión residual en paredes, pisos y patios.', 'Activa'),
+(32, 'PLG-020', 'Chinche de cama', 'Cimex lectularius', 'Insecto hematófago nocturno que se esconde en costuras de colchones, cabeceras y grietas.', 'Tratamiento térmico con vapor seco, aspirado y aplicación de insecticidas especializados.', 'Activa'),
+(33, 'PLG-021', 'Alacrán de corteza', 'Centruroides spp.', 'Arácnido ponzoñoso que se refugia en escombros, leña, grietas y calzado en zonas cálidas.', 'Limpieza de maleza y escombros, colocación de guardapolvos y aspersión con piretroides.', 'Activa'),
+(34, 'PLG-022', 'Araña viuda negra', 'Latrodectus mactans', 'Araña de veneno neurotóxico que teje telas irregulares en rincones oscuros y exteriores.', 'Retiro manual con equipo de protección, limpieza de bodegas y aspersión perimetral.', 'Activa'),
+(35, 'PLG-023', 'Araña violinista', 'Loxosceles laeta', 'Araña tímida de hábitos nocturnos que se oculta detrás de cuadros, muebles y ropa guardada.', 'Limpieza periódica detrás de mobiliario, sellado de hendiduras y tratamiento residual.', 'Activa'),
+(36, 'PLG-024', 'Avispa papelera', 'Polistes spp.', 'Insecto social que construye nidos abiertos de celulosa en aleros, techos y árboles.', 'Aplicación directa de insecticida en aerosol de largo alcance al anochecer y retiro del nido.', 'Activa'),
+(37, 'PLG-025', 'Abeja africanizada', 'Apis mellifera scutellata', 'Polinizador altamente defensivo cuando establece colmenas en zonas urbanas o viviendas.', 'Rescate y reubicación por personal apícola capacitado sin uso de insecticidas.', 'Activa'),
+(38, 'PLG-026', 'Gorgojo del maíz', 'Sitophilus zeamais', 'Plaga primaria de granos almacenados que perfora semillas de maíz, sorgo y arroz.', 'Hermeticidad en silos, limpieza de bodegas y fumigación controlada con fosfuros.', 'Activa'),
+(39, 'PLG-027', 'Gorgojo del arroz', 'Sitophilus oryzae', 'Insecto pequeño que infesta cereales almacenados provocando pérdida de peso y calidad.', 'Control de temperatura y humedad del grano, rotación de inventarios y tratamiento preventivo.', 'Activa'),
+(40, 'PLG-028', 'Palomilla india de la harina', 'Plodia interpunctella', 'Polilla cuyas larvas tejen sedas en harinas, frutos secos y alimentos procesados.', 'Descarte de productos infestados, trampas de feromonas y limpieza profunda de anaqueles.', 'Activa'),
+(41, 'PLG-029', 'Pececillo de plata', 'Lepisma saccharina', 'Insecto sin alas que se alimenta de almidón, papel, libros y pegamentos en sitios húmedos.', 'Deshumidificación de archivos, almacenamiento en cajas herméticas y aplicación de geles.', 'Activa'),
+(42, 'PLG-030', 'Cochinilla de la humedad', 'Armadillidium vulgare', 'Crustáceo terrestre que se enrolla en bola; habita bajo macetas, piedras y jardines húmedos.', 'Reducción de riego excesivo, retiro de hojarasca y barrera perimetral granulada.', 'Activa'),
+(43, 'PLG-031', 'Ciempiés doméstico', 'Scutigera coleoptrata', 'Mirápodo depredador rápido que aparece en baños y sótanos húmedos buscando otros insectos.', 'Control de humedad ambiental y eliminación de insectos presa en el inmueble.', 'Inactiva'),
+(44, 'PLG-032', 'Milpiés de jardín', 'Oxidus gracilis', 'Artrópodo detritívoro que invade interiores tras lluvias intensas desde jardines con mantillo.', 'Barreras físicas en puertas, drenaje adecuado y aspersión perimetral exterior.', 'Activa'),
+(45, 'PLG-033', 'Grillo doméstico', 'Acheta domesticus', 'Insecto saltador atraído por luces exteriores; puede dañar telas y papel en interiores.', 'Cambio a iluminación cálida exterior, sellado bajo puertas y cebos granulados.', 'Activa'),
+(46, 'PLG-034', 'Piojo de la cabeza', 'Pediculus humanus capitis', 'Parásito humano exclusivo del cuero cabelludo transmitido por contacto directo.', 'Uso de lociones pediculicidas aprobadas y peinado mecánico con lendrera.', 'Inactiva'),
+(47, 'PLG-035', 'Ácaro del polvo', 'Dermatophagoides pteronyssinus', 'Microorganismo presente en colchones y textiles; principal causante de alergias respiratorias.', 'Lavado de ropa de cama con agua caliente, fundas antiácaros y aspirado con filtro HEPA.', 'Activa'),
+(48, 'PLG-036', 'Gusano cogollero', 'Spodoptera frugiperda', 'Larva lepidóptera que devora el cogollo del maíz y pastos en zonas agrícolas.', 'Monitoreo con trampas de feromonas, control biológico con Trichogramma y bioinsecticidas.', 'Activa'),
+(49, 'PLG-037', 'Mosca blanca', 'Bemisia tabaci', 'Insecto chupador que debilita cultivos hortícolas y transmite virus vegetales.', 'Trampas cromáticas amarillas, jabón potásico y extracto de aceite de neem.', 'Activa'),
+(50, 'PLG-038', 'Pulgón verde', 'Myzus persicae', 'Áfido que succiona savia de brotes tiernos produciendo melaza y fumagina.', 'Liberación de catarinas (Coccinellidae), jabón potásico y control de hormigas asociadas.', 'Activa'),
+(51, 'PLG-039', 'Picudo negro del plátano', 'Cosmopolites sordidus', 'Escarabajo cuyas larvas perforan galerías en el cormo de plantaciones de plátano.', 'Trampeo con pseudotallo, saneamiento de cepas y uso de hongos entomopatógenos.', 'Activa'),
+(52, 'PLG-040', 'Broca del café', 'Hypothenemus hampei', 'Pequeño escarabajo que perfora el fruto del cafeto destruyendo el grano.', 'Cosecha sanitaria oportuna, trampas etanólicas y aplicación de Beauveria bassiana.', 'Inactiva'),
+(53, 'PLG-041', 'Trips occidental', 'Frankliniella occidentalis', 'Insecto diminuto que raspa hojas y flores dejando manchas plateadas y deformaciones.', 'Mallas antitrips en invernaderos, trampas azules y control biológico con ácaros depredadores.', 'Activa'),
+(54, 'PLG-042', 'Araña roja', 'Tetranychus urticae', 'Ácaro fitófago que prolifera en climas cálidos y secos generando telarañas finas en hojas.', 'Incremento de humedad relativa, azufre micronizado y acaricidas específicos.', 'Activa'),
+(55, 'PLG-043', 'Escama algodonosa', 'Planococcus citri', 'Insecto cubierto de cera blanca que ataca cítricos, cacao y plantas ornamentales.', 'Poda de partes muy afectadas, aceite mineral agrícola y control biológico.', 'Activa'),
+(56, 'PLG-044', 'Caracol gigante africano', 'Lissachatina fulica', 'Molusco invasor voraz capaz de transmitir parásitos como Angiostrongylus.', 'Recolección manual con guantes, destrucción controlada y cebos molusquicidas seguros.', 'Activa'),
+(57, 'PLG-045', 'Babosa gris de jardín', 'Deroceras reticulatum', 'Molusco nocturno que perfora hojas de hortalizas y plántulas en ambientes muy húmedos.', 'Trampas de cerveza, barreras de tierra de diatomeas y reducción de refugios húmedos.', 'Activa'),
+(58, 'PLG-046', 'Tijerilla común', 'Forficula auricularia', 'Insecto nocturno con cercos en forma de pinza; ocasionalmente invade viviendas desde jardines.', 'Retiro de materia orgánica pegada a muros y sellado de rendijas en puertas.', 'Activa'),
+(59, 'PLG-047', 'Escarabajo de la despensa', 'Lasioderma serricorne', 'Pequeño escarabajo que perfora empaques de especias, tabaco, té y alimentos secos.', 'Inspección de materias primas, congelación de productos afectados y trampas de feromonas.', 'Activa'),
+(60, 'PLG-048', 'Jejenes o mosquitos de arena', 'Lutzomyia spp.', 'Dípteros diminutos de picadura dolorosa, vectores de leishmaniasis en zonas selváticas.', 'Uso de mosquiteros de malla fina, repelentes con DEET y limpieza de hojarasca.', 'Activa'),
+(61, 'PLG-049', 'Tábano común', 'Tabanus spp.', 'Mosca grande hematófaga que afecta principalmente al ganado y personas en zonas rurales.', 'Trampas visuales tipo Manitoba en potreros y repelentes autorizados para ganado.', 'Inactiva'),
+(62, 'PLG-050', 'Paloma bravía urbana', 'Columba livia', 'Ave urbana cuyas heces ácidas corroen estructuras y transmiten enfermedades respiratorias.', 'Instalación de púas anti-posamiento, redes de exclusión y sellado de cornisas.', 'Activa');
 
---
--- Filtros para la tabla `zonasprioritarias`
---
-ALTER TABLE `zonasprioritarias`
-  ADD CONSTRAINT `fk_zp_plaga` FOREIGN KEY (`IdPlaga`) REFERENCES `plagas` (`IdPlaga`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_zp_zona` FOREIGN KEY (`IdZona`) REFERENCES `zonas` (`IdZona`) ON DELETE CASCADE ON UPDATE CASCADE;
+INSERT INTO `productos` (`IdProducto`, `CodigoProducto`, `NombreComercial`, `IngredienteActivo`, `TipoProducto`, `UnidadMedida`, `PresentacionDosis`, `Estado`) VALUES
+(1, 'PRD-INS-001', 'Deltamex 25 EC', 'Deltametrina 2.5%', 'Insecticida', 'Litro', 'Frasco 1 L / 20 ml por 10 L de agua', 'Activo'),
+(2, 'PRD-INS-002', 'Ciperforce 200', 'Cipermetrina 20%', 'Insecticida', 'Litro', 'Bidón 1 L / 30 ml por 10 L de agua', 'Activo'),
+(3, 'PRD-INS-003', 'Permakill Polvo', 'Permetrina 0.5%', 'Insecticida', 'Kilogramo', 'Bolsa 1 kg / 20 g por m2', 'Activo'),
+(4, 'PRD-INS-004', 'GelMax Cucaracha', 'Imidacloprid 2.15%', 'Insecticida', 'Gramo', 'Jeringa 30 g / 0.1 g por punto', 'Activo'),
+(5, 'PRD-INS-005', 'Fipronil Guard SC', 'Fipronil 2.5%', 'Insecticida', 'Litro', 'Frasco 1 L / 50 ml por 10 L de agua', 'Activo'),
+(6, 'PRD-ROD-006', 'Brodiblock 50', 'Brodifacoum 0.005%', 'Rodenticida', 'Kilogramo', 'Cubeta 5 kg / 2 a 4 bloques por estación', 'Activo'),
+(7, 'PRD-ROD-007', 'Bromadiolone Wax', 'Bromadiolona 0.005%', 'Rodenticida', 'Kilogramo', 'Saco 10 kg / 50 a 100 g por madriguera', 'Activo'),
+(8, 'PRD-ROD-008', 'Ratopellet Plus', 'Difacinona 0.005%', 'Rodenticida', 'Kilogramo', 'Bolsa 2 kg / 40 g por estación cebadera', 'Activo'),
+(9, 'PRD-LAR-009', 'Temefos Granular 1G', 'Temefos 1%', 'Larvicida', 'Kilogramo', 'Saco 25 kg / 10 g por m2 de espejo de agua', 'Activo'),
+(10, 'PRD-LAR-010', 'Bti LarviTab', 'Bacillus thuringiensis israelensis', 'Larvicida', 'Pieza', 'Tableta 1 g / 1 tableta por 50 L de agua', 'Activo'),
+(11, 'PRD-LAR-011', 'Metopreno Aqua', 'S-Metopreno 5%', 'Larvicida', 'Litro', 'Garrafa 5 L / 2 ml por m3 de agua', 'Activo'),
+(12, 'PRD-REP-012', 'DEET Shield 30', 'N,N-Dietil-meta-toluamida 30%', 'Repelente', 'Mililitro', 'Atomizador 120 ml / Aplicación uniforme en piel expuesta', 'Activo'),
+(13, 'PRD-REP-013', 'Icaridina ProSpray', 'Icaridina 20%', 'Repelente', 'Mililitro', 'Frasco 150 ml / Pulverización ligera a 15 cm', 'Activo'),
+(14, 'PRD-OTR-014', 'Sanitizol Cloro 13', 'Hipoclorito de sodio 13%', 'Otro', 'Litro', 'Garrafa 20 L / 50 ml por L de agua', 'Activo'),
+(15, 'PRD-OTR-015', 'BioTrampa Feromona', 'Feromona sexual sintética', 'Otro', 'Pieza', 'Trampa adhesiva / 1 trampa por cada 100 m2', 'Activo'),
+(16, 'PRD-INS-016', 'LambdaNebul 10', 'Lambda-cihalotrina 10%', 'Insecticida', 'Litro', 'Frasco 1 L / 15 ml por L de solvente ULV', 'Activo'),
+(17, 'PRD-INS-017', 'Bifentrin Max SC', 'Bifentrina 10%', 'Insecticida', 'Litro', 'Bidón 1 L / 25 ml por 10 L de agua', 'Activo'),
+(18, 'PRD-INS-018', 'Clorpirifos Perimetral', 'Clorpirifos etil 48%', 'Insecticida', 'Litro', 'Garrafa 4 L / 40 ml por 10 L de agua', 'Inactivo'),
+(19, 'PRD-INS-019', 'Aerosol ChincheStop', 'Tetrametrina + Permetrina', 'Insecticida', 'Mililitro', 'Lata 400 ml / Aplicación en costuras a 20 cm', 'Activo'),
+(20, 'PRD-INS-020', 'HormiGel Dorado', 'Tiametoxam 0.01%', 'Insecticida', 'Gramo', 'Jeringa 20 g / Gotas de 0.05 g en rutas', 'Activo'),
+(21, 'PRD-ROD-021', 'Flocoumafen Bloque', 'Flocoumafen 0.005%', 'Rodenticida', 'Kilogramo', 'Caja 2.5 kg / 2 bloques por punto de control', 'Activo'),
+(22, 'PRD-ROD-022', 'Cumatetralil Pasta', 'Cumatetralil 0.0375%', 'Rodenticida', 'Kilogramo', 'Cubeta 4 kg / 60 g por estación', 'Activo'),
+(23, 'PRD-ROD-023', 'Clorfacinona Cebo', 'Clorfacinona 0.005%', 'Rodenticida', 'Kilogramo', 'Bolsa 5 kg / 50 g en zonas secas', 'Inactivo'),
+(24, 'PRD-LAR-024', 'Espinosad LarviDrop', 'Spinosad 12%', 'Larvicida', 'Mililitro', 'Gotero 250 ml / 1 ml por cada 200 L de agua', 'Activo'),
+(25, 'PRD-LAR-025', 'Diflubenzuron WP25', 'Diflubenzuron 25%', 'Larvicida', 'Kilogramo', 'Sobre 500 g / 2 g por 10 L de agua', 'Activo'),
+(26, 'PRD-LAR-026', 'Aceite Monomolecular', 'Polidimetilsiloxano', 'Larvicida', 'Litro', 'Garrafa 5 L / 10 ml por m2 de agua estancada', 'Activo'),
+(27, 'PRD-REP-027', 'CitronelaBotanica', 'Aceite esencial de citronela 15%', 'Repelente', 'Mililitro', 'Frasco 250 ml / Aplicar en áreas expuestas cada 2 h', 'Activo'),
+(28, 'PRD-REP-028', 'IR3535 CampoLibre', 'Etil butilacetilaminopropionato 20%', 'Repelente', 'Mililitro', 'Spray 100 ml / Aplicación uniforme en piel y ropa', 'Activo'),
+(29, 'PRD-OTR-029', 'EnziDren Limpiador', 'Consorcio enzimático + tensoactivos', 'Otro', 'Litro', 'Garrafa 5 L / 100 ml por coladera semanal', 'Activo'),
+(30, 'PRD-OTR-030', 'Sellador Grietas Flex', 'Acrílico elastomérico', 'Otro', 'Mililitro', 'Cartucho 300 ml / Cordón continuo en juntas', 'Activo'),
+(31, 'PRD-INS-031', 'Alfacipermetrina 6SC', 'Alfacipermetrina 6%', 'Insecticida', 'Litro', 'Frasco 1 L / 20 ml por 10 L de agua', 'Activo'),
+(32, 'PRD-INS-032', 'Etofenprox Micro', 'Etofenprox 10%', 'Insecticida', 'Litro', 'Bidón 1 L / 30 ml por 10 L de agua', 'Activo'),
+(33, 'PRD-INS-033', 'Acetamiprid Agrícola', 'Acetamiprid 20%', 'Insecticida', 'Kilogramo', 'Bolsa 1 kg / 1.5 g por L de agua', 'Activo'),
+(34, 'PRD-INS-034', 'Malation ULV 96', 'Malatión 96%', 'Insecticida', 'Litro', 'Tambor 20 L / Según calibración de equipo ULV', 'Inactivo'),
+(35, 'PRD-INS-035', 'Abamectina AcarClean', 'Abamectina 1.8%', 'Insecticida', 'Litro', 'Frasco 1 L / 10 ml por 10 L de agua', 'Activo'),
+(36, 'PRD-ROD-036', 'Difenacoum Parafina', 'Difenacoum 0.005%', 'Rodenticida', 'Kilogramo', 'Cubeta 5 kg / 2 a 3 bloques por estación', 'Activo'),
+(37, 'PRD-ROD-037', 'Warfarina Concentrado', 'Warfarina 0.5%', 'Rodenticida', 'Kilogramo', 'Bolsa 1 kg / Mezclar 50 g por kg de grano base', 'Inactivo'),
+(38, 'PRD-LAR-038', 'Bsph LarviControl', 'Bacillus sphaericus', 'Larvicida', 'Litro', 'Garrafa 2 L / 5 ml por m2 en aguas contaminadas', 'Activo'),
+(39, 'PRD-LAR-039', 'Piriproxifen 0.5G', 'Piriproxifen 0.5%', 'Larvicida', 'Kilogramo', 'Saco 10 kg / 4 g por m2 de superficie acuática', 'Activo'),
+(40, 'PRD-REP-040', 'Eucalipto Limon Spray', 'Aceite de eucalipto limón (PMD) 25%', 'Repelente', 'Mililitro', 'Atomizador 120 ml / Aplicar en zonas expuestas', 'Activo'),
+(41, 'PRD-REP-041', 'Banda Repelente Natural', 'Aceites de citronela y lavanda', 'Repelente', 'Pieza', 'Pulsera / 1 pieza por persona hasta 15 días', 'Activo'),
+(42, 'PRD-OTR-042', 'Atrayente Alimenticio Trampa', 'Extracto proteico hidrolizado', 'Otro', 'Mililitro', 'Botella 500 ml / 15 ml por trampa mosquera', 'Activo'),
+(43, 'PRD-OTR-043', 'Desinfectante Amonio 5G', 'Cloruro de benzalconio 5%', 'Otro', 'Litro', 'Garrafa 10 L / 25 ml por L de agua', 'Activo'),
+(44, 'PRD-INS-044', 'Esfenvalerato Escudo', 'Esfenvalerato 5%', 'Insecticida', 'Litro', 'Frasco 1 L / 20 ml por 10 L de agua', 'Activo'),
+(45, 'PRD-INS-045', 'Clothianidin Suelo', 'Clothianidin 50%', 'Insecticida', 'Kilogramo', 'Bolsa 500 g / 2 g por 10 L de agua', 'Activo'),
+(46, 'PRD-ROD-046', 'Brodifacoum Pellets 50', 'Brodifacoum 0.005%', 'Rodenticida', 'Kilogramo', 'Saco 10 kg / 50 g por estación segura', 'Activo'),
+(47, 'PRD-LAR-047', 'Temefos Líquido 50EC', 'Temefos 50%', 'Larvicida', 'Litro', 'Frasco 1 L / 1 ml por cada 400 L de agua', 'Activo'),
+(48, 'PRD-REP-048', 'DEET Extremo 40', 'N,N-Dietil-meta-toluamida 40%', 'Repelente', 'Mililitro', 'Spray 150 ml / Uso en zonas de alta exposición', 'Activo'),
+(49, 'PRD-OTR-049', 'Pegamento Captura Roedor', 'Poliisobutileno grado técnico', 'Otro', 'Pieza', 'Charola 200 g / 2 a 4 charolas por ruta', 'Activo'),
+(50, 'PRD-OTR-050', 'Coadyuvante Dispersante', 'Alquil aril poliglicol éter', 'Otro', 'Litro', 'Bidón 1 L / 5 ml por 10 L de mezcla', 'Activo');
+
+INSERT INTO `solicitantes` (`IdSolicitante`, `TipoOrigen`, `NombreSolicitante`, `TelefonoSolicitante`, `DescripcionSolicitud`, `EstadoSolicitud`) VALUES
+(1, 'Reporte ciudadano', 'Roberto Méndez Pérez', '9171023401', 'Reporte de acumulación de larvas en tinacos y patios baldíos cerca del parque.', 'Activo'),
+(2, 'Cliente privado', 'María Elena López Cruz', '9931458820', 'Solicitud de control de cucaracha alemana y sanitización en cocina de restaurante.', 'Activo'),
+(3, 'Programa de salud público', 'Dr. Héctor Álvarez Domínguez', '9331120944', 'Coordinación para brigada preventiva contra mosquitos transmisores en sector escolar.', 'Activo'),
+(4, 'Institución', 'Lic. Patricia Morales Valencia', '9171189032', 'Revisión estructural por presencia de termita en mobiliario y archivos de oficina.', 'Activo'),
+(5, 'Solicitud interna', 'Ing. Fernando Custodio García', '9932041178', 'Verificación de puntos de riesgo y maleza en perímetro de instalaciones operativas.', 'Activo'),
+(6, 'Otro', 'Cooperativa Agrícola El Ceibo', '9171345567', 'Consulta para manejo de plagas en área de almacenamiento de granos y costales.', 'Activo'),
+(7, 'Reporte ciudadano', 'Lucía Hernández Bautista', '9331087712', 'Presencia de roedores en registros de drenaje y patio trasero de vivienda.', 'Activo'),
+(8, 'Cliente privado', 'Carlos Alberto Ruiz Ramos', '9931892345', 'Inspección y tratamiento contra hormiga de fuego en jardín de residencia privada.', 'Activo'),
+(9, 'Programa de salud público', 'QFB. Sandra Isabel Gómez León', '9171204489', 'Apoyo técnico para monitoreo larvario en cuerpos de agua estancada.', 'Activo'),
+(10, 'Institución', 'Mtro. Jorge Luis Sánchez Mayo', '9331563201', 'Solicitud de inspección preventiva contra alacranes y fauna nociva en plantel.', 'Activo'),
+(11, 'Solicitud interna', 'Técnico Alejandro Vidal Torres', '9931117654', 'Seguimiento a estaciones cebaderas instaladas en bodega de resguardo.', 'Activo'),
+(12, 'Reporte ciudadano', 'Guadalupe Martínez de la Cruz', '9171490023', 'Reporte de proliferación de moscas por acumulación de residuos en vía pública.', 'Activo'),
+(13, 'Cliente privado', 'Hotel y Posada La Chontalpa', '9331278890', 'Revisión preventiva de habitaciones y colchones para descartar chinches.', 'Activo'),
+(14, 'Programa de salud público', 'Enf. Mariana del Carmen Arias', '9171093311', 'Reporte comunitario de criaderos tras lluvias intensas en colonia periférica.', 'Activo'),
+(15, 'Institución', 'Dirección de Servicios Municipales', '9932304419', 'Solicitud de desratización y sanitización en mercado y zonas de acopio.', 'Activo'),
+(16, 'Otro', 'Empacadora Frutal del Sur', '9331650987', 'Control de mosca de la fruta y monitoreo en área de recepción de cosecha.', 'Activo'),
+(17, 'Reporte ciudadano', 'José Antonio Vázquez Jiménez', '9171382190', 'Avistamiento de nido de avispa en alero exterior de domicilio particular.', 'Activo'),
+(18, 'Cliente privado', 'Abarrotes y Carnicería San Juan', '9931725408', 'Diagnóstico y control de plagas urbanas en área de refrigeración y almacén.', 'Activo'),
+(19, 'Programa de salud público', 'Jurisdicción Sanitaria Regional', '9171156782', 'Campaña conjunta para reducción de criaderos y nebulización focalizada.', 'Activo'),
+(20, 'Institución', 'Clínica Rural del Bienestar', '9331409921', 'Sanitización preventiva y control de hormigas en consultorios y pasillos.', 'Activo'),
+(21, 'Solicitud interna', 'Coordinación de Operaciones', '9932187634', 'Revisión de rutas y zonas prioritarias asignadas para el mes en curso.', 'Activo'),
+(22, 'Reporte ciudadano', 'Verónica Rodríguez Castellanos', '9171528876', 'Humedad y polilla en vigas de madera de vivienda antigua en zona centro.', 'Activo'),
+(23, 'Cliente privado', 'Panadería La Espiga Dorada', '9931336712', 'Control preventivo contra gorgojos y palomillas en almacén de harinas.', 'Activo'),
+(24, 'Programa de salud público', 'Brigada de Vectores Comunitaria', '9171264509', 'Reporte de depósitos abiertos con agua en solares baldíos del sector.', 'Activo'),
+(25, 'Institución', 'Centro de Desarrollo Infantil', '9331812045', 'Inspección de patios, areneros y áreas verdes previo al ingreso de alumnos.', 'Activo'),
+(26, 'Otro', 'Asociación Ganadera Local', '9171419903', 'Solicitud de orientación y control de ectoparásitos en áreas perimetrales.', 'Activo'),
+(27, 'Reporte ciudadano', 'Eduardo de Dios Hernández', '9931598231', 'Presencia de cucarachas grandes emergiendo de coladeras en calle lateral.', 'Activo'),
+(28, 'Cliente privado', 'Restaurante Mariscos El Puerto', '9331940012', 'Control integral de plagas y limpieza enzimática de registros de cocina.', 'Activo'),
+(29, 'Programa de salud público', 'Unidad de Epidemiología Local', '9171076543', 'Seguimiento a reportes ciudadanos en zonas de alta densidad poblacional.', 'Activo'),
+(30, 'Institución', 'Biblioteca Pública Municipal', '9931223980', 'Inspección de estantería de madera y control preventivo de insectos bibliófagos.', 'Activo'),
+(31, 'Solicitud interna', 'Supervisor de Campo Zona Norte', '9171310945', 'Reporte de incidencia en acceso a predio y solicitud de reprogramación.', 'Activo'),
+(32, 'Reporte ciudadano', 'Beatriz Adriana León Córdova', '9931684520', 'Aparición de arácnidos en patio y bodega doméstica; se solicita revisión.', 'Activo'),
+(33, 'Cliente privado', 'Bodega de Insumos Agrícolas', '9331105678', 'Protección perimetral contra roedores y monitoreo de plagas de almacén.', 'Activo'),
+(34, 'Programa de salud público', 'Promoción de la Salud Comunitaria', '9171447812', 'Solicitud de participación en jornada informativa y control de criaderos.', 'Activo'),
+(35, 'Institución', 'Casa de la Cultura', '9931973210', 'Revisión de auditorio y áreas húmedas por presencia de mosca de drenaje.', 'Activo'),
+(36, 'Otro', 'Condominio Residencial Palmas', '9931489076', 'Tratamiento de áreas comunes, jardines y ductos de basura del conjunto.', 'Activo'),
+(37, 'Reporte ciudadano', 'Miguel Ángel Torres Ovando', '9171235540', 'Reporte de caracoles en jardín y banqueta tras lluvia prolongada.', 'Activo'),
+(38, 'Cliente privado', 'Cafetería y Repostería Central', '9331754321', 'Aplicación de gel insecticida y diagnóstico en barra y almacén seco.', 'Activo'),
+(39, 'Programa de salud público', 'Centro de Salud Urbano', '9171192834', 'Notificación de puntos críticos con agua estancada en colonia vecina.', 'Activo'),
+(40, 'Institución', 'Juzgado y Ofinas Administrativas', '9931841290', 'Fumigación preventiva programada en fin de semana para áreas de archivo.', 'Activo'),
+(41, 'Solicitud interna', 'Almacén y Control de Inventarios', '9171506789', 'Solicitud de verificación de condiciones sanitarias en área de resguardo.', 'Activo'),
+(42, 'Reporte ciudadano', 'Sofía Alejandra Pérez Cruz', '9931149876', 'Madrigueras visibles en borde de zanja junto a viviendas de la colonia.', 'Activo'),
+(43, 'Cliente privado', 'Taller y Refaccionaria El Paso', '9331627804', 'Control de roedores y limpieza de rincones con acumulación de piezas.', 'Activo'),
+(44, 'Programa de salud público', 'Brigada de Saneamiento Básico', '9171369012', 'Apoyo en inspección de registros pluviales y canales a cielo abierto.', 'Activo'),
+(45, 'Institución', 'Escuela Secundaria Técnica', '9331472109', 'Control de hormigas y revisión de cocina escolar y cisternas.', 'Activo'),
+(46, 'Otro', 'Inmobiliaria del Sureste', '9931905432', 'Inspección previa a entrega de inmueble por posible infestación de termitas.', 'Inactivo'),
+(47, 'Reporte ciudadano', 'Raúl Enrique Domínguez López', '9171041122', 'Reporte duplicado de limpieza de lote baldío ya atendido en visita previa.', 'Inactivo'),
+(48, 'Cliente privado', 'Comercializadora La Ceiba', '9331387654', 'Solicitud de cotización de servicio periódico que quedó sin seguimiento.', 'Inactivo'),
+(49, 'Programa de salud público', 'Comité Vecinal Sector 4', '9171289900', 'Solicitud anterior de campaña estacional concluida en el periodo pasado.', 'Inactivo'),
+(50, 'Institución', 'Unidad Administrativa Temporal', '9931556677', 'Registro de prueba o solicitud cerrada por reubicación de oficinas.', 'Inactivo');
+
+INSERT INTO `zonas` (`IdZona`, `CodigoZona`, `NombreZona`, `Municipio`, `Referencias`, `Latitud`, `Longitud`, `Estado`, `FechaRegistro`) VALUES
+(7, 'ZN-HUI-001', 'Centro Histórico', 'Huimanguillo', 'Frente al parque central Benito Juárez y Palacio Municipal', 17.83420000, -93.39110000, 'Activa', '2026-11-26 06:00:18'),
+(8, 'ZN-HUI-002', 'Colonia Pueblo Nuevo', 'Huimanguillo', 'A dos cuadras de la glorieta de la Piña, salida a Cárdenas', 17.84150000, -93.38540000, 'Activa', '2026-11-26 06:00:18'),
+(9, 'ZN-HUI-003', 'Villa La Venta', 'Huimanguillo', 'Cerca del Parque Museo La Venta y zona comercial principal', 18.10140000, -94.04190000, 'Activa', '2026-11-26 06:00:18'),
+(10, 'ZN-HUI-004', 'Villa Estación Chontalpa', 'Huimanguillo', 'A un costado de la antigua estación del ferrocarril', 17.64890000, -93.45720000, 'Activa', '2026-11-26 06:00:18'),
+(11, 'ZN-HUI-005', 'Colonia El Torito', 'Huimanguillo', 'Sobre calle Hidalgo, cerca de la escuela primaria federal', 17.83180000, -93.39650000, 'Activa', '2026-11-26 06:00:18'),
+(12, 'ZN-CAR-006', 'Centro Cárdenas', 'Cárdenas', 'Alrededor del parque Independencia y mercado 27 de Febrero', 17.98970000, -93.37580000, 'Activa', '2026-11-26 06:00:18'),
+(13, 'ZN-CAR-007', 'Colonia Petrolera', 'Cárdenas', 'A espaldas del hospital general y zona habitacional Pemex', 17.99620000, -93.38120000, 'Activa', '2026-11-26 06:00:18'),
+(14, 'ZN-CAR-008', 'Poblado C-28', 'Cárdenas', 'Entrada principal del Plan Chontalpa, junto a la cancha techada', 18.04510000, -93.51230000, 'Activa', '2026-11-26 06:00:18'),
+(15, 'ZN-CAR-009', 'Villa Benito Juárez', 'Cárdenas', 'Frente a la iglesia principal y carretera federal 180', 18.08120000, -93.62450000, 'Inactiva', '2026-11-26 06:00:18'),
+(16, 'ZN-COM-010', 'Centro Comalcalco', 'Comalcalco', 'Sobre calle Juárez, a tres cuadras de la plaza principal', 18.26360000, -93.22410000, 'Activa', '2026-11-26 06:00:18'),
+(17, 'ZN-COM-011', 'Zona Arqueológica', 'Comalcalco', 'Carretera a Paraíso km 2, frente al acceso de las ruinas', 18.27850000, -93.20180000, 'Activa', '2026-11-26 06:00:18'),
+(18, 'ZN-COM-012', 'Villa Tecolutilla', 'Comalcalco', 'Parque central de la villa, junto a la biblioteca pública', 18.28910000, -93.32140000, 'Activa', '2026-11-26 06:00:18'),
+(19, 'ZN-PAR-013', 'Centro Paraíso', 'Paraíso', 'Frente al parque Venustiano Carranza, zona bancaria', 18.39720000, -93.21450000, 'Activa', '2026-11-26 06:00:18'),
+(20, 'ZN-PAR-014', 'Puerto Dos Bocas', 'Paraíso', 'Boulevard Manuel Antonio Romero Zurita, acceso a terminal', 18.42560000, -93.18940000, 'Activa', '2026-11-26 06:00:18'),
+(21, 'ZN-PAR-015', 'Villa Puerto Ceiba', 'Paraíso', 'Malecón del río Seco, zona de restaurantes y embarcadero', 18.41180000, -93.17620000, 'Activa', '2026-11-26 06:00:18'),
+(22, 'ZN-CUN-016', 'Centro Cunduacán', 'Cunduacán', 'Frente al parque central José Eduardo de Cárdenas', 18.06450000, -93.17280000, 'Activa', '2026-11-26 06:00:18'),
+(23, 'ZN-CUN-017', 'Zona Universitaria Chontalpa', 'Cunduacán', 'Carretera Cunduacán-Jalpa km 1, frente a campus UJAT', 18.07120000, -93.16540000, 'Activa', '2026-11-26 06:00:18'),
+(24, 'ZN-JAL-018', 'Centro Jalpa de Méndez', 'Jalpa de Méndez', 'A un costado de la parroquia de San Francisco de Asís', 18.17640000, -93.06310000, 'Activa', '2026-11-26 06:00:18'),
+(25, 'ZN-NAC-019', 'Centro Nacajuca', 'Nacajuca', 'Frente al palacio municipal y corredor artesanal', 18.16920000, -93.01850000, 'Activa', '2026-11-26 06:00:18'),
+(26, 'ZN-NAC-020', 'Bosques de Saloya', 'Nacajuca', 'Avenida principal, límite con Villahermosa, plaza comercial', 18.02140000, -92.96420000, 'Activa', '2026-11-26 06:00:18'),
+(27, 'ZN-CEN-021', 'Tabasco 2000', 'Centro', 'Avenida Paseo Tabasco, frente a Palacio Municipal y La Choca', 17.99680000, -92.94450000, 'Activa', '2026-11-26 06:00:18'),
+(28, 'ZN-CEN-022', 'Zona Luz Centro', 'Centro', 'Calle Juárez esquina Lerdo de Tejada, zona peatonal', 17.98920000, -92.91840000, 'Activa', '2026-11-26 06:00:18'),
+(29, 'ZN-CEN-023', 'Colonia Atasta', 'Centro', 'Avenida 27 de Febrero, cerca de la Ciudad Deportiva', 17.98150000, -92.94120000, 'Activa', '2026-11-26 06:00:18'),
+(30, 'ZN-CEN-024', 'Colonia Tamulté', 'Centro', 'Calle Gregorio Méndez, frente al mercado público', 17.97340000, -92.94890000, 'Inactiva', '2026-11-26 06:00:18'),
+(31, 'ZN-CEN-025', 'Ciudad Industrial', 'Centro', 'Carretera Villahermosa-Frontera km 4, parque industrial', 18.03450000, -92.90560000, 'Activa', '2026-11-26 06:00:18'),
+(32, 'ZN-TEA-026', 'Centro Teapa', 'Teapa', 'Frente al parque Miguel Hidalgo y mercado Diana Laura', 17.54890000, -92.95240000, 'Activa', '2026-11-26 06:00:18'),
+(33, 'ZN-MAC-027', 'Centro Macuspana', 'Macuspana', 'Avenida Paseo Carlos Pellicer, frente al parque central', 17.76120000, -92.59680000, 'Activa', '2026-11-26 06:00:18'),
+(34, 'ZN-CEN-028', 'Centro Frontera', 'Centla', 'Frente al parque Quintín Arauz y malecón del río Grijalva', 18.54120000, -92.64580000, 'Activa', '2026-11-26 06:00:18'),
+(35, 'ZN-TEN-029', 'Centro Tenosique', 'Tenosique', 'Calle 26 esquina 21, frente al parque central', 17.47180000, -91.42250000, 'Activa', '2026-11-26 06:00:18'),
+(36, 'ZN-BAL-030', 'Centro Balancán', 'Balancán', 'A un costado del malecón del río Usumacinta y plaza cívica', 17.80150000, -91.53640000, 'Inactiva', '2026-11-26 06:00:18'),
+(37, 'ZN-HUI-031', 'Colonia Convivencia', 'Huimanguillo', 'Cerca de la unidad deportiva municipal y carretera a Chontalpa', 17.82840000, -93.38920000, 'Activa', '2026-11-26 06:02:14'),
+(38, 'ZN-HUI-032', 'Poblado C-34', 'Huimanguillo', 'Avenida principal del poblado, frente a la clínica rural', 17.91250000, -93.48910000, 'Activa', '2026-11-26 06:02:14'),
+(39, 'ZN-HUI-033', 'Villa Francisco Rueda', 'Huimanguillo', 'Parque central de la villa, límite con Chiapas', 17.81420000, -93.92140000, 'Activa', '2026-11-26 06:02:14'),
+(40, 'ZN-HUI-034', 'Colonia Mastelero', 'Huimanguillo', 'A dos cuadras del mercado público municipal', 17.83690000, -93.39410000, 'Activa', '2026-11-26 06:02:14'),
+(41, 'ZN-CAR-035', 'Colonia Pueblo Nuevo Cárdenas', 'Cárdenas', 'Periférico Carlos A. Molina, cerca de central camionera', 17.98450000, -93.36890000, 'Activa', '2026-11-26 06:02:14'),
+(42, 'ZN-CAR-036', 'Poblado C-16', 'Cárdenas', 'Frente al parque principal y escuela secundaria técnica', 18.06210000, -93.45120000, 'Activa', '2026-11-26 06:02:14'),
+(43, 'ZN-CAR-037', 'Villa Sánchez Magallanes', 'Cárdenas', 'Zona costera, frente al faro y malecón de la barra', 18.29450000, -93.85420000, 'Activa', '2026-11-26 06:02:14'),
+(44, 'ZN-COM-038', 'Villa Chichicapa', 'Comalcalco', 'Carretera Comalcalco-Cunduacán, frente al parque central', 18.23410000, -93.20890000, 'Activa', '2026-11-26 06:02:14'),
+(45, 'ZN-COM-039', 'Villa Aldama', 'Comalcalco', 'A un costado de la parroquia y plaza cívica', 18.21560000, -93.34120000, 'Inactiva', '2026-11-26 06:02:14'),
+(46, 'ZN-PAR-040', 'Barra de Tupilco', 'Paraíso', 'Acceso principal a zona de playas y corredor turístico', 18.43120000, -93.41250000, 'Activa', '2026-11-26 06:02:14'),
+(47, 'ZN-CUN-041', 'Villa Libertad', 'Cunduacán', 'Carretera federal vía corta, frente al crucero principal', 18.11240000, -93.26450000, 'Activa', '2026-11-26 06:02:14'),
+(48, 'ZN-JAL-042', 'Poblado Ayapa', 'Jalpa de Méndez', 'Parque central de la comunidad, zona artesanal', 18.21890000, -93.11450000, 'Activa', '2026-11-26 06:02:14'),
+(49, 'ZN-NAC-043', 'Poblado Tapotzingo', 'Nacajuca', 'Avenida principal, cerca de la iglesia y corredor gastronómico', 18.18450000, -93.02890000, 'Activa', '2026-11-26 06:02:14'),
+(50, 'ZN-CEN-044', 'Fraccionamiento Pomoca', 'Nacajuca', 'Entrada principal sector Valle Real, límite con Centro', 18.05120000, -92.92840000, 'Activa', '2026-11-26 06:02:14'),
+(51, 'ZN-CEN-045', 'Colonia Gaviotas Norte', 'Centro', 'Malecón Leandro Rovirosa Wade, frente al puente Grijalva I', 17.99120000, -92.90890000, 'Activa', '2026-11-26 06:02:14'),
+(52, 'ZN-CEN-046', 'Villa Ocuiltzapotlán', 'Centro', 'Carretera Villahermosa-Frontera km 15, parque central', 18.11450000, -92.87450000, 'Activa', '2026-11-26 06:02:14'),
+(53, 'ZN-CEN-047', 'Villa Parrilla', 'Centro', 'Carretera Villahermosa-Teapa km 11, frente al mercado', 17.89450000, -92.92410000, 'Inactiva', '2026-11-26 06:02:14'),
+(54, 'ZN-TAC-048', 'Centro Tacotalpa', 'Tacotalpa', 'Frente al parque central y palacio municipal', 17.59450000, -92.82450000, 'Activa', '2026-11-26 06:02:14'),
+(55, 'ZN-JAL-049', 'Centro Jalapa', 'Jalapa', 'Malecón del río de la Sierra y plaza principal', 17.72140000, -92.81120000, 'Activa', '2026-11-26 06:02:14'),
+(56, 'ZN-EMI-050', 'Centro Emiliano Zapata', 'Emiliano Zapata', 'Balcón del Usumacinta, frente al parque central', 17.74120000, -91.76450000, 'Activa', '2026-11-26 06:02:14');
+
+INSERT INTO `usuarios` (`IdUsuario`, `IdRol`, `Nombre`, `Apellidos`, `Contacto`, `Correo`, `Curp`, `Rfc`, `Password`, `Estado`, `FechaCreacion`) VALUES
+(2, 2, 'root2', 'root2', 'root2', 'root2@root2.com', 'root2', 'root2', '$2y$10$6JUmgO9b6RYWJzsqBZu5ZeUMiPirSSvLhfYnUHXnyOFo19PrEwPcC', 'Activo', '2026-10-23 15:55:25'),
+(3, 3, 'root3', 'root3', 'root3', 'root3@root3.com', 'root3', 'root3', '$2y$10$qicjqul9hTLfMZnQ6Arn3Oo9ajU6UjfIIc8qkDANZ.duQphr29dFe', 'Activo', '2026-10-23 15:52:02'),
+(14, 1, 'root', 'root', '1234567890', 'root@root.com', 'root', 'root', '$2y$10$HbA1skrZLcZZg3QveapqH.cH7u2d.949tIqkzjIiNH559luj/KA3m', 'Activo', '2026-11-24 08:33:42'),
+(16, 2, 'Carlos', 'Hernández López', '9931120401', 'carlos.hernandez04@correo.com', 'HELC920415HTSLNR01', 'HELC920415AB1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(17, 2, 'María Elena', 'González Pérez', '9931120502', 'maria.gonzalez05@correo.com', 'GOPM950822MTSLNR02', 'GOPM950822CD2', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(18, 3, 'José Luis', 'Martínez Sánchez', '9931120603', 'joseluis.martinez06@correo.com', 'MASJ880311HTSLNR03', 'MASJ880311EF3', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(19, 3, 'Ana Sofía', 'Ramírez Morales', '9931120704', 'anasofia.ramirez07@correo.com', 'RAMA991205MTSLNR04', 'RAMA991205GH4', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(20, 3, 'Diego', 'Flores Castro', '9931120805', 'diego.flores08@correo.com', 'FOCD910719HTSLNR05', 'FOCD910719IJ5', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(21, 3, 'Valeria', 'Cruz Domínguez', '9931120906', 'valeria.cruz09@correo.com', 'CUDV970228MTSLNR06', 'CUDV970228KL6', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(22, 2, 'Alejandro', 'Reyes Vázquez', '9931121007', 'alejandro.reyes10@correo.com', 'REVA851103HTSLNR07', 'REVA851103MN7', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(23, 3, 'Fernanda', 'Mendoza Ortiz', '9931121108', 'fernanda.mendoza11@correo.com', 'MEOF000614MTSLNR08', 'MEOF000614OP8', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(24, 3, 'Miguel Ángel', 'Gutiérrez Silva', '9931121209', 'miguel.gutierrez12@correo.com', 'GUSM890927HTSLNR09', 'GUSM890927QR9', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(25, 3, 'Paola', 'Chávez Romero', '9931121310', 'paola.chavez13@correo.com', 'CHAR960118MTSLNR10', 'CHAR960118ST1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Inactivo', '2026-11-26 05:50:26'),
+(26, 2, 'Jorge', 'Ramos Torres', '9931121411', 'jorge.ramos14@correo.com', 'RATJ870509HTSLNR11', 'RATJ870509UV2', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(27, 3, 'Daniela', 'Vargas Jiménez', '9931121512', 'daniela.vargas15@correo.com', 'VAJD981021MTSLNR12', 'VAJD981021WX3', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(28, 3, 'Ricardo', 'Castillo Navarro', '9931121613', 'ricardo.castillo16@correo.com', 'CANR930330HTSLNR13', 'CANR930330YZ4', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(29, 3, 'Camila', 'Méndez Aguilar', '9931121714', 'camila.mendez17@correo.com', 'MEAC010712MTSLNR14', 'MEAC010712AA5', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(30, 3, 'Eduardo', 'Delgado Guzmán', '9931121815', 'eduardo.delgado18@correo.com', 'DEGE861224HTSLNR15', 'DEGE861224BB6', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(31, 2, 'Andrea', 'Sandoval Rubio', '9931121916', 'andrea.sandoval19@correo.com', 'SARA940408MTSLNR16', 'SARA940408CC7', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(32, 3, 'Óscar', 'Medina Cortés', '9931122017', 'oscar.medina20@correo.com', 'MECO900816HTSLNR17', 'MECO900816DD8', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(33, 3, 'Natalia', 'Ríos Contreras', '9931122118', 'natalia.rios21@correo.com', 'RICN990129MTSLNR18', 'RICN990129EE9', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(34, 3, 'Francisco', 'Salazar León', '9931122219', 'francisco.salazar22@correo.com', 'SELF840602HTSLNR19', 'SELF840602FF1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Inactivo', '2026-11-26 05:50:26'),
+(35, 3, 'Jimena', 'Ibarra Soto', '9931122320', 'jimena.ibarra23@correo.com', 'IASJ971119MTSLNR20', 'IASJ971119GG2', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(36, 2, 'Raúl', 'Núñez Vega', '9931122421', 'raul.nunez24@correo.com', 'NUVR910214HTSLNR21', 'NUVR910214HH3', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(37, 3, 'Lucía', 'Peña Campos', '9931122522', 'lucia.pena25@correo.com', 'PECL020526MTSLNR22', 'PECL020526II4', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(38, 3, 'Héctor', 'Aguirre Maldonado', '9931122623', 'hector.aguirre26@correo.com', 'AUMH881007HTSLNR23', 'AUMH881007JJ5', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(39, 3, 'Ximena', 'Solís Fuentes', '9931122724', 'ximena.solis27@correo.com', 'SOFX950703MTSLNR24', 'SOFX950703KK6', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(40, 3, 'Arturo', 'Domínguez Herrera', '9931122825', 'arturo.dominguez28@correo.com', 'DOHA830915HTSLNR25', 'DOHA830915LL7', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(41, 2, 'Mariana', 'Pacheco Guerrero', '9931122926', 'mariana.pacheco29@correo.com', 'PAGM961211MTSLNR26', 'PAGM961211MM8', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(42, 3, 'Gabriel', 'Valencia Ríos', '9931123027', 'gabriel.valencia30@correo.com', 'VARG920123HTSLNR27', 'VARG920123NN9', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(43, 3, 'Sofía', 'Montoya Luna', '9931123128', 'sofia.montoya31@correo.com', 'MOLS000419MTSLNR28', 'MOLS000419OO1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(44, 3, 'Rodrigo', 'Carrillo Estrada', '9931123229', 'rodrigo.carrillo32@correo.com', 'CAER890628HTSLNR29', 'CAER890628PP2', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Inactivo', '2026-11-26 05:50:26'),
+(45, 3, 'Renata', 'Cervantes Ochoa', '9931123330', 'renata.cervantes33@correo.com', 'CEOR980904MTSLNR30', 'CEOR980904QQ3', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 05:50:26'),
+(46, 2, 'Sergio', 'Molina Paredes', '9931123431', 'sergio.molina34@correo.com', 'MOPS870214HTSLNR31', 'MOPS870214RR4', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(47, 3, 'Brenda', 'Escobar Tapia', '9931123532', 'brenda.escobar35@correo.com', 'ESTB960519MTSLNR32', 'ESTB960519SS5', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(48, 3, 'Iván', 'Acosta Benítez', '9931123633', 'ivan.acosta36@correo.com', 'ACBI910823HTSLNR33', 'ACBI910823TT6', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(49, 3, 'Karla', 'Miranda Rosales', '9931123734', 'karla.miranda37@correo.com', 'MIRK981104MTSLNR34', 'MIRK981104UU7', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(50, 2, 'Alberto', 'Palacios Cárdenas', '9931123835', 'alberto.palacios38@correo.com', 'PACA840317HTSLNR35', 'PACA840317VV8', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(51, 3, 'Lorena', 'Figueroa Salas', '9931123936', 'lorena.figueroa39@correo.com', 'FISL950729MTSLNR36', 'FISL950729WW9', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Inactivo', '2026-11-26 06:01:50'),
+(52, 3, 'Roberto', 'Orozco Méndez', '9931124037', 'roberto.orozco40@correo.com', 'OOMR891011HTSLNR37', 'OOMR891011XX1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(53, 3, 'Diana', 'gallegos Zamora', '9931124138', 'diana.gallegos41@correo.com', 'GAZD000125MTSLNR38', 'GAZD000125YY2', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(54, 3, 'Manuel', 'Cabrera Ponce', '9931124239', 'manuel.cabrera42@correo.com', 'CAPM930408HTSLNR39', 'CAPM930408ZZ3', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(55, 2, 'Patricia', 'Villarreal Soto', '9931124340', 'patricia.villarreal43@correo.com', 'VISP860914MTSLNR40', 'VISP860914A14', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(56, 3, 'Enrique', 'Avilés Trejo', '9931124441', 'enrique.aviles44@correo.com', 'AITE921202HTSLNR41', 'AITE921202B25', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(57, 3, 'Mónica', 'Cisneros Bravo', '9931124542', 'monica.cisneros45@correo.com', 'CIBM970618MTSLNR42', 'CIBM970618C36', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(58, 3, 'César', 'Bautista Corona', '9931124643', 'cesar.bautista46@correo.com', 'BACC900227HTSLNR43', 'BACC900227D47', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Inactivo', '2026-11-26 06:01:50'),
+(59, 3, 'Adriana', 'Meza Peralta', '9931124744', 'adriana.meza47@correo.com', 'MEPA990809MTSLNR44', 'MEPA990809E58', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(60, 2, 'Víctor', 'Espinoza Lara', '9931124845', 'victor.espinoza48@correo.com', 'EILV850516HTSLNR45', 'EILV850516F69', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(61, 3, 'Verónica', 'Velázquez Cano', '9931124946', 'veronica.velazquez49@correo.com', 'VECV941121MTSLNR46', 'VECV941121G71', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(62, 3, 'Rubén', 'Juárez Pineda', '9931125047', 'ruben.juarez50@correo.com', 'JUPR880703HTSLNR47', 'JUPR880703H82', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(63, 3, 'Claudia', 'Lozano Franco', '9931125148', 'claudia.lozano51@correo.com', 'LOFC010312MTSLNR48', 'LOFC010312I93', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(64, 3, 'Guillermo', 'Serrano Márquez', '9931125249', 'guillermo.serrano52@correo.com', 'SEMG821030HTSLNR49', 'SEMG821030J14', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50'),
+(65, 3, 'Isabel', 'Arellano Quintero', '9931125350', 'isabel.arellano53@correo.com', 'AEQI960424MTSLNR50', 'AEQI960424K25', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Activo', '2026-11-26 06:01:50');
+
+INSERT INTO `tecnicos` (`IdTecnico`, `IdUsuario`, `NumeroEmpleado`, `Especialidad`) VALUES
+(7, 16, 'EMP-TEC-001', 'Inspección'),
+(8, 17, 'EMP-TEC-002', 'Aplicación'),
+(9, 18, 'EMP-TEC-003', 'Ambas'),
+(10, 19, 'EMP-TEC-004', 'Inspección'),
+(11, 20, 'EMP-TEC-005', 'Aplicación'),
+(12, 21, 'EMP-TEC-006', 'Ambas'),
+(13, 22, 'EMP-TEC-007', 'Inspección'),
+(14, 23, 'EMP-TEC-008', 'Aplicación'),
+(15, 24, 'EMP-TEC-009', 'Ambas'),
+(16, 25, 'EMP-TEC-010', 'Inspección'),
+(17, 26, 'EMP-TEC-011', 'Aplicación'),
+(18, 27, 'EMP-TEC-012', 'Ambas'),
+(19, 28, 'EMP-TEC-013', 'Inspección'),
+(20, 29, 'EMP-TEC-014', 'Aplicación'),
+(21, 30, 'EMP-TEC-015', 'Ambas'),
+(22, 31, 'EMP-TEC-016', 'Inspección'),
+(23, 32, 'EMP-TEC-017', 'Aplicación'),
+(24, 33, 'EMP-TEC-018', 'Ambas'),
+(25, 34, 'EMP-TEC-019', 'Inspección'),
+(26, 35, 'EMP-TEC-020', 'Aplicación'),
+(27, 36, 'EMP-TEC-021', 'Ambas'),
+(28, 37, 'EMP-TEC-022', 'Inspección'),
+(29, 38, 'EMP-TEC-023', 'Aplicación'),
+(30, 39, 'EMP-TEC-024', 'Ambas'),
+(31, 40, 'EMP-TEC-025', 'Inspección'),
+(32, 41, 'EMP-TEC-026', 'Aplicación'),
+(33, 42, 'EMP-TEC-027', 'Ambas'),
+(34, 43, 'EMP-TEC-028', 'Inspección'),
+(35, 44, 'EMP-TEC-029', 'Aplicación'),
+(36, 45, 'EMP-TEC-030', 'Ambas'),
+(37, 46, 'EMP-TEC-031', 'Inspección'),
+(38, 47, 'EMP-TEC-032', 'Aplicación'),
+(39, 48, 'EMP-TEC-033', 'Ambas'),
+(40, 49, 'EMP-TEC-034', 'Inspección'),
+(41, 50, 'EMP-TEC-035', 'Aplicación'),
+(42, 51, 'EMP-TEC-036', 'Ambas'),
+(43, 52, 'EMP-TEC-037', 'Inspección'),
+(44, 53, 'EMP-TEC-038', 'Aplicación'),
+(45, 54, 'EMP-TEC-039', 'Ambas'),
+(46, 55, 'EMP-TEC-040', 'Inspección'),
+(47, 56, 'EMP-TEC-041', 'Aplicación'),
+(48, 57, 'EMP-TEC-042', 'Ambas'),
+(49, 58, 'EMP-TEC-043', 'Inspección'),
+(50, 59, 'EMP-TEC-044', 'Aplicación'),
+(51, 60, 'EMP-TEC-045', 'Ambas'),
+(52, 61, 'EMP-TEC-046', 'Inspección'),
+(53, 62, 'EMP-TEC-047', 'Aplicación'),
+(54, 63, 'EMP-TEC-048', 'Ambas'),
+(55, 64, 'EMP-TEC-049', 'Inspección'),
+(56, 65, 'EMP-TEC-050', 'Ambas');
+
+INSERT INTO `bitacora` (`IdBitacora`, `IdUsuario`, `IdModulo`, `TipoAccion`, `FechaInicioBit`, `FechaFinBit`) VALUES
+(51, 16, 1, 'Inicio de sesión', '2026-01-06 08:00:12', '2026-01-06 08:15:40'),
+(52, 17, 2, 'Consulta de registros', '2026-01-07 09:05:00', '2026-01-07 09:12:18'),
+(53, 18, 3, 'Actualización de permisos', '2026-01-08 10:20:05', '2026-01-08 10:28:50'),
+(54, 19, 5, 'Creación de registro', '2026-01-09 11:10:30', '2026-01-09 11:19:02'),
+(55, 20, 6, 'Edición de registro', '2026-01-10 08:45:14', '2026-01-10 08:53:27'),
+(56, 21, 7, 'Consulta de catálogo', '2026-01-11 13:00:00', '2026-01-11 13:08:45'),
+(57, 22, 8, 'Creación de campaña', '2026-01-12 09:30:22', '2026-01-12 09:44:10'),
+(58, 23, 9, 'Registro de acción', '2026-01-13 10:15:09', '2026-01-13 10:26:33'),
+(59, 24, 10, 'Asignación de técnico', '2026-01-14 14:10:00', '2026-01-14 14:18:19'),
+(60, 25, 11, 'Programación de visita', '2026-01-15 15:05:41', '2026-01-15 15:14:00'),
+(61, 26, 12, 'Generación de orden', '2026-01-16 08:20:11', '2026-01-16 08:31:05'),
+(62, 27, 13, 'Registro de inspección', '2026-01-17 09:50:00', '2026-01-17 10:04:12'),
+(63, 28, 14, 'Registro de diagnóstico', '2026-01-18 11:25:38', '2026-01-18 11:39:55'),
+(64, 29, 15, 'Registro de aplicación', '2026-01-19 12:40:19', '2026-01-19 12:52:40'),
+(65, 30, 16, 'Actualización de seguimiento', '2026-01-20 16:00:00', '2026-01-20 16:11:23'),
+(66, 31, 17, 'Generación de reporte', '2026-01-21 09:12:04', '2026-01-21 09:20:15'),
+(67, 32, 18, 'Exportación de datos', '2026-01-22 10:45:50', '2026-01-22 10:49:10'),
+(68, 33, 19, 'Consulta de bitácora', '2026-01-23 11:30:00', '2026-01-23 11:37:28'),
+(69, 34, 20, 'Revisión de accesos', '2026-01-24 13:15:16', '2026-01-24 13:24:09'),
+(70, 35, 21, 'Consulta de producto', '2026-01-25 08:55:00', '2026-01-25 09:02:44'),
+(71, 36, 22, 'Consulta de inventario', '2026-01-26 10:05:31', '2026-01-26 10:15:12'),
+(72, 37, 23, 'Movimiento de almacén', '2026-01-27 11:40:20', '2026-01-27 11:51:08'),
+(73, 38, 24, 'Registro de proveedor', '2026-01-28 14:22:00', '2026-01-28 14:33:47'),
+(74, 39, 25, 'Registro de compra', '2026-01-29 15:18:10', '2026-01-29 15:29:30'),
+(75, 40, 26, 'Registro de equipo', '2026-01-30 09:00:45', '2026-01-30 09:10:19'),
+(76, 41, 27, 'Mantenimiento de equipo', '2026-02-01 10:33:12', '2026-02-01 10:45:00'),
+(77, 42, 28, 'Asignación de ruta', '2026-02-02 11:12:08', '2026-02-02 11:21:54'),
+(78, 43, 29, 'Consulta de mapa', '2026-02-03 13:50:25', '2026-02-03 14:02:11'),
+(79, 44, 30, 'Revisión de alerta', '2026-02-04 16:10:00', '2026-02-04 16:16:39'),
+(80, 45, 31, 'Consulta de incidencia', '2026-02-05 08:35:19', '2026-02-05 08:44:02'),
+(81, 46, 32, 'Carga de evidencia', '2026-02-06 09:48:55', '2026-02-06 09:57:21'),
+(82, 47, 33, 'Emisión de dictamen', '2026-02-07 11:05:14', '2026-02-07 11:18:40'),
+(83, 48, 34, 'Registro de predio', '2026-02-08 12:30:00', '2026-02-08 12:41:15'),
+(84, 49, 35, 'Registro de contrato', '2026-02-09 14:15:27', '2026-02-09 14:27:08'),
+(85, 50, 36, 'Consulta de agenda', '2026-02-10 15:40:09', '2026-02-10 15:48:33'),
+(86, 51, 37, 'Evaluación de calidad', '2026-02-11 08:18:42', '2026-02-11 08:29:10'),
+(87, 52, 38, 'Registro de capacitación', '2026-02-12 10:02:15', '2026-02-12 10:14:50'),
+(88, 53, 39, 'Consulta de protocolo', '2026-02-13 11:55:00', '2026-02-13 12:03:22'),
+(89, 54, 40, 'Cambio de configuración', '2026-02-14 13:20:36', '2026-02-14 13:28:19'),
+(90, 55, 41, 'Actualización de parámetro', '2026-02-15 15:10:04', '2026-02-15 15:17:45'),
+(91, 56, 42, 'Generación de respaldo', '2026-02-16 07:45:11', '2026-02-16 07:56:02'),
+(92, 57, 43, 'Consulta de soporte', '2026-02-17 09:22:30', '2026-02-17 09:30:14'),
+(93, 58, 44, 'Consulta de FAQ', '2026-02-18 10:50:18', '2026-02-18 10:55:40'),
+(94, 59, 45, 'Descarga de manual', '2026-02-19 12:12:00', '2026-02-19 12:16:25'),
+(95, 60, 1, 'Inicio de sesión', '2026-02-20 08:05:10', NULL),
+(96, 61, 5, 'Consulta de zona', '2026-02-21 09:15:45', NULL),
+(97, 62, 8, 'Consulta de campaña', '2026-02-22 10:30:20', NULL),
+(98, 63, 9, 'Registro de acción', '2026-02-23 11:45:00', NULL),
+(99, 64, 13, 'Consulta de inspección', '2026-02-24 14:00:12', NULL),
+(100, 65, 17, 'Consulta de reporte', '2026-02-25 15:20:35', NULL);
+
+INSERT INTO `zonasprioritarias` (`IdZonaPrioritaria`, `IdZona`, `IdPlaga`, `FechaInicialPrioritaria`, `FechaFinalPrioritaria`) VALUES
+(151, 7, 13, '2026-01-05', '2026-02-04'),
+(152, 8, 16, '2026-01-10', '2026-02-09'),
+(153, 9, 19, '2026-01-15', '2026-02-14'),
+(154, 10, 22, '2026-01-20', '2026-02-19'),
+(155, 11, 24, '2026-01-25', '2026-02-24'),
+(156, 12, 14, '2026-02-01', '2026-03-03'),
+(157, 13, 17, '2026-02-05', '2026-03-07'),
+(158, 14, 48, '2026-02-10', '2026-03-12'),
+(159, 15, 20, '2026-02-15', '2026-03-17'),
+(160, 16, 27, '2026-02-20', '2026-03-22'),
+(161, 17, 23, '2026-02-25', '2026-03-27'),
+(162, 18, 49, '2026-03-01', '2026-03-31'),
+(163, 19, 13, '2026-03-05', '2026-04-04'),
+(164, 20, 21, '2026-03-10', '2026-04-09'),
+(165, 21, 31, '2026-03-15', '2026-04-14'),
+(166, 22, 25, '2026-03-20', '2026-04-19'),
+(167, 23, 50, '2026-03-25', '2026-04-24'),
+(168, 24, 28, '2026-04-01', '2026-05-01'),
+(169, 25, 30, '2026-04-05', '2026-05-05'),
+(170, 26, 16, '2026-04-10', '2026-05-10'),
+(171, 27, 32, '2026-04-15', '2026-05-15'),
+(172, 28, 18, '2026-04-20', '2026-05-20'),
+(173, 29, 13, '2026-04-25', '2026-05-25'),
+(174, 30, 19, '2026-05-01', '2026-05-31'),
+(175, 31, 38, '2026-05-05', '2026-06-04'),
+(176, 32, 33, '2026-05-10', '2026-06-09'),
+(177, 33, 14, '2026-05-15', '2026-06-14'),
+(178, 34, 15, '2026-05-20', '2026-06-19'),
+(179, 35, 51, '2026-05-25', '2026-06-24'),
+(180, 36, 56, '2026-06-01', '2026-07-01'),
+(181, 37, 26, '2026-06-05', '2026-07-05'),
+(182, 38, 48, '2026-06-10', '2026-07-10'),
+(183, 39, 36, '2026-06-15', '2026-07-15'),
+(184, 40, 29, '2026-06-20', '2026-07-20'),
+(185, 41, 17, '2026-06-25', '2026-07-25'),
+(186, 42, 53, '2026-07-01', '2026-07-31'),
+(187, 43, 34, '2026-07-05', '2026-08-04'),
+(188, 44, 54, '2026-07-10', '2026-08-09'),
+(189, 45, 37, '2026-07-15', '2026-08-14'),
+(190, 46, 35, '2026-07-20', '2026-08-19'),
+(191, 47, 55, '2026-07-25', '2026-08-24'),
+(192, 48, 57, '2026-08-01', '2026-08-31'),
+(193, 49, 40, '2026-08-05', '2026-09-04'),
+(194, 50, 21, '2026-08-10', '2026-09-09'),
+(195, 51, 13, '2026-08-15', '2026-09-14'),
+(196, 52, 39, '2026-08-20', '2026-09-19'),
+(197, 53, 59, '2026-08-25', '2026-09-24'),
+(198, 54, 60, '2026-09-01', '2026-10-01'),
+(199, 55, 58, '2026-09-05', '2026-10-05'),
+(200, 56, 62, '2026-09-10', '2026-10-10');
+
+INSERT INTO `campanas` (`IdCampana`, `CodigoCampana`, `NombreCampana`, `IdZona`, `FechaInicio`, `FechaFin`, `Estado`) VALUES
+(9, 'CMP-2026-001', 'Control de criaderos y nebulización preventiva', 7, '2026-01-06', '2026-01-25', 'Finalizada'),
+(10, 'CMP-2026-002', 'Sanitización y control de cucarachas en comercios', 8, '2026-01-12', '2026-01-30', 'Finalizada'),
+(11, 'CMP-2026-003', 'Desratización perimetral en bodegas y mercados', 9, '2026-01-18', '2026-02-05', 'Finalizada'),
+(12, 'CMP-2026-004', 'Protección estructural contra termita subterránea', 10, '2026-01-22', '2026-02-12', 'Finalizada'),
+(13, 'CMP-2026-005', 'Erradicación de hormiga de fuego en áreas verdes', 11, '2026-01-28', '2026-02-15', 'Finalizada'),
+(14, 'CMP-2026-006', 'Limpieza de drenajes y control larvario de mosquitos', 12, '2026-02-02', '2026-02-22', 'Finalizada'),
+(15, 'CMP-2026-007', 'Control integral de plagas urbanas en zona hospitalaria', 13, '2026-02-07', '2026-02-27', 'Finalizada'),
+(16, 'CMP-2026-008', 'Manejo integrado de gusano cogollero en parcelas', 14, '2026-02-12', '2026-03-04', 'Finalizada'),
+(17, 'CMP-2026-009', 'Cerco sanitario y control de roedores en vía principal', 15, '2026-02-16', '2026-03-01', 'Cancelada'),
+(18, 'CMP-2026-010', 'Control de moscas y manejo de residuos en mercado', 16, '2026-02-20', '2026-03-10', 'Finalizada'),
+(19, 'CMP-2026-011', 'Inspección y tratamiento de madera contra termita seca', 17, '2026-02-24', '2026-03-14', 'Finalizada'),
+(20, 'CMP-2026-012', 'Monitoreo y control de mosca blanca en cultivos', 18, '2026-03-02', '2026-03-22', 'Finalizada'),
+(21, 'CMP-2026-013', 'Brigada anti-dengue y eliminación de cacharros', 19, '2026-03-06', '2026-03-26', 'Finalizada'),
+(22, 'CMP-2026-014', 'Control de ratón doméstico en almacenes y viviendas', 20, '2026-03-10', '2026-03-30', 'Finalizada'),
+(23, 'CMP-2026-015', 'Campaña contra garrapata y pulga en zonas habitacionales', 21, '2026-03-14', '2026-04-03', 'Finalizada'),
+(24, 'CMP-2026-016', 'Control de hormiga faraón en cocinas y clínicas', 22, '2026-03-18', '2026-04-07', 'Finalizada'),
+(25, 'CMP-2026-017', 'Control biológico de pulgón verde en zona agrícola', 23, '2026-03-22', '2026-04-12', 'Finalizada'),
+(26, 'CMP-2026-018', 'Control de mosca de la fruta en corredores comerciales', 24, '2026-03-27', '2026-04-16', 'Finalizada'),
+(27, 'CMP-2026-019', 'Fumigación y prevención de ectoparásitos en patios', 25, '2026-04-01', '2026-04-20', 'Finalizada'),
+(28, 'CMP-2026-020', 'Sanitización preventiva contra cucaracha alemana', 26, '2026-04-05', '2026-04-25', 'Finalizada'),
+(29, 'CMP-2026-021', 'Detección y control de chinche de cama en hospedajes', 27, '2026-04-10', '2026-04-30', 'Finalizada'),
+(30, 'CMP-2026-022', 'Limpieza de registros y control de cucaracha oriental', 28, '2026-04-14', '2026-05-04', 'Finalizada'),
+(31, 'CMP-2026-023', 'Nebulización focalizada previa a temporada de lluvias', 29, '2026-04-19', '2026-05-09', 'Finalizada'),
+(32, 'CMP-2026-024', 'Control de roedores en zonas de acopio y maleza', 30, '2026-04-24', '2026-05-14', 'Finalizada'),
+(33, 'CMP-2026-025', 'Protección de granos almacenados contra gorgojo del maíz', 31, '2026-04-28', '2026-05-18', 'Finalizada'),
+(34, 'CMP-2026-026', 'Prevención de picaduras de alacrán en viviendas y escuelas', 32, '2026-05-03', '2026-05-23', 'Finalizada'),
+(35, 'CMP-2026-027', 'Tratamiento larvario en cuerpos de agua estancada', 33, '2026-05-07', '2026-05-27', 'Finalizada'),
+(36, 'CMP-2026-028', 'Vigilancia entomológica contra mosquito de la malaria', 34, '2026-05-12', '2026-06-01', 'Finalizada'),
+(37, 'CMP-2026-029', 'Control de picudo negro en plantaciones de plátano', 35, '2026-05-18', '2026-06-07', 'Finalizada'),
+(38, 'CMP-2026-030', 'Recolección controlada y manejo de caracol gigante', 36, '2026-05-22', '2026-06-11', 'Finalizada'),
+(39, 'CMP-2026-031', 'Localización y control de hormiga carpintera en madera', 37, '2026-05-27', '2026-06-16', 'Finalizada'),
+(40, 'CMP-2026-032', 'Monitoreo de plagas agrícolas en poblado rural', 38, '2026-06-01', '2026-06-20', 'Cancelada'),
+(41, 'CMP-2026-033', 'Retiro seguro de nidos de avispa papelera en edificios', 39, '2026-06-05', '2026-06-25', 'Finalizada'),
+(42, 'CMP-2026-034', 'Limpieza enzimática de coladeras contra mosca de drenaje', 40, '2026-06-10', '2026-06-30', 'Finalizada'),
+(43, 'CMP-2026-035', 'Control de cucaracha americana en red de alcantarillado', 41, '2026-06-15', '2026-07-05', 'Finalizada'),
+(44, 'CMP-2026-036', 'Manejo de trips occidental en cultivos e invernaderos', 42, '2026-06-20', '2026-07-10', 'Finalizada'),
+(45, 'CMP-2026-037', 'Retiro y control preventivo de araña viuda negra', 43, '2026-06-25', '2026-07-15', 'Finalizada'),
+(46, 'CMP-2026-038', 'Control de araña roja en zonas cálidas y secas', 44, '2026-07-01', '2026-07-20', 'Finalizada'),
+(47, 'CMP-2026-039', 'Rescate y reubicación de abejas en áreas urbanas', 45, '2026-07-06', '2026-07-26', 'Finalizada'),
+(48, 'CMP-2026-040', 'Prevención y control de araña violinista en interiores', 46, '2026-07-12', '2026-08-01', 'Finalizada'),
+(49, 'CMP-2026-041', 'Control de escama algodonosa en árboles y huertos', 47, '2026-07-18', '2026-08-07', 'Finalizada'),
+(50, 'CMP-2026-042', 'Control de babosas y humedad en jardines y huertos', 48, '2026-08-01', '2026-08-21', 'Finalizada'),
+(51, 'CMP-2026-043', 'Sanitización de bodegas contra palomilla de la harina', 49, '2026-08-10', '2026-08-30', 'Finalizada'),
+(52, 'CMP-2026-044', 'Control de plagas domésticas en viviendas y comercios', 50, '2026-09-01', '2026-09-21', 'Finalizada'),
+(53, 'CMP-2026-045', 'Jornada intensiva contra mosquito transmisor de dengue', 51, '2026-10-01', '2026-10-25', 'Finalizada'),
+(54, 'CMP-2026-046', 'Protección de granos y cereales contra gorgojo del arroz', 52, '2026-11-02', NULL, 'En Curso'),
+(55, 'CMP-2026-047', 'Control de escarabajo de la despensa en almacenes', 53, '2026-11-10', NULL, 'En Curso'),
+(56, 'CMP-2026-048', 'Prevención contra jejenes en zonas húmedas y arboladas', 54, '2026-11-18', NULL, 'En Curso'),
+(57, 'CMP-2026-049', 'Control de tijerillas y fauna nociva en periferias', 55, '2026-12-01', '2026-12-20', 'Programada'),
+(58, 'CMP-2026-050', 'Exclusión y control de paloma bravía en estructuras', 56, '2026-12-05', '2026-12-28', 'Programada');
+
+INSERT INTO `campanatecnicos` (`IdCampana`, `IdUsuario`) VALUES
+(9, 16),
+(10, 17),
+(11, 18),
+(12, 19),
+(13, 20),
+(14, 21),
+(15, 22),
+(16, 23),
+(17, 24),
+(18, 25),
+(19, 26),
+(20, 27),
+(21, 28),
+(22, 29),
+(23, 30),
+(24, 31),
+(25, 32),
+(26, 33),
+(27, 34),
+(28, 35),
+(29, 36),
+(30, 37),
+(31, 38),
+(32, 39),
+(33, 40),
+(34, 41),
+(35, 42),
+(36, 43),
+(37, 44),
+(38, 45),
+(39, 46),
+(40, 47),
+(41, 48),
+(42, 49),
+(43, 50),
+(44, 51),
+(45, 52),
+(46, 53),
+(47, 54),
+(48, 55),
+(49, 56),
+(50, 57),
+(51, 58),
+(52, 59),
+(53, 60),
+(54, 61),
+(55, 62),
+(56, 63),
+(57, 64),
+(58, 65);
+
+INSERT INTO `origencampana` (`IdOrigenCampana`, `IdCampana`, `IdSolicitante`, `FechaSolicitud`) VALUES
+(1, 9, 1, '2026-01-04'),
+(2, 10, 2, '2026-01-09'),
+(3, 11, 3, '2026-01-14'),
+(4, 12, 4, '2026-01-19'),
+(5, 13, 5, '2026-01-24'),
+(6, 14, 6, '2026-01-29'),
+(7, 15, 7, '2026-02-03'),
+(8, 16, 8, '2026-02-08'),
+(9, 17, 9, '2026-02-13'),
+(10, 18, 10, '2026-02-17'),
+(11, 19, 11, '2026-02-21'),
+(12, 20, 12, '2026-02-26'),
+(13, 21, 13, '2026-03-03'),
+(14, 22, 14, '2026-03-07'),
+(15, 23, 15, '2026-03-11'),
+(16, 24, 16, '2026-03-15'),
+(17, 25, 17, '2026-03-19'),
+(18, 26, 18, '2026-03-23'),
+(19, 27, 19, '2026-03-28'),
+(20, 28, 20, '2026-04-02'),
+(21, 29, 21, '2026-04-07'),
+(22, 30, 22, '2026-04-11'),
+(23, 31, 23, '2026-04-16'),
+(24, 32, 24, '2026-04-21'),
+(25, 33, 25, '2026-04-25'),
+(26, 34, 26, '2026-04-30'),
+(27, 35, 27, '2026-05-04'),
+(28, 36, 28, '2026-05-09'),
+(29, 37, 29, '2026-05-14'),
+(30, 38, 30, '2026-05-19'),
+(31, 39, 31, '2026-05-24'),
+(32, 40, 32, '2026-05-29'),
+(33, 41, 33, '2026-06-02'),
+(34, 42, 34, '2026-06-07'),
+(35, 43, 35, '2026-06-12'),
+(36, 44, 36, '2026-06-17'),
+(37, 45, 37, '2026-06-22'),
+(38, 46, 38, '2026-06-27'),
+(39, 47, 39, '2026-07-02'),
+(40, 48, 40, '2026-07-08'),
+(41, 49, 41, '2026-07-14'),
+(42, 50, 42, '2026-07-25'),
+(43, 51, 43, '2026-08-05'),
+(44, 52, 44, '2026-08-20'),
+(45, 53, 45, '2026-09-15'),
+(46, 54, 46, '2026-10-18'),
+(47, 55, 47, '2026-11-02'),
+(48, 56, 48, '2026-11-12'),
+(49, 57, 49, '2026-11-20'),
+(50, 58, 50, '2026-11-25');
+
+INSERT INTO `evidenciasfotograficas` (`IdEvidencia`, `IdCampana`, `idTipoAccion`, `TipoActividad`, `RutaArchivo`, `FechaSubida`) VALUES
+(1, 9, 1, 'Inspección', 'uploads/evidencias/2026/01/evidencia_001.jpg', '2026-01-07 08:40:00'),
+(2, 10, 2, 'Inspección', 'uploads/evidencias/2026/01/evidencia_002.jpg', '2026-01-13 09:30:00'),
+(3, 11, 3, 'Aplicación', 'uploads/evidencias/2026/01/evidencia_003.jpg', '2026-01-19 10:15:00'),
+(4, 12, 4, 'Seguimiento', 'uploads/evidencias/2026/01/evidencia_004.jpg', '2026-01-24 11:35:00'),
+(5, 13, 5, 'Inspección', 'uploads/evidencias/2026/01/evidencia_005.jpg', '2026-01-29 09:00:00'),
+(6, 14, 6, 'Aplicación', 'uploads/evidencias/2026/02/evidencia_006.jpg', '2026-02-03 10:05:00'),
+(7, 15, 7, 'Aplicación', 'uploads/evidencias/2026/02/evidencia_007.jpg', '2026-02-08 14:25:00'),
+(8, 16, 8, 'Aplicación', 'uploads/evidencias/2026/02/evidencia_008.jpg', '2026-02-13 07:55:00'),
+(9, 17, 9, 'Aplicación', 'uploads/evidencias/2026/02/evidencia_009.jpg', '2026-02-17 10:45:00'),
+(10, 18, 10, 'Seguimiento', 'uploads/evidencias/2026/02/evidencia_010.jpg', '2026-02-21 11:15:00'),
+(11, 19, 11, 'Aplicación', 'uploads/evidencias/2026/02/evidencia_011.jpg', '2026-02-25 09:35:00'),
+(12, 20, 12, 'Seguimiento', 'uploads/evidencias/2026/03/evidencia_012.jpg', '2026-03-03 13:30:00'),
+(13, 21, 8, 'Aplicación', 'uploads/evidencias/2026/03/evidencia_013.jpg', '2026-03-07 08:30:00'),
+(14, 22, 1, 'Inspección', 'uploads/evidencias/2026/03/evidencia_014.jpg', '2026-03-11 10:55:00'),
+(15, 23, 2, 'Inspección', 'uploads/evidencias/2026/03/evidencia_015.jpg', '2026-03-15 15:15:00'),
+(16, 24, 3, 'Aplicación', 'uploads/evidencias/2026/03/evidencia_016.jpg', '2026-03-19 09:20:00'),
+(17, 25, 4, 'Seguimiento', 'uploads/evidencias/2026/03/evidencia_017.jpg', '2026-03-23 12:00:00'),
+(18, 26, 5, 'Seguimiento', 'uploads/evidencias/2026/03/evidencia_018.jpg', '2026-03-28 09:05:00'),
+(19, 27, 6, 'Aplicación', 'uploads/evidencias/2026/04/evidencia_019.jpg', '2026-04-02 10:30:00'),
+(20, 28, 2, 'Inspección', 'uploads/evidencias/2026/04/evidencia_020.jpg', '2026-04-06 14:45:00'),
+(21, 29, 1, 'Inspección', 'uploads/evidencias/2026/04/evidencia_021.jpg', '2026-04-11 09:55:00'),
+(22, 30, 9, 'Aplicación', 'uploads/evidencias/2026/04/evidencia_022.jpg', '2026-04-15 11:25:00'),
+(23, 31, 4, 'Seguimiento', 'uploads/evidencias/2026/04/evidencia_023.jpg', '2026-04-20 08:40:00'),
+(24, 32, 2, 'Inspección', 'uploads/evidencias/2026/04/evidencia_024.jpg', '2026-04-25 16:15:00'),
+(25, 33, 3, 'Aplicación', 'uploads/evidencias/2026/04/evidencia_025.jpg', '2026-04-29 10:35:00'),
+(26, 34, 6, 'Aplicación', 'uploads/evidencias/2026/05/evidencia_026.jpg', '2026-05-04 09:15:00'),
+(27, 35, 7, 'Aplicación', 'uploads/evidencias/2026/05/evidencia_027.jpg', '2026-05-08 08:10:00'),
+(28, 36, 5, 'Seguimiento', 'uploads/evidencias/2026/05/evidencia_028.jpg', '2026-05-13 13:55:00'),
+(29, 37, 10, 'Seguimiento', 'uploads/evidencias/2026/05/evidencia_029.jpg', '2026-05-19 11:05:00'),
+(30, 38, 11, 'Aplicación', 'uploads/evidencias/2026/05/evidencia_030.jpg', '2026-05-23 09:45:00'),
+(31, 39, 1, 'Inspección', 'uploads/evidencias/2026/05/evidencia_031.jpg', '2026-05-28 11:30:00'),
+(32, 40, 2, 'Inspección', 'uploads/evidencias/2026/06/evidencia_032.jpg', '2026-06-02 14:20:00'),
+(33, 41, 11, 'Aplicación', 'uploads/evidencias/2026/06/evidencia_033.jpg', '2026-06-06 18:00:00'),
+(34, 42, 4, 'Seguimiento', 'uploads/evidencias/2026/06/evidencia_034.jpg', '2026-06-11 09:25:00'),
+(35, 43, 3, 'Aplicación', 'uploads/evidencias/2026/06/evidencia_035.jpg', '2026-06-16 08:55:00'),
+(36, 44, 10, 'Seguimiento', 'uploads/evidencias/2026/06/evidencia_036.jpg', '2026-06-21 10:15:00'),
+(37, 45, 11, 'Aplicación', 'uploads/evidencias/2026/06/evidencia_037.jpg', '2026-06-26 15:35:00'),
+(38, 46, 3, 'Aplicación', 'uploads/evidencias/2026/07/evidencia_038.jpg', '2026-07-02 09:50:00'),
+(39, 47, 12, 'Seguimiento', 'uploads/evidencias/2026/07/evidencia_039.jpg', '2026-07-07 11:45:00'),
+(40, 48, 1, 'Inspección', 'uploads/evidencias/2026/07/evidencia_040.jpg', '2026-07-13 11:00:00'),
+(41, 49, 3, 'Aplicación', 'uploads/evidencias/2026/07/evidencia_041.jpg', '2026-07-19 08:35:00'),
+(42, 50, 5, 'Seguimiento', 'uploads/evidencias/2026/08/evidencia_042.jpg', '2026-08-02 15:05:00'),
+(43, 51, 9, 'Aplicación', 'uploads/evidencias/2026/08/evidencia_043.jpg', '2026-08-11 09:40:00'),
+(44, 52, 12, 'Seguimiento', 'uploads/evidencias/2026/09/evidencia_044.jpg', '2026-09-02 11:20:00'),
+(45, 53, 8, 'Aplicación', 'uploads/evidencias/2026/10/evidencia_045.jpg', '2026-10-02 07:45:00'),
+(46, 54, 1, 'Inspección', 'uploads/evidencias/2026/11/evidencia_046.jpg', '2026-11-03 10:25:00'),
+(47, 55, 2, 'Inspección', 'uploads/evidencias/2026/11/evidencia_047.jpg', '2026-11-11 14:05:00'),
+(48, 56, 6, 'Aplicación', 'uploads/evidencias/2026/11/evidencia_048.jpg', '2026-11-19 08:30:00'),
+(49, 57, 1, 'Inspección', 'uploads/evidencias/2026/12/evidencia_049.jpg', '2026-12-02 09:55:00'),
+(50, 58, 2, 'Seguimiento', 'uploads/evidencias/2026/12/evidencia_050.jpg', '2026-12-06 10:15:00');
+
+INSERT INTO `incidencias` (`IdIncidencia`, `IdCampana`, `Zona`, `ActividadRelacionada`, `Descripcion`, `FechaRegistro`, `SincronizadoOffline`) VALUES
+(1, 9, 'Centro Histórico, Huimanguillo', 'Inspección', 'Patio con acumulación de agua en recipientes abiertos y acceso restringido en dos predios.', '2026-01-07 09:10:00', 1),
+(2, 10, 'Colonia Pueblo Nuevo, Huimanguillo', 'Aplicación', 'Fuga de agua cerca del área de lavado que redujo la adherencia del gel insecticida.', '2026-01-13 10:05:00', 1),
+(3, 11, 'Villa La Venta, Huimanguillo', 'Aplicación', 'Estación cebadera desplazada por fauna doméstica; se reubicó y aseguró con anclaje.', '2026-01-19 11:20:00', 1),
+(4, 12, 'Villa Estación Chontalpa, Huimanguillo', 'Seguimiento', 'Humedad persistente en viga de madera debido a filtración pluvial en techo.', '2026-01-24 12:00:00', 1),
+(5, 13, 'Colonia El Torito, Huimanguillo', 'Inspección', 'Presencia de montículos adicionales en terreno baldío colindante sin acceso autorizado.', '2026-01-29 09:45:00', 1),
+(6, 14, 'Centro Cárdenas, Cárdenas', 'Aplicación', 'Obstrucción parcial por residuos sólidos en registro pluvial durante la aplicación larvicida.', '2026-02-03 10:30:00', 1),
+(7, 15, 'Colonia Petrolera, Cárdenas', 'Inspección', 'Lluvia ligera repentina obligó a pausar temporalmente el recorrido exterior.', '2026-02-08 15:10:00', 1),
+(8, 16, 'Poblado C-28, Cárdenas', 'Inspección', 'Maleza alta en lindero de parcela dificultó el acceso a los primeros surcos.', '2026-02-13 08:25:00', 1),
+(9, 17, 'Villa Benito Juárez, Cárdenas', 'Aplicación', 'Tráfico vehicular intenso sobre tramo intervenido requirió señalización preventiva extra.', '2026-02-17 11:15:00', 1),
+(10, 18, 'Centro Comalcalco, Comalcalco', 'Seguimiento', 'Residuos orgánicos no retirados a tiempo atrajeron nuevamente moscas al área del mercado.', '2026-02-21 12:05:00', 1),
+(11, 19, 'Zona Arqueológica, Comalcalco', 'Inspección', 'Polilla y humedad en bodega auxiliar dificultaron la inspección visual de tarimas.', '2026-02-25 10:10:00', 1),
+(12, 20, 'Villa Tecolutilla, Comalcalco', 'Seguimiento', 'Ráfagas de viento moderadas durante la jornada requirieron ajuste de horario de revisión.', '2026-03-03 14:00:00', 1),
+(13, 21, 'Centro Paraíso, Paraíso', 'Aplicación', 'Viviendas cerradas en horario matutino; se dejó aviso para reprogramar atención.', '2026-03-07 09:00:00', 1),
+(14, 22, 'Puerto Dos Bocas, Paraíso', 'Inspección', 'Falta de iluminación en sótano de almacén; se utilizó lámpara portátil de alta potencia.', '2026-03-11 11:30:00', 1),
+(15, 23, 'Villa Puerto Ceiba, Paraíso', 'Seguimiento', 'Mascotas sueltas en patio durante la verificación; se solicitó resguardo temporal.', '2026-03-15 15:50:00', 1),
+(16, 24, 'Centro Cunduacán, Cunduacán', 'Aplicación', 'Limpieza reciente con cloro en un punto de cocina obligó a reaplicar cebo específico.', '2026-03-19 09:50:00', 1),
+(17, 25, 'Zona Universitaria Chontalpa, Cunduacán', 'Seguimiento', 'Encharcamiento localizado tras riego excesivo en franja del cultivo evaluado.', '2026-03-23 12:35:00', 1),
+(18, 26, 'Centro Jalpa de Méndez, Jalpa de Méndez', 'Inspección', 'Exceso de fruta madura expuesta en vía pública generó foco secundario de mosca de la fruta.', '2026-03-28 09:40:00', 1),
+(19, 27, 'Centro Nacajuca, Nacajuca', 'Aplicación', 'Terreno irregular con lodo en perímetro trasero limitó el avance del equipo de aspersión.', '2026-04-02 11:00:00', 1),
+(20, 28, 'Bosques de Saloya, Nacajuca', 'Aplicación', 'Ducto de ventilación con acumulación de grasa requirió limpieza previa antes del gel.', '2026-04-06 15:15:00', 1),
+(21, 29, 'Tabasco 2000, Centro', 'Inspección', 'Muebles pesados adosados a muros dificultaron la revisión completa de grietas.', '2026-04-11 10:25:00', 1),
+(22, 30, 'Zona Luz Centro, Centro', 'Aplicación', 'Coladera con tapa soldada impidió tratamiento directo; se reportó a mantenimiento.', '2026-04-15 12:00:00', 1),
+(23, 31, 'Colonia Atasta, Centro', 'Seguimiento', 'Lluvia previa dejó charcos menores en patio baldío vecino a la zona monitoreada.', '2026-04-20 09:10:00', 1),
+(24, 32, 'Colonia Tamulté, Centro', 'Seguimiento', 'Acumulación de tarimas y costales en desuso favoreció refugio de roedores.', '2026-04-25 16:45:00', 1),
+(25, 33, 'Ciudad Industrial, Centro', 'Aplicación', 'Humedad ambiental elevada en bodega obligó a reforzar ventilación antes del tratamiento.', '2026-04-29 11:05:00', 1),
+(26, 34, 'Centro Teapa, Teapa', 'Inspección', 'Escombros de obra y leña apilada representaron refugio potencial para alacranes.', '2026-05-04 09:45:00', 1),
+(27, 35, 'Centro Macuspana, Macuspana', 'Aplicación', 'Zanja con alto nivel de agua requirió doble dosis de larvicida según etiqueta.', '2026-05-08 08:40:00', 1),
+(28, 36, 'Centro Frontera, Centla', 'Inspección', 'Cuerpo de agua con vegetación densa en orilla dificultó el muestreo larvario.', '2026-05-13 14:25:00', 1),
+(29, 37, 'Centro Tenosique, Tenosique', 'Seguimiento', 'Dos trampas desplazadas por viento; se reinstalaron y fijaron correctamente.', '2026-05-19 11:40:00', 1),
+(30, 38, 'Centro Balancán, Balancán', 'Aplicación', 'Alta densidad de ejemplares tras lluvia requirió ampliación del perímetro de recolección.', '2026-05-23 10:15:00', 1),
+(31, 39, 'Colonia Convivencia, Huimanguillo', 'Inspección', 'Muro con humedad capilar debilitó madera de marco en acceso lateral.', '2026-05-28 12:00:00', 1),
+(32, 40, 'Poblado C-34, Huimanguillo', 'Seguimiento', 'Falta de acceso a lote agrícola por camino temporalmente anegado.', '2026-06-02 14:50:00', 1),
+(33, 41, 'Villa Francisco Rueda, Huimanguillo', 'Aplicación', 'Nido ubicado a gran altura requirió pértiga telescópica para aplicación segura.', '2026-06-06 18:20:00', 1),
+(34, 42, 'Colonia Mastelero, Huimanguillo', 'Seguimiento', 'Trampa de grasa sin mantenimiento previo retrasó la evaluación de coladeras.', '2026-06-11 09:50:00', 1),
+(35, 43, 'Colonia Pueblo Nuevo Cárdenas, Cárdenas', 'Aplicación', 'Pozo de visita con presión de agua impidió aplicación en ese punto específico.', '2026-06-16 09:20:00', 1),
+(36, 44, 'Poblado C-16, Cárdenas', 'Inspección', 'Follaje denso en sector norte requirió revisión más detallada de envés de hojas.', '2026-06-21 10:45:00', 1),
+(37, 45, 'Villa Sánchez Magallanes, Cárdenas', 'Aplicación', 'Presencia de cableado eléctrico cerca de esquina exterior requirió precaución adicional.', '2026-06-26 16:05:00', 1),
+(38, 46, 'Villa Chichicapa, Comalcalco', 'Aplicación', 'Temperatura elevada al mediodía; se ajustó la aspersión a horas de menor evaporación.', '2026-07-02 10:20:00', 1),
+(39, 47, 'Villa Aldama, Comalcalco', 'Seguimiento', 'Acceso restringido a patio trasero por candado sin responsable en el sitio.', '2026-07-07 12:10:00', 1),
+(40, 48, 'Barra de Tupilco, Paraíso', 'Inspección', 'Espacio reducido entre mobiliario y pared dificultó inspección con espejo.', '2026-07-13 11:30:00', 1),
+(41, 49, 'Villa Libertad, Cunduacán', 'Aplicación', 'Ramas secas entrelazadas limitaron cobertura uniforme en copa baja del árbol.', '2026-07-19 09:05:00', 1),
+(42, 50, 'Poblado Ayapa, Jalpa de Méndez', 'Seguimiento', 'Riego nocturno automático encendió durante la visita; se coordinó ajuste con encargado.', '2026-08-02 15:30:00', 1),
+(43, 51, 'Poblado Tapotzingo, Nacajuca', 'Aplicación', 'Anaquel superior con polvo acumulado requirió limpieza previa antes de colocar trampa.', '2026-08-11 10:10:00', 1),
+(44, 52, 'Fraccionamiento Pomoca, Nacajuca', 'Seguimiento', 'Dos predios pendientes de firma de conformidad por ausencia del titular.', '2026-09-02 11:50:00', 1),
+(45, 53, 'Colonia Gaviotas Norte, Centro', 'Aplicación', 'Chubasco breve a mitad de la jornada obligó a reagendar el último sector.', '2026-10-02 08:15:00', 1),
+(46, 54, 'Villa Ocuiltzapotlán, Centro', 'Inspección', 'Saco con rasgadura menor en esquina de estiba; se separó para revisión detallada.', '2026-11-03 10:55:00', 1),
+(47, 55, 'Villa Parrilla, Centro', 'Inspección', 'Etiquetado ilegible en un lote de almacén; se reportó a control de calidad.', '2026-11-11 14:30:00', 0),
+(48, 56, 'Centro Tacotalpa, Tacotalpa', 'Aplicación', 'Zona con alta humedad ambiental; se registró incidencia sin conexión para sincronizar.', '2026-11-19 09:00:00', 0),
+(49, 57, 'Centro Jalapa, Jalapa', 'Inspección', 'Registro levantado en campo sin cobertura móvil; pendiente de sincronización.', '2026-12-02 10:20:00', 0),
+(50, 58, 'Centro Emiliano Zapata, Emiliano Zapata', 'Seguimiento', 'Inspección de cierre registrada offline en tablet; pendiente de subir al servidor.', '2026-12-06 10:40:00', 0);
+
+INSERT INTO `accionescampana` (`IdAccion`, `IdCampana`, `IdTecnico`, `idTipoAccion`, `FechaHora`, `DetallesResultados`, `Observaciones`) VALUES
+(51, 9, 7, 1, '2026-01-07 08:30:00', 'Revisión inicial de patios, registros y depósitos de agua; se detectaron 4 recipientes con larvas.', 'Se recomendó voltear cubetas y tapar tinacos de inmediato.'),
+(52, 10, 8, 2, '2026-01-13 09:15:00', 'Evaluación de foco activo de cucaracha alemana en cocina y área de lavado con captura en trampas.', 'Nivel de infestación moderado; requiere aplicación focalizada en gel.'),
+(53, 11, 9, 3, '2026-01-19 10:00:00', 'Colocación de estaciones cebaderas rodenticidas en perímetro de bodega y rutas de tránsito.', 'Sin incidencias; estaciones aseguradas y señalizadas.'),
+(54, 12, 10, 4, '2026-01-24 11:20:00', 'Verificación de consumo de cebo y revisión de túneles en madera; reducción visible de actividad.', 'Programar segunda revisión en 15 días.'),
+(55, 13, 11, 5, '2026-01-29 08:45:00', 'Monitoreo de áreas verdes y jardines; localizados 6 montículos activos de hormiga de fuego.', NULL),
+(56, 14, 12, 6, '2026-02-03 09:50:00', 'Acciones preventivas y control larvario en canales y registros pluviales con agua estancada.', 'Condiciones climáticas favorables para la intervención.'),
+(57, 15, 13, 7, '2026-02-08 14:10:00', 'Control de criaderos y evaluación de puntos críticos alrededor del inmueble.', 'Se identificaron zonas de sombra con alta humedad.'),
+(58, 16, 14, 8, '2026-02-13 07:40:00', 'Nebulización y revisión de parcelas; presencia inicial de larvas en borde del cultivo.', 'Se sugirió mantener monitoreo semanal con trampas.'),
+(59, 17, 15, 9, '2026-02-17 10:30:00', 'Sanitización y aplicación residual en perímetro y registros sanitarios de la vía principal.', NULL),
+(60, 18, 16, 10, '2026-02-21 11:00:00', 'Trampeo y captura en puestos y contenedores de basura; alta presencia de mosca doméstica.', 'Necesario reforzar horarios de recolección de basura.'),
+(61, 19, 17, 11, '2026-02-25 09:20:00', 'Eliminación de foco localizado en vigas y mobiliario de madera por termita seca.', 'Sin daños estructurales severos.'),
+(62, 20, 18, 12, '2026-03-03 13:15:00', 'Cierre y verificación posterior a aplicación agrícola; descenso notable en población de mosca blanca.', 'Continuar con trampas cromáticas amarillas.'),
+(63, 21, 19, 8, '2026-03-07 08:15:00', 'Nebulización espacial y control de criaderos en viviendas de la zona asignada.', 'Buena participación de los vecinos durante el acceso.'),
+(64, 22, 20, 1, '2026-03-11 10:40:00', 'Inspección de alacenas, grietas y zonas cálidas en almacén; rastros leves de roedores.', NULL),
+(65, 23, 21, 2, '2026-03-15 15:00:00', 'Diagnóstico en patios y áreas con mascotas para determinar presencia de garrapatas y pulgas.', 'Se recomendó coordinación con atención veterinaria local.'),
+(66, 24, 22, 3, '2026-03-19 09:05:00', 'Aplicación de cebos específicos contra hormiga faraón en puntos críticos interiores.', 'Evitar limpieza con cloro sobre los cebos aplicados.'),
+(67, 25, 23, 4, '2026-03-23 11:45:00', 'Seguimiento de control biológico en brotes tiernos; colonias de pulgón en descenso.', 'Sin fitotoxicidad observada en el follaje.'),
+(68, 26, 24, 5, '2026-03-28 08:50:00', 'Monitoreo en locales de venta de frutas y verduras; detección de focos de mosca de la fruta.', 'Se solicitó retiro inmediato de fruta magullada.'),
+(69, 27, 25, 6, '2026-04-02 10:15:00', 'Prevención perimetral y tratamiento en maleza baja alrededor de viviendas.', NULL),
+(70, 28, 26, 2, '2026-04-06 14:30:00', 'Diagnóstico en áreas de preparación de alimentos y ductos; actividad moderada de cucaracha alemana.', 'Aplicar gel en bisagras, motores y grietas.'),
+(71, 29, 27, 1, '2026-04-11 09:40:00', 'Inspección minuciosa de costuras de colchones, cabeceras y zoclos en habitaciones.', 'Se detectaron indicios en dos habitaciones del segundo nivel.'),
+(72, 30, 28, 9, '2026-04-15 11:10:00', 'Sanitización en registros y desagües para control de cucaracha oriental.', 'Sellado parcial de dos coladeras con rejilla fina.'),
+(73, 31, 29, 4, '2026-04-20 08:25:00', 'Seguimiento de criaderos previos a temporada de lluvias; sin acumulación nueva de agua.', 'Mantener vigilancia en patios baldíos cercanos.'),
+(74, 32, 30, 2, '2026-04-25 16:00:00', 'Diagnóstico de madrigueras y puntos de ingreso de roedores en zona de acopio.', 'Se requiere desmalezado perimetral de 2 metros.'),
+(75, 33, 31, 3, '2026-04-29 10:20:00', 'Aplicación preventiva y control de gorgojo del maíz en costales y tarimas.', NULL),
+(76, 34, 32, 6, '2026-05-04 09:00:00', 'Prevención en escombros, leña y rincones oscuros en patios escolares y domicilios.', 'Se orientó sobre medidas preventivas contra alacranes.'),
+(77, 35, 33, 7, '2026-05-08 07:55:00', 'Control de criaderos con larvicida en charcos y zanjas con agua retenida.', 'Cobertura completa del sector programado.'),
+(78, 36, 34, 5, '2026-05-13 13:40:00', 'Monitoreo nocturno y revisión de cuerpos de agua cercanos a zona habitacional.', 'Se registraron condiciones propicias para anofelinos.'),
+(79, 37, 35, 10, '2026-05-19 10:50:00', 'Trampeo y captura en plantación de plátano; captura moderada de picudo negro.', 'Renovar atrayente en trampas cada 15 días.'),
+(80, 38, 36, 11, '2026-05-23 09:30:00', 'Eliminación de foco y disposición segura de ejemplares de caracol gigante africano.', NULL),
+(81, 39, 37, 1, '2026-05-28 11:15:00', 'Inspección de aserrín fino y galerías en estructura de madera húmeda.', 'Se recomendó corregir humedad en muro colindante.'),
+(82, 40, 38, 2, '2026-06-02 14:05:00', 'Diagnóstico de incidencias agrícolas en el poblado; sin brote severo reportado.', 'Campaña suspendida por reasignación de recursos.'),
+(83, 41, 39, 11, '2026-06-06 17:45:00', 'Eliminación controlada de nidos de avispa papelera en aleros durante el atardecer.', 'Operación realizada sin incidentes para el personal.'),
+(84, 42, 40, 4, '2026-06-11 09:10:00', 'Seguimiento de coladeras tras tratamiento; notable reducción de mosca de drenaje.', 'Mantener limpieza semanal de trampas de grasa.'),
+(85, 43, 41, 3, '2026-06-16 08:40:00', 'Aplicación de insecticida residual en pozos de visita y red de alcantarillado.', NULL),
+(86, 44, 42, 10, '2026-06-21 10:00:00', 'Trampeo con bandas azules en cultivo; presencia de trips en brotes terminales.', 'Revisar capturas cada 7 días.'),
+(87, 45, 43, 11, '2026-06-26 15:20:00', 'Eliminación de foco en bodegas y esquinas exteriores; retiro de 3 telarañas de viuda negra.', 'Se procedió al resguardo seguro de los ejemplares.'),
+(88, 46, 44, 3, '2026-07-02 09:35:00', 'Aplicación de acaricida y ajuste de riego para controlar foco de araña roja.', 'Revisar en 7 días para evaluar eclosión de huevos.'),
+(89, 47, 45, 12, '2026-07-07 11:30:00', 'Cierre y verificación de resguardo de colmena urbana reubicada; sin actividad residual.', 'Sitio libre de riesgo para transeúntes.'),
+(90, 48, 46, 1, '2026-07-13 10:45:00', 'Inspección detrás de cuadros, closets y muebles poco movidos; sin hallazgos críticos.', NULL),
+(91, 49, 47, 3, '2026-07-19 08:20:00', 'Aplicación localizada en ramas afectadas por escama algodonosa.', 'Poda sanitaria previa a la aplicación.'),
+(92, 50, 48, 5, '2026-08-02 14:50:00', 'Monitoreo de zonas húmedas y jardines; presencia de babosas en plantas ornamentales.', 'Se sugirió reducir encharcamientos nocturnos.'),
+(93, 51, 49, 9, '2026-08-11 09:25:00', 'Sanitización profunda de anaqueles y colocación de trampas en bodega.', 'Se retiraron empaques dañados encontrados.'),
+(94, 52, 50, 12, '2026-09-02 11:05:00', 'Cierre y verificación final de puntos tratados en viviendas y comercios; control efectivo.', 'Cierre satisfactorio de la jornada.'),
+(95, 53, 51, 8, '2026-10-02 07:30:00', 'Nebulización y control larvario en colonias de alta prioridad.', NULL),
+(96, 54, 52, 1, '2026-11-03 10:10:00', 'Inspección de granos almacenados para evaluar humedad y presencia de gorgojo del arroz.', 'Humedad dentro de rango aceptable; campaña en curso.'),
+(97, 55, 53, 2, '2026-11-11 13:50:00', 'Diagnóstico de lotes de especias y productos secos; detección leve de escarabajo de despensa.', 'Aislamiento preventivo de los lotes observados.'),
+(98, 56, 54, 6, '2026-11-19 08:15:00', 'Prevención perimetral y recomendaciones contra jejenes en zona arbolada.', 'Campaña activa con monitoreo continuo.'),
+(99, 57, 55, 1, '2026-12-02 09:40:00', 'Inspección previa de linderos y patios para programación de control de tijerillas.', NULL),
+(100, 58, 56, 2, '2026-12-06 10:00:00', 'Diagnóstico de cornisas, techos y puntos de posamiento de paloma bravía en edificios.', 'Se definieron puntos para instalación de exclusión.'),
+(101, 9, 7, 1, '2026-01-07 08:30:00', 'Revisión inicial de patios, registros y depósitos de agua; se detectaron 4 recipientes con larvas.', 'Se recomendó voltear cubetas y tapar tinacos de inmediato.'),
+(102, 10, 8, 2, '2026-01-13 09:15:00', 'Evaluación de foco activo de cucaracha alemana en cocina y área de lavado con captura en trampas.', 'Nivel de infestación moderado; requiere aplicación focalizada en gel.'),
+(103, 11, 9, 3, '2026-01-19 10:00:00', 'Colocación de estaciones cebaderas rodenticidas en perímetro de bodega y rutas de tránsito.', 'Sin incidencias; estaciones aseguradas y señalizadas.'),
+(104, 12, 10, 4, '2026-01-24 11:20:00', 'Verificación de consumo de cebo y revisión de túneles en madera; reducción visible de actividad.', 'Programar segunda revisión en 15 días.'),
+(105, 13, 11, 5, '2026-01-29 08:45:00', 'Monitoreo de áreas verdes y jardines; localizados 6 montículos activos de hormiga de fuego.', NULL),
+(106, 14, 12, 6, '2026-02-03 09:50:00', 'Acciones preventivas y control larvario en canales y registros pluviales con agua estancada.', 'Condiciones climáticas favorables para la intervención.'),
+(107, 15, 13, 7, '2026-02-08 14:10:00', 'Control de criaderos y evaluación de puntos críticos alrededor del inmueble.', 'Se identificaron zonas de sombra con alta humedad.'),
+(108, 16, 14, 8, '2026-02-13 07:40:00', 'Nebulización y revisión de parcelas; presencia inicial de larvas en borde del cultivo.', 'Se sugirió mantener monitoreo semanal con trampas.'),
+(109, 17, 15, 9, '2026-02-17 10:30:00', 'Sanitización y aplicación residual en perímetro y registros sanitarios de la vía principal.', NULL),
+(110, 18, 16, 10, '2026-02-21 11:00:00', 'Trampeo y captura en puestos y contenedores de basura; alta presencia de mosca doméstica.', 'Necesario reforzar horarios de recolección de basura.'),
+(111, 19, 17, 11, '2026-02-25 09:20:00', 'Eliminación de foco localizado en vigas y mobiliario de madera por termita seca.', 'Sin daños estructurales severos.'),
+(112, 20, 18, 12, '2026-03-03 13:15:00', 'Cierre y verificación posterior a aplicación agrícola; descenso notable en población de mosca blanca.', 'Continuar con trampas cromáticas amarillas.'),
+(113, 21, 19, 8, '2026-03-07 08:15:00', 'Nebulización espacial y control de criaderos en viviendas de la zona asignada.', 'Buena participación de los vecinos durante el acceso.'),
+(114, 22, 20, 1, '2026-03-11 10:40:00', 'Inspección de alacenas, grietas y zonas cálidas en almacén; rastros leves de roedores.', NULL),
+(115, 23, 21, 2, '2026-03-15 15:00:00', 'Diagnóstico en patios y áreas con mascotas para determinar presencia de garrapatas y pulgas.', 'Se recomendó coordinación con atención veterinaria local.'),
+(116, 24, 22, 3, '2026-03-19 09:05:00', 'Aplicación de cebos específicos contra hormiga faraón en puntos críticos interiores.', 'Evitar limpieza con cloro sobre los cebos aplicados.'),
+(117, 25, 23, 4, '2026-03-23 11:45:00', 'Seguimiento de control biológico en brotes tiernos; colonias de pulgón en descenso.', 'Sin fitotoxicidad observada en el follaje.'),
+(118, 26, 24, 5, '2026-03-28 08:50:00', 'Monitoreo en locales de venta de frutas y verduras; detección de focos de mosca de la fruta.', 'Se solicitó retiro inmediato de fruta magullada.'),
+(119, 27, 25, 6, '2026-04-02 10:15:00', 'Prevención perimetral y tratamiento en maleza baja alrededor de viviendas.', NULL),
+(120, 28, 26, 2, '2026-04-06 14:30:00', 'Diagnóstico en áreas de preparación de alimentos y ductos; actividad moderada de cucaracha alemana.', 'Aplicar gel en bisagras, motores y grietas.'),
+(121, 29, 27, 1, '2026-04-11 09:40:00', 'Inspección minuciosa de costuras de colchones, cabeceras y zoclos en habitaciones.', 'Se detectaron indicios en dos habitaciones del segundo nivel.'),
+(122, 30, 28, 9, '2026-04-15 11:10:00', 'Sanitización en registros y desagües para control de cucaracha oriental.', 'Sellado parcial de dos coladeras con rejilla fina.'),
+(123, 31, 29, 4, '2026-04-20 08:25:00', 'Seguimiento de criaderos previos a temporada de lluvias; sin acumulación nueva de agua.', 'Mantener vigilancia en patios baldíos cercanos.'),
+(124, 32, 30, 2, '2026-04-25 16:00:00', 'Diagnóstico de madrigueras y puntos de ingreso de roedores en zona de acopio.', 'Se requiere desmalezado perimetral de 2 metros.'),
+(125, 33, 31, 3, '2026-04-29 10:20:00', 'Aplicación preventiva y control de gorgojo del maíz en costales y tarimas.', NULL),
+(126, 34, 32, 6, '2026-05-04 09:00:00', 'Prevención en escombros, leña y rincones oscuros en patios escolares y domicilios.', 'Se orientó sobre medidas preventivas contra alacranes.'),
+(127, 35, 33, 7, '2026-05-08 07:55:00', 'Control de criaderos con larvicida en charcos y zanjas con agua retenida.', 'Cobertura completa del sector programado.'),
+(128, 36, 34, 5, '2026-05-13 13:40:00', 'Monitoreo nocturno y revisión de cuerpos de agua cercanos a zona habitacional.', 'Se registraron condiciones propicias para anofelinos.'),
+(129, 37, 35, 10, '2026-05-19 10:50:00', 'Trampeo y captura en plantación de plátano; captura moderada de picudo negro.', 'Renovar atrayente en trampas cada 15 días.'),
+(130, 38, 36, 11, '2026-05-23 09:30:00', 'Eliminación de foco y disposición segura de ejemplares de caracol gigante africano.', NULL),
+(131, 39, 37, 1, '2026-05-28 11:15:00', 'Inspección de aserrín fino y galerías en estructura de madera húmeda.', 'Se recomendó corregir humedad en muro colindante.'),
+(132, 40, 38, 2, '2026-06-02 14:05:00', 'Diagnóstico de incidencias agrícolas en el poblado; sin brote severo reportado.', 'Campaña suspendida por reasignación de recursos.'),
+(133, 41, 39, 11, '2026-06-06 17:45:00', 'Eliminación controlada de nidos de avispa papelera en aleros durante el atardecer.', 'Operación realizada sin incidentes para el personal.'),
+(134, 42, 40, 4, '2026-06-11 09:10:00', 'Seguimiento de coladeras tras tratamiento; notable reducción de mosca de drenaje.', 'Mantener limpieza semanal de trampas de grasa.'),
+(135, 43, 41, 3, '2026-06-16 08:40:00', 'Aplicación de insecticida residual en pozos de visita y red de alcantarillado.', NULL),
+(136, 44, 42, 10, '2026-06-21 10:00:00', 'Trampeo con bandas azules en cultivo; presencia de trips en brotes terminales.', 'Revisar capturas cada 7 días.'),
+(137, 45, 43, 11, '2026-06-26 15:20:00', 'Eliminación de foco en bodegas y esquinas exteriores; retiro de 3 telarañas de viuda negra.', 'Se procedió al resguardo seguro de los ejemplares.'),
+(138, 46, 44, 3, '2026-07-02 09:35:00', 'Aplicación de acaricida y ajuste de riego para controlar foco de araña roja.', 'Revisar en 7 días para evaluar eclosión de huevos.'),
+(139, 47, 45, 12, '2026-07-07 11:30:00', 'Cierre y verificación de resguardo de colmena urbana reubicada; sin actividad residual.', 'Sitio libre de riesgo para transeúntes.'),
+(140, 48, 46, 1, '2026-07-13 10:45:00', 'Inspección detrás de cuadros, closets y muebles poco movidos; sin hallazgos críticos.', NULL),
+(141, 49, 47, 3, '2026-07-19 08:20:00', 'Aplicación localizada en ramas afectadas por escama algodonosa.', 'Poda sanitaria previa a la aplicación.'),
+(142, 50, 48, 5, '2026-08-02 14:50:00', 'Monitoreo de zonas húmedas y jardines; presencia de babosas en plantas ornamentales.', 'Se sugirió reducir encharcamientos nocturnos.'),
+(143, 51, 49, 9, '2026-08-11 09:25:00', 'Sanitización profunda de anaqueles y colocación de trampas en bodega.', 'Se retiraron empaques dañados encontrados.'),
+(144, 52, 50, 12, '2026-09-02 11:05:00', 'Cierre y verificación final de puntos tratados en viviendas y comercios; control efectivo.', 'Cierre satisfactorio de la jornada.'),
+(145, 53, 51, 8, '2026-10-02 07:30:00', 'Nebulización y control larvario en colonias de alta prioridad.', NULL),
+(146, 54, 52, 1, '2026-11-03 10:10:00', 'Inspección de granos almacenados para evaluar humedad y presencia de gorgojo del arroz.', 'Humedad dentro de rango aceptable; campaña en curso.'),
+(147, 55, 53, 2, '2026-11-11 13:50:00', 'Diagnóstico de lotes de especias y productos secos; detección leve de escarabajo de despensa.', 'Aislamiento preventivo de los lotes observados.'),
+(148, 56, 54, 6, '2026-11-19 08:15:00', 'Prevención perimetral y recomendaciones contra jejenes en zona arbolada.', 'Campaña activa con monitoreo continuo.'),
+(149, 57, 55, 1, '2026-12-02 09:40:00', 'Inspección previa de linderos y patios para programación de control de tijerillas.', NULL),
+(150, 58, 56, 2, '2026-12-06 10:00:00', 'Diagnóstico de cornisas, techos y puntos de posamiento de paloma bravía en edificios.', 'Se definieron puntos para instalación de exclusión.');
+
+INSERT INTO `insumosusados` (`IdInsumoUsado`, `IdAccion`, `IdProducto`, `CantidadAplicada`, `UnidadMedida`) VALUES
+(1, 51, 1, 1.50, 'Litro'),
+(2, 52, 2, 2.00, 'Litro'),
+(3, 53, 3, 1.25, 'Kilogramo'),
+(4, 54, 4, 60.00, 'Gramo'),
+(5, 55, 5, 0.75, 'Litro'),
+(6, 56, 6, 3.50, 'Kilogramo'),
+(7, 57, 7, 5.00, 'Kilogramo'),
+(8, 58, 8, 2.40, 'Kilogramo'),
+(9, 59, 9, 15.00, 'Kilogramo'),
+(10, 60, 10, 25.00, 'Pieza'),
+(11, 61, 11, 1.80, 'Litro'),
+(12, 62, 12, 360.00, 'Mililitro'),
+(13, 63, 13, 450.00, 'Mililitro'),
+(14, 64, 14, 10.00, 'Litro'),
+(15, 65, 15, 12.00, 'Pieza'),
+(16, 66, 16, 2.25, 'Litro'),
+(17, 67, 17, 1.60, 'Litro'),
+(18, 68, 18, 3.00, 'Litro'),
+(19, 69, 19, 800.00, 'Mililitro'),
+(20, 70, 20, 45.00, 'Gramo'),
+(21, 71, 21, 2.50, 'Kilogramo'),
+(22, 72, 22, 4.00, 'Kilogramo'),
+(23, 73, 23, 3.20, 'Kilogramo'),
+(24, 74, 24, 150.00, 'Mililitro'),
+(25, 75, 25, 1.50, 'Kilogramo'),
+(26, 76, 26, 2.75, 'Litro'),
+(27, 77, 27, 500.00, 'Mililitro'),
+(28, 78, 28, 300.00, 'Mililitro'),
+(29, 79, 29, 4.50, 'Litro'),
+(30, 80, 30, 600.00, 'Mililitro'),
+(31, 81, 31, 1.90, 'Litro'),
+(32, 82, 32, 2.10, 'Litro'),
+(33, 83, 33, 2.00, 'Kilogramo'),
+(34, 84, 34, 12.00, 'Litro'),
+(35, 85, 35, 1.10, 'Litro'),
+(36, 86, 36, 3.75, 'Kilogramo'),
+(37, 87, 37, 1.80, 'Kilogramo'),
+(38, 88, 38, 2.60, 'Litro'),
+(39, 89, 39, 8.50, 'Kilogramo'),
+(40, 90, 40, 240.00, 'Mililitro'),
+(41, 91, 41, 15.00, 'Pieza'),
+(42, 92, 42, 750.00, 'Mililitro'),
+(43, 93, 43, 6.00, 'Litro'),
+(44, 94, 44, 1.70, 'Litro'),
+(45, 95, 45, 1.00, 'Kilogramo'),
+(46, 96, 46, 4.50, 'Kilogramo'),
+(47, 97, 47, 1.20, 'Litro'),
+(48, 98, 48, 450.00, 'Mililitro'),
+(49, 99, 49, 18.00, 'Pieza'),
+(50, 100, 50, 0.90, 'Litro');
+
+INSERT INTO `plagasidentificadas` (`idplagasidentificadas`, `IdAccion`, `IdPlaga`, `NivelInfestacion`, `Observaciones`) VALUES
+(1, 51, 13, 'Medio', 'Presencia de larvas en recipientes con agua estancada en patio trasero.'),
+(2, 52, 14, 'Alto', 'Actividad constante de cucarachas en áreas de preparación y drenaje.'),
+(3, 53, 15, 'Medio', 'Madrigueras y rastros de roedores detectados en perímetro de bodega.'),
+(4, 54, 16, 'Bajo', 'Indicios leves de termitas en zoclo de madera con humedad moderada.'),
+(5, 55, 17, 'Alto', 'Varios montículos activos de hormiga en zona ajardinada y senderos.'),
+(6, 56, 18, 'Crítico', 'Alta densidad larvaria en canales y registros pluviales sin desazolve.'),
+(7, 57, 19, 'Medio', 'Avistamiento de vectores adultos en zonas sombreadas alrededor del predio.'),
+(8, 58, 20, 'Alto', 'Daño foliar inicial en borde del cultivo con presencia de larvas.'),
+(9, 59, 21, 'Medio', 'Rastros de roedores en registros sanitarios a lo largo de la vialidad.'),
+(10, 60, 22, 'Alto', 'Concentración elevada de moscas junto a contenedores de residuos orgánicos.'),
+(11, 61, 23, 'Bajo', 'Daño localizado en vigas secundarias; sin afectación estructural grave.'),
+(12, 62, 24, 'Medio', 'Población moderada de mosca blanca en envés de hojas tras monitoreo.'),
+(13, 63, 25, 'Alto', 'Múltiples criaderos potenciales detectados en viviendas de la manzana.'),
+(14, 64, 26, 'Bajo', 'Evidencia leve de roedor en esquina poco transitada del almacén.'),
+(15, 65, 27, 'Medio', 'Presencia de ectoparásitos en patio con vegetación y mascotas.'),
+(16, 66, 28, 'Alto', 'Rutas activas de hormigas en mesadas y grietas de cocina.'),
+(17, 67, 29, 'Bajo', 'Colonias pequeñas en brotes tiernos bajo control biológico.'),
+(18, 68, 30, 'Medio', 'Focos localizados en lotes de fruta madura en área comercial.'),
+(19, 69, 31, 'Alto', 'Maleza crecida en perímetro favoreciendo refugio de plagas.'),
+(20, 70, 32, 'Medio', 'Captura moderada en trampas de monitoreo en zona de lavado.'),
+(21, 71, 33, 'Crítico', 'Infestación detectada en dos habitaciones; requiere tratamiento intensivo.'),
+(22, 72, 34, 'Medio', 'Presencia en coladeras y registros con humedad constante.'),
+(23, 73, 35, 'Bajo', 'Sin nuevos criaderos activos; se mantiene vigilancia preventiva.'),
+(24, 74, 36, 'Alto', 'Madrigueras activas cerca de tarimas y zona de acopio.'),
+(25, 75, 37, 'Medio', 'Presencia moderada de gorgojos en costales almacenados.'),
+(26, 76, 38, 'Alto', 'Refugios potenciales identificados entre escombros y leña.'),
+(27, 77, 39, 'Crítico', 'Alto número de larvas en charcos acumulados tras lluvias.'),
+(28, 78, 40, 'Medio', 'Condiciones favorables en cuerpo de agua cercano a viviendas.'),
+(29, 79, 41, 'Alto', 'Captura elevada en trampas instaladas dentro de la parcela.'),
+(30, 80, 42, 'Medio', 'Ejemplares observados en áreas húmedas tras riego y lluvia.'),
+(31, 81, 43, 'Bajo', 'Aserrín fino y galerías incipientes en marco de madera.'),
+(32, 82, 44, 'Bajo', 'Incidencia baja en el recorrido de diagnóstico rural.'),
+(33, 83, 45, 'Alto', 'Nido activo en alero superior representando riesgo para transeúntes.'),
+(34, 84, 46, 'Medio', 'Presencia de mosca de drenaje en coladeras con grasa acumulada.'),
+(35, 85, 47, 'Alto', 'Actividad de cucarachas en red de alcantarillado y pozos.'),
+(36, 86, 48, 'Medio', 'Trips detectados en brotes terminales durante revisión de cultivo.'),
+(37, 87, 49, 'Alto', 'Telarañas y ejemplares ubicados en esquinas exteriores y medidores.'),
+(38, 88, 50, 'Medio', 'Foco localizado de araña roja en zona cálida y seca.'),
+(39, 89, 51, 'Bajo', 'Colmena urbana detectada en estructura; sin agresión reportada.'),
+(40, 90, 52, 'Bajo', 'Revisión interior sin hallazgos críticos en mobiliario.'),
+(41, 91, 53, 'Medio', 'Escama algodonosa en ramas específicas de árboles frutales.'),
+(42, 92, 54, 'Medio', 'Babosas en plantas ornamentales en sector húmedo del jardín.'),
+(43, 93, 55, 'Alto', 'Presencia de palomilla de almacén en anaqueles y empaques.'),
+(44, 94, 56, 'Bajo', 'Nivel controlado tras aplicaciones previas en la zona.'),
+(45, 95, 57, 'Crítico', 'Alta concentración de criaderos en colonia prioritaria.'),
+(46, 96, 58, 'Medio', 'Muestreo de granos con presencia leve de gorgojo del arroz.'),
+(47, 97, 59, 'Bajo', 'Detección leve en lote aislado de productos secos.'),
+(48, 98, 60, 'Medio', 'Actividad moderada en zona arbolada con alta humedad.'),
+(49, 99, 61, 'Bajo', 'Incidencia baja en linderos y patios inspeccionados.'),
+(50, 100, 62, 'Medio', 'Puntos de posamiento y excremento detectados en cornisas y techos.');
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
