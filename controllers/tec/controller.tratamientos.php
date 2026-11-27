@@ -11,14 +11,98 @@ $tipoAplicacion = 'Aplicación';
 $mensaje = '';
 $aplicacionEditar = null;
 
+// --- Fotografía del tratamiento (mismo esquema que el módulo de evidencias) ---
+// La imagen se guarda en resources/uploads/tratamientos/ y en la base de datos
+// (tabla fotostratamiento, una foto por aplicación) se guarda su ruta relativa.
+$carpetaFotosTratamiento = 'resources/uploads/tratamientos/';
+
+// Valida y guarda la fotografía. Devuelve [rutaAbsoluta, rutaRelativa].
+$guardarFotoTratamiento = static function ($archivo) use ($carpetaFotosTratamiento) {
+    if (
+        !is_array($archivo)
+        || !isset($archivo['error'], $archivo['size'], $archivo['tmp_name'])
+        || !is_int($archivo['error'])
+        || !is_numeric($archivo['size'])
+        || !is_string($archivo['tmp_name'])
+        || $archivo['error'] !== UPLOAD_ERR_OK
+        || (int)$archivo['size'] < 1
+        || (int)$archivo['size'] > 5 * 1024 * 1024
+        || !is_uploaded_file($archivo['tmp_name'])
+    ) {
+        throw new RuntimeException('La fotografía debe recibirse correctamente y pesar entre 1 byte y 5 MB.');
+    }
+
+    // Se revisa el contenido real del archivo, no solo su extensión.
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($archivo['tmp_name']);
+    $extensionesPermitidas = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp'
+    ];
+    if (!isset($extensionesPermitidas[$mime])) {
+        throw new RuntimeException('Solo se permiten fotografías JPEG, PNG o WebP.');
+    }
+
+    set_error_handler(static function ($severity, $message) {
+        throw new RuntimeException('El archivo no es una imagen válida.');
+    });
+    try {
+        $datosImagen = getimagesize($archivo['tmp_name']);
+    } finally {
+        restore_error_handler();
+    }
+    if ($datosImagen === false || ($datosImagen['mime'] ?? null) !== $mime) {
+        throw new RuntimeException('El archivo no es una imagen válida.');
+    }
+
+    $directorioSubida = RESOURCE_PATH . 'uploads' . DIRECTORY_SEPARATOR . 'tratamientos';
+    if (!is_dir($directorioSubida) && !mkdir($directorioSubida, 0750, true) && !is_dir($directorioSubida)) {
+        throw new RuntimeException('No se pudo preparar el almacenamiento de fotografías de tratamientos.');
+    }
+
+    // Nombre aleatorio para que no se pueda adivinar ni sobrescribir otro archivo.
+    $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $extensionesPermitidas[$mime];
+    $rutaAbsoluta = $directorioSubida . DIRECTORY_SEPARATOR . $nombreArchivo;
+    if (!move_uploaded_file($archivo['tmp_name'], $rutaAbsoluta)) {
+        throw new RuntimeException('No se pudo guardar la fotografía.');
+    }
+
+    return [$rutaAbsoluta, $carpetaFotosTratamiento . $nombreArchivo];
+};
+
+// Borra del disco una fotografía de tratamiento. Solo acepta rutas generadas por este módulo.
+$borrarFotoTratamiento = static function ($rutaRelativa) use ($carpetaFotosTratamiento) {
+    if (
+        !is_string($rutaRelativa)
+        || !preg_match('#^resources/uploads/tratamientos/[a-f0-9]{32}\.(jpg|png|webp)$#D', $rutaRelativa)
+    ) {
+        return true;
+    }
+    $rutaAbsoluta = RESOURCE_PATH . 'uploads' . DIRECTORY_SEPARATOR . 'tratamientos'
+        . DIRECTORY_SEPARATOR . substr($rutaRelativa, strlen($carpetaFotosTratamiento));
+    if (is_file($rutaAbsoluta) && !unlink($rutaAbsoluta)) {
+        error_log('No se pudo borrar la fotografía de un tratamiento.');
+        return false;
+    }
+    return true;
+};
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
     if ($accion === 'eliminar') {
         $idEliminar = $_POST['id'] ?? '';
-        $mensaje = is_string($idEliminar) && ctype_digit($idEliminar) && (int)$idEliminar > 0
-            && $modeloOperaciones->eliminarAccionPorTipo((int)$idEliminar, $tipoAplicacion)
+        $aplicacionEliminar = is_string($idEliminar) && ctype_digit($idEliminar) && (int)$idEliminar > 0
+            ? $modeloOperaciones->obtenerAccionAplicacionPorId((int)$idEliminar)
+            : null;
+        if ($aplicacionEliminar && $modeloOperaciones->eliminarAccionPorTipo((int)$idEliminar, $tipoAplicacion)) {
+            // La fila de fotostratamiento se borra sola (ON DELETE CASCADE); aquí se borra el archivo.
+            $mensaje = $borrarFotoTratamiento($aplicacionEliminar['RutaFoto'] ?? null)
                 ? 'Aplicación eliminada.'
-                : 'No se encontró la aplicación para eliminar.';
+                : 'La aplicación se eliminó, pero no se pudo borrar su fotografía.';
+        } else {
+            $mensaje = 'No se encontró la aplicación para eliminar.';
+        }
     } elseif ($accion === 'guardar_aplicacion') {
         $idEntrada = $_POST['id_accion'] ?? '';
         $idCampanaEntrada = $_POST['id_campana'] ?? '';
@@ -77,7 +161,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $observaciones = $observaciones !== '' ? $observaciones : null;
             $transaccionIniciada = false;
 
+            // La fotografía es opcional: solo se procesa si el usuario eligió un archivo.
+            $archivo = $_FILES['foto'] ?? null;
+            $seEnvioFoto = is_array($archivo)
+                && isset($archivo['error'])
+                && $archivo['error'] !== UPLOAD_ERR_NO_FILE;
+            $archivoGuardado = null;
+            $rutaFotoNueva = null;
+            $rutaFotoAnterior = null;
+
             try {
+                if ($seEnvioFoto) {
+                    [$archivoGuardado, $rutaFotoNueva] = $guardarFotoTratamiento($archivo);
+                }
+
                 $conexion->begin_transaction();
                 $transaccionIniciada = true;
                 if ($idEntrada === '') {
@@ -94,9 +191,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $idAccion = (int)$conexion->insert_id;
                 } else {
                     $idAccion = (int)$idEntrada;
-                    if (!$modeloOperaciones->obtenerAccionPorIdYTipo($idAccion, $tipoAplicacion)) {
+                    $aplicacionExistente = $modeloOperaciones->obtenerAccionAplicacionPorId($idAccion);
+                    if (!$aplicacionExistente) {
                         throw new RuntimeException('No se encontró la aplicación para modificar.');
                     }
+                    $rutaFotoAnterior = $aplicacionExistente['RutaFoto'] ?? null;
                     if (!$modeloOperaciones->actualizarAccion(
                         $idAccion,
                         (int)$idCampanaEntrada,
@@ -118,18 +217,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 )) {
                     throw new RuntimeException('No se pudo guardar el producto aplicado.');
                 }
+
+                if ($rutaFotoNueva !== null && !$modeloOperaciones->guardarFotoTratamiento($idAccion, $rutaFotoNueva)) {
+                    throw new RuntimeException('No se pudo guardar la fotografía de la aplicación.');
+                }
+
                 $conexion->commit();
                 $transaccionIniciada = false;
                 $mensaje = 'Aplicación guardada correctamente.';
+                // Si se reemplazó la fotografía, se borra la anterior del disco.
+                if ($rutaFotoNueva !== null && !$borrarFotoTratamiento($rutaFotoAnterior)) {
+                    $mensaje = 'La aplicación se guardó, pero no se pudo borrar su fotografía anterior.';
+                }
             } catch (mysqli_sql_exception $e) {
                 if ($transaccionIniciada) {
                     $conexion->rollback();
+                }
+                if ($archivoGuardado !== null && is_file($archivoGuardado)) {
+                    unlink($archivoGuardado);
                 }
                 error_log('Error al guardar una aplicación: ' . $e->getMessage());
                 $mensaje = 'No se pudo guardar la aplicación. Verifica las referencias y vuelve a intentarlo.';
             } catch (RuntimeException $e) {
                 if ($transaccionIniciada) {
                     $conexion->rollback();
+                }
+                if ($archivoGuardado !== null && is_file($archivoGuardado)) {
+                    unlink($archivoGuardado);
                 }
                 $mensaje = $e->getMessage();
             }

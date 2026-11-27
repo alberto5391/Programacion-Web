@@ -63,6 +63,8 @@
         }
         textarea.control { resize: vertical; min-height: 125px; }
         input[type="file"].control { padding: 7px 10px; }
+        .miniatura { max-width: 120px; max-height: 90px; border-radius: 4px; border: 1px solid var(--borde); display: inline-block; margin: 6px 0; }
+        .sin-foto { color: var(--secundario); font-size: 13px; }
         .control::placeholder { color: #697a8e; opacity: 1; }
         .control:focus { outline: none; border-color: #80bdff; box-shadow: 0 0 0 3px rgba(0,123,255,.16); }
         .boton {
@@ -135,7 +137,7 @@
         <section class="tarjeta" aria-labelledby="titulo-registro">
             <h2 class="tarjeta-titulo" id="titulo-registro"><?= $incidenciaEditar ? 'Modificar Incidencia' : 'Registrar Nueva Incidencia' ?></h2>
             <div class="tarjeta-cuerpo">
-                <form action="index.php" method="POST">
+                <form action="index.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="modulo" value="incidencias">
                     <input type="hidden" name="accion" value="guardar_incidencia">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
@@ -178,6 +180,20 @@
                         <label for="detalle">Detalle de la incidencia:</label>
                         <textarea class="control" id="detalle" name="detalle" rows="5" placeholder="Describa la incidencia detectada" required><?= $incidenciaEditar ? htmlspecialchars($incidenciaEditar['Descripcion'], ENT_QUOTES, 'UTF-8') : '' ?></textarea>
                     </div>
+                    <div class="campo">
+                        <label for="foto">Fotografía de la incidencia (opcional; JPEG, PNG o WebP; máximo 5 MB):</label>
+                        <?php if ($incidenciaEditar && !empty($incidenciaEditar['RutaFoto'])): ?>
+                            <?php $rutaFotoActual = BASE_URL . ltrim($incidenciaEditar['RutaFoto'], '/\\'); ?>
+                            <p class="texto-ayuda">
+                                Fotografía actual:<br>
+                                <a href="<?= htmlspecialchars($rutaFotoActual, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                    <img class="miniatura" src="<?= htmlspecialchars($rutaFotoActual, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía actual de la incidencia">
+                                </a><br>
+                                Si eliges otro archivo, reemplazará a esta fotografía.
+                            </p>
+                        <?php endif; ?>
+                        <input class="control" type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp">
+                    </div>
                     <button class="boton" type="submit"><?= $incidenciaEditar ? 'Guardar cambios' : 'Registrar incidencia' ?></button>
                 </form>
             </div>
@@ -195,6 +211,7 @@
                             <th>Actividad</th>
                             <th>Tipo</th>
                             <th>Detalle</th>
+                            <th>Fotografía</th>
                             <th>Fecha</th>
                             <th>Acciones</th>
                         </tr>
@@ -208,6 +225,16 @@
                                     <td><?= htmlspecialchars($incidencia['ActividadRelacionada'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($incidencia['TipoIncidencia'] ?? 'Sin clasificar', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($incidencia['Descripcion'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td>
+                                        <?php if (!empty($incidencia['RutaFoto'])): ?>
+                                            <?php $rutaFoto = BASE_URL . ltrim($incidencia['RutaFoto'], '/\\'); ?>
+                                            <a href="<?= htmlspecialchars($rutaFoto, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                                <img class="miniatura" src="<?= htmlspecialchars($rutaFoto, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía de la incidencia">
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="sin-foto">Sin fotografía</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?= htmlspecialchars($incidencia['FechaRegistro'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td>
                                         <?php if (appCan('incidencias', 'modificar')): ?>
@@ -226,7 +253,7 @@
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <tr><td colspan="7">Todavía no hay incidencias registradas.</td></tr>
+                            <tr><td colspan="8">Todavía no hay incidencias registradas.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
