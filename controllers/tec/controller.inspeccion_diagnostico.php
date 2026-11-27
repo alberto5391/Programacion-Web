@@ -11,6 +11,83 @@ $mensaje = '';
 $accionEditar = null;
 $tiposAccion = ['Inspección', 'Diagnóstico'];
 
+// --- Fotografía de la inspección o diagnóstico (mismo esquema que el módulo de evidencias) ---
+// La imagen se guarda en resources/uploads/inspecciones/ y en la base de datos
+// (tabla fotosinspeccion, una foto por registro) se guarda su ruta relativa.
+$carpetaFotosInspeccion = 'resources/uploads/inspecciones/';
+
+// Valida y guarda la fotografía. Devuelve [rutaAbsoluta, rutaRelativa].
+$guardarFotoInspeccion = static function ($archivo) use ($carpetaFotosInspeccion) {
+    if (
+        !is_array($archivo)
+        || !isset($archivo['error'], $archivo['size'], $archivo['tmp_name'])
+        || !is_int($archivo['error'])
+        || !is_numeric($archivo['size'])
+        || !is_string($archivo['tmp_name'])
+        || $archivo['error'] !== UPLOAD_ERR_OK
+        || (int)$archivo['size'] < 1
+        || (int)$archivo['size'] > 5 * 1024 * 1024
+        || !is_uploaded_file($archivo['tmp_name'])
+    ) {
+        throw new RuntimeException('La fotografía debe recibirse correctamente y pesar entre 1 byte y 5 MB.');
+    }
+
+    // Se revisa el contenido real del archivo, no solo su extensión.
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($archivo['tmp_name']);
+    $extensionesPermitidas = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp'
+    ];
+    if (!isset($extensionesPermitidas[$mime])) {
+        throw new RuntimeException('Solo se permiten fotografías JPEG, PNG o WebP.');
+    }
+
+    set_error_handler(static function ($severity, $message) {
+        throw new RuntimeException('El archivo no es una imagen válida.');
+    });
+    try {
+        $datosImagen = getimagesize($archivo['tmp_name']);
+    } finally {
+        restore_error_handler();
+    }
+    if ($datosImagen === false || ($datosImagen['mime'] ?? null) !== $mime) {
+        throw new RuntimeException('El archivo no es una imagen válida.');
+    }
+
+    $directorioSubida = RESOURCE_PATH . 'uploads' . DIRECTORY_SEPARATOR . 'inspecciones';
+    if (!is_dir($directorioSubida) && !mkdir($directorioSubida, 0750, true) && !is_dir($directorioSubida)) {
+        throw new RuntimeException('No se pudo preparar el almacenamiento de fotografías de inspección.');
+    }
+
+    // Nombre aleatorio para que no se pueda adivinar ni sobrescribir otro archivo.
+    $nombreArchivo = bin2hex(random_bytes(16)) . '.' . $extensionesPermitidas[$mime];
+    $rutaAbsoluta = $directorioSubida . DIRECTORY_SEPARATOR . $nombreArchivo;
+    if (!move_uploaded_file($archivo['tmp_name'], $rutaAbsoluta)) {
+        throw new RuntimeException('No se pudo guardar la fotografía.');
+    }
+
+    return [$rutaAbsoluta, $carpetaFotosInspeccion . $nombreArchivo];
+};
+
+// Borra del disco una fotografía de inspección. Solo acepta rutas generadas por este módulo.
+$borrarFotoInspeccion = static function ($rutaRelativa) use ($carpetaFotosInspeccion) {
+    if (
+        !is_string($rutaRelativa)
+        || !preg_match('#^resources/uploads/inspecciones/[a-f0-9]{32}\.(jpg|png|webp)$#D', $rutaRelativa)
+    ) {
+        return true;
+    }
+    $rutaAbsoluta = RESOURCE_PATH . 'uploads' . DIRECTORY_SEPARATOR . 'inspecciones'
+        . DIRECTORY_SEPARATOR . substr($rutaRelativa, strlen($carpetaFotosInspeccion));
+    if (is_file($rutaAbsoluta) && !unlink($rutaAbsoluta)) {
+        error_log('No se pudo borrar la fotografía de una inspección.');
+        return false;
+    }
+    return true;
+};
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
     $idEntrada = $_POST['id_accion'] ?? '';
@@ -18,11 +95,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($accion === 'eliminar') {
         $idEliminar = $_POST['id'] ?? '';
         $tipoEliminar = $_POST['tipo_accion'] ?? '';
-        $mensaje = is_string($idEliminar) && ctype_digit($idEliminar) && (int)$idEliminar > 0
+        $registroEliminar = is_string($idEliminar) && ctype_digit($idEliminar) && (int)$idEliminar > 0
+            ? $modeloOperaciones->obtenerAccionInspeccionDiagnosticoPorId((int)$idEliminar)
+            : null;
+        if (
+            $registroEliminar
             && is_string($tipoEliminar) && in_array($tipoEliminar, $tiposAccion, true)
             && $modeloOperaciones->eliminarAccionPorTipo((int)$idEliminar, $tipoEliminar)
+        ) {
+            // La fila de fotosinspeccion se borra sola (ON DELETE CASCADE); aquí se borra el archivo.
+            $mensaje = $borrarFotoInspeccion($registroEliminar['RutaFoto'] ?? null)
                 ? 'Registro eliminado.'
-                : 'No se encontró el registro para eliminar.';
+                : 'El registro se eliminó, pero no se pudo borrar su fotografía.';
+        } else {
+            $mensaje = 'No se encontró el registro para eliminar.';
+        }
     } elseif ($accion === 'guardar_accion') {
         $idCampanaEntrada = $_POST['id_campana'] ?? '';
         $idTecnicoEntrada = $_POST['id_tecnico'] ?? '';
@@ -86,7 +173,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $observaciones = $observaciones !== '' ? $observaciones : null;
             $transaccionIniciada = false;
 
+            // La fotografía es opcional: solo se procesa si el usuario eligió un archivo.
+            $archivo = $_FILES['foto'] ?? null;
+            $seEnvioFoto = is_array($archivo)
+                && isset($archivo['error'])
+                && $archivo['error'] !== UPLOAD_ERR_NO_FILE;
+            $archivoGuardado = null;
+            $rutaFotoNueva = null;
+            $rutaFotoAnterior = null;
+
             try {
+                if ($seEnvioFoto) {
+                    [$archivoGuardado, $rutaFotoNueva] = $guardarFotoInspeccion($archivo);
+                }
+
                 $conexion->begin_transaction();
                 $transaccionIniciada = true;
                 if ($idEntrada === '') {
@@ -107,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!$accionExistente || $accionExistente['TipoAccion'] !== $tipo) {
                         throw new RuntimeException('No se encontró la acción para modificar.');
                     }
+                    $rutaFotoAnterior = $accionExistente['RutaFoto'] ?? null;
                     if (!$modeloOperaciones->actualizarAccion(
                         $idAccion,
                         (int)$idCampanaEntrada,
@@ -133,18 +234,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new RuntimeException('No se pudieron actualizar las plagas asociadas.');
                 }
 
+                if ($rutaFotoNueva !== null && !$modeloOperaciones->guardarFotoInspeccion($idAccion, $rutaFotoNueva)) {
+                    throw new RuntimeException('No se pudo guardar la fotografía del registro.');
+                }
+
                 $conexion->commit();
                 $transaccionIniciada = false;
                 $mensaje = 'Registro guardado correctamente.';
+                // Si se reemplazó la fotografía, se borra la anterior del disco.
+                if ($rutaFotoNueva !== null && !$borrarFotoInspeccion($rutaFotoAnterior)) {
+                    $mensaje = 'El registro se guardó, pero no se pudo borrar su fotografía anterior.';
+                }
             } catch (mysqli_sql_exception $e) {
                 if ($transaccionIniciada) {
                     $conexion->rollback();
+                }
+                if ($archivoGuardado !== null && is_file($archivoGuardado)) {
+                    unlink($archivoGuardado);
                 }
                 error_log('Error al guardar una inspección o diagnóstico: ' . $e->getMessage());
                 $mensaje = 'No se pudo guardar el registro. Verifica las referencias y vuelve a intentarlo.';
             } catch (RuntimeException $e) {
                 if ($transaccionIniciada) {
                     $conexion->rollback();
+                }
+                if ($archivoGuardado !== null && is_file($archivoGuardado)) {
+                    unlink($archivoGuardado);
                 }
                 $mensaje = $e->getMessage();
             }

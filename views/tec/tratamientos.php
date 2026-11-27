@@ -25,7 +25,7 @@
         <?php endif; ?>
 
         <?php if (appCan('tratamientos', $aplicacionEditar ? 'modificar' : 'registrar')): ?>
-            <form method="POST" action="index.php" class="mb-5">
+            <form method="POST" action="index.php" class="mb-5" enctype="multipart/form-data">
                 <input type="hidden" name="modulo" value="tratamientos">
                 <input type="hidden" name="accion" value="guardar_aplicacion">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
@@ -86,6 +86,20 @@
                     <label class="form-label" for="observaciones">Observaciones</label>
                     <textarea class="form-control" id="observaciones" name="observaciones"><?= $aplicacionEditar ? htmlspecialchars($aplicacionEditar['Observaciones'] ?? '', ENT_QUOTES, 'UTF-8') : '' ?></textarea>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label" for="foto">Fotografía del tratamiento: producto aplicado o área tratada (opcional; JPEG, PNG o WebP; máximo 5 MB)</label>
+                    <?php if ($aplicacionEditar && !empty($aplicacionEditar['RutaFoto'])): ?>
+                        <?php $rutaFotoActual = BASE_URL . ltrim($aplicacionEditar['RutaFoto'], '/\\'); ?>
+                        <div class="form-text mb-2">
+                            Fotografía actual:<br>
+                            <a href="<?= htmlspecialchars($rutaFotoActual, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                <img src="<?= htmlspecialchars($rutaFotoActual, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía actual del tratamiento" class="img-thumbnail my-1" style="max-width: 160px; max-height: 120px;">
+                            </a><br>
+                            Si eliges otro archivo, reemplazará a esta fotografía.
+                        </div>
+                    <?php endif; ?>
+                    <input class="form-control" type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp">
+                </div>
                 <button class="btn btn-primary" type="submit"><?= $aplicacionEditar ? 'Guardar cambios' : 'Registrar aplicación' ?></button>
                 <?php if ($aplicacionEditar): ?>
                     <a class="btn btn-outline-secondary" href="index.php?modulo=tratamientos">Cancelar</a>
@@ -96,7 +110,7 @@
         <div class="table-responsive">
             <table class="table table-bordered table-hover bg-white">
                 <thead class="table-dark">
-                    <tr><th>Campaña</th><th>Zona</th><th>Fecha</th><th>Técnico</th><th>Producto</th><th>Cantidad</th><th>Observaciones</th><th>Acciones</th></tr>
+                    <tr><th>Campaña</th><th>Zona</th><th>Fecha</th><th>Técnico</th><th>Producto</th><th>Cantidad</th><th>Observaciones</th><th>Fotografía</th><th>Acciones</th></tr>
                 </thead>
                 <tbody>
                     <?php if ($resultadoAplicaciones->num_rows > 0): ?>
@@ -109,6 +123,16 @@
                                 <td><?= htmlspecialchars($aplicacion['Producto'] ?? 'Sin producto', ENT_QUOTES, 'UTF-8') ?></td>
                                 <td><?= htmlspecialchars((string)($aplicacion['CantidadAplicada'] ?? ''), ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($aplicacion['UnidadMedida'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                                 <td><?= htmlspecialchars($aplicacion['Observaciones'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td>
+                                    <?php if (!empty($aplicacion['RutaFoto'])): ?>
+                                        <?php $rutaFoto = BASE_URL . ltrim($aplicacion['RutaFoto'], '/\\'); ?>
+                                        <a href="<?= htmlspecialchars($rutaFoto, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                            <img src="<?= htmlspecialchars($rutaFoto, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía del tratamiento" class="img-thumbnail" style="max-width: 120px; max-height: 90px;">
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted small">Sin fotografía</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?php if (appCan('tratamientos', 'modificar')): ?>
                                         <a class="btn btn-sm btn-primary" href="index.php?modulo=tratamientos&accion=editar&id=<?= (int)$aplicacion['IdAccion'] ?>">Editar</a>
@@ -126,7 +150,7 @@
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <tr><td colspan="8">No hay aplicaciones registradas.</td></tr>
+                        <tr><td colspan="9">No hay aplicaciones registradas.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>

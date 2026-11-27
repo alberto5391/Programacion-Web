@@ -51,15 +51,15 @@
             <div class="card-body">
                 <form action="<?= BASE_URL ?>index.php" method="GET" class="row g-3 align-items-end">
                     <input type="hidden" name="modulo" value="graficas_zonas">
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-lg-2">
                         <label class="form-label" for="desde">Desde</label>
                         <input class="form-control" type="date" id="desde" name="desde" value="<?= htmlspecialchars($fechaInicio, ENT_QUOTES, 'UTF-8') ?>">
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-lg-2">
                         <label class="form-label" for="hasta">Hasta</label>
                         <input class="form-control" type="date" id="hasta" name="hasta" value="<?= htmlspecialchars($fechaFin, ENT_QUOTES, 'UTF-8') ?>">
                     </div>
-                    <div class="col-sm-8 col-lg-3">
+                    <div class="col-sm-6 col-lg-3">
                         <label class="form-label" for="municipio">Municipio</label>
                         <select class="form-select" id="municipio" name="municipio">
                             <option value="">Todos los municipios</option>
@@ -70,7 +70,7 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-sm-8 col-lg-2">
+                    <div class="col-sm-6 col-lg-3">
                         <label class="form-label" for="metrica">Comparar por</label>
                         <select class="form-select" id="metrica" name="metrica">
                             <?php foreach ($metricas as $claveMetrica => $opcionMetrica): ?>
@@ -80,7 +80,7 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-sm-4 col-lg-1">
+                    <div class="col-sm-6 col-lg-2">
                         <button class="btn btn-primary w-100" type="submit">Aplicar</button>
                     </div>
                 </form>

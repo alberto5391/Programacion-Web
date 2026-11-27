@@ -43,7 +43,7 @@ class ModelOperaciones
         return $this->conexion->query(
             "SELECT i.IdIncidencia, i.IdCampana, i.IdTipoIncidencia,
                     ti.Nombre AS TipoIncidencia, i.Zona, i.ActividadRelacionada,
-                    i.Descripcion, i.FechaRegistro, c.CodigoCampana, c.NombreCampana
+                    i.Descripcion, i.RutaFoto, i.FechaRegistro, c.CodigoCampana, c.NombreCampana
              FROM Incidencias i
              INNER JOIN Campanas c ON c.IdCampana = i.IdCampana
              LEFT JOIN tipoincidencia ti ON ti.IdTipoIncidencia = i.IdTipoIncidencia
@@ -54,7 +54,7 @@ class ModelOperaciones
     public function obtenerIncidenciaPorId($id)
     {
         $stmt = $this->conexion->prepare(
-            "SELECT IdIncidencia, IdCampana, IdTipoIncidencia, ActividadRelacionada, Descripcion
+            "SELECT IdIncidencia, IdCampana, IdTipoIncidencia, ActividadRelacionada, Descripcion, RutaFoto
              FROM Incidencias
              WHERE IdIncidencia = ?"
         );
@@ -63,22 +63,24 @@ class ModelOperaciones
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function registrarIncidencia($idCampana, $actividad, $descripcion, $idTipoIncidencia)
+    // $rutaFoto: ruta relativa de la fotografía (resources/uploads/incidencias/...) o null si no se subió.
+    public function registrarIncidencia($idCampana, $actividad, $descripcion, $idTipoIncidencia, $rutaFoto = null)
     {
         $stmt = $this->conexion->prepare(
             "INSERT INTO Incidencias (
-                IdCampana, Zona, ActividadRelacionada, IdTipoIncidencia, Descripcion
+                IdCampana, Zona, ActividadRelacionada, IdTipoIncidencia, Descripcion, RutaFoto
              )
-             SELECT c.IdCampana, z.NombreZona, ?, ?, ?
+             SELECT c.IdCampana, z.NombreZona, ?, ?, ?, ?
              FROM Campanas c
              INNER JOIN Zonas z ON z.IdZona = c.IdZona
              WHERE c.IdCampana = ?"
         );
-        $stmt->bind_param('sisi', $actividad, $idTipoIncidencia, $descripcion, $idCampana);
+        $stmt->bind_param('sissi', $actividad, $idTipoIncidencia, $descripcion, $rutaFoto, $idCampana);
         return $stmt->execute() && $stmt->affected_rows === 1;
     }
 
-    public function actualizarIncidencia($id, $idCampana, $actividad, $descripcion, $idTipoIncidencia)
+    // Si $rutaFoto es null se conserva la fotografía que ya tenía la incidencia.
+    public function actualizarIncidencia($id, $idCampana, $actividad, $descripcion, $idTipoIncidencia, $rutaFoto = null)
     {
         $stmt = $this->conexion->prepare(
             "UPDATE Incidencias i
@@ -87,11 +89,12 @@ class ModelOperaciones
              SET i.IdCampana = c.IdCampana,
                  i.Zona = z.NombreZona,
                  i.ActividadRelacionada = ?,
-             i.IdTipoIncidencia = ?,
-                 i.Descripcion = ?
+                 i.IdTipoIncidencia = ?,
+                 i.Descripcion = ?,
+                 i.RutaFoto = COALESCE(?, i.RutaFoto)
              WHERE i.IdIncidencia = ?"
         );
-        $stmt->bind_param('isisi', $idCampana, $actividad, $idTipoIncidencia, $descripcion, $id);
+        $stmt->bind_param('isissi', $idCampana, $actividad, $idTipoIncidencia, $descripcion, $rutaFoto, $id);
         return $stmt->execute();
     }
 
@@ -247,7 +250,8 @@ class ModelOperaciones
                     a.FechaHora, a.DetallesResultados, a.Observaciones,
                     c.CodigoCampana, c.NombreCampana, z.NombreZona,
                     t.NumeroEmpleado, CONCAT(u.Nombre, ' ', u.Apellidos) AS Tecnico,
-                    pi.IdPlaga, p.NombreComun AS Plaga, pi.NivelInfestacion
+                    pi.IdPlaga, p.NombreComun AS Plaga, pi.NivelInfestacion,
+                    fi.RutaFoto
              FROM AccionesCampana a
              INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
@@ -256,6 +260,7 @@ class ModelOperaciones
              INNER JOIN Usuarios u ON u.IdUsuario = t.IdUsuario
              LEFT JOIN PlagasIdentificadas pi ON pi.IdAccion = a.IdAccion
              LEFT JOIN Plagas p ON p.IdPlaga = pi.IdPlaga
+             LEFT JOIN fotosinspeccion fi ON fi.IdAccion = a.IdAccion
              WHERE ta.Nombre IN ('Inspección', 'Diagnóstico')
              ORDER BY a.FechaHora DESC, a.IdAccion DESC"
         );
@@ -266,10 +271,11 @@ class ModelOperaciones
         $stmt = $this->conexion->prepare(
             "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, ta.Nombre AS TipoAccion,
                     a.FechaHora, a.DetallesResultados, a.Observaciones,
-                    pi.IdPlaga, pi.NivelInfestacion
+                    pi.IdPlaga, pi.NivelInfestacion, fi.RutaFoto
              FROM AccionesCampana a
              INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              LEFT JOIN PlagasIdentificadas pi ON pi.IdAccion = a.IdAccion
+             LEFT JOIN fotosinspeccion fi ON fi.IdAccion = a.IdAccion
              WHERE a.IdAccion = ?
                AND ta.Nombre IN ('Inspección', 'Diagnóstico')
              LIMIT 1"
@@ -277,6 +283,19 @@ class ModelOperaciones
         $stmt->bind_param('i', $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    // Guarda (o reemplaza) la fotografía de una inspección o diagnóstico.
+    // $rutaFoto es la ruta relativa: resources/uploads/inspecciones/...
+    public function guardarFotoInspeccion($idAccion, $rutaFoto)
+    {
+        $stmt = $this->conexion->prepare(
+            "INSERT INTO fotosinspeccion (IdAccion, RutaFoto)
+             VALUES (?, ?)
+             ON DUPLICATE KEY UPDATE RutaFoto = VALUES(RutaFoto), FechaSubida = CURRENT_TIMESTAMP"
+        );
+        $stmt->bind_param('is', $idAccion, $rutaFoto);
+        return $stmt->execute();
     }
 
     public function registrarPlagaIdentificada($idAccion, $idPlaga, $nivel, $observaciones)
@@ -298,7 +317,7 @@ class ModelOperaciones
                     c.CodigoCampana, c.NombreCampana, z.NombreZona,
                     t.NumeroEmpleado, CONCAT(u.Nombre, ' ', u.Apellidos) AS Tecnico,
                     iu.IdProducto, iu.CantidadAplicada, iu.UnidadMedida,
-                    p.NombreComercial AS Producto
+                    p.NombreComercial AS Producto, ft.RutaFoto
              FROM AccionesCampana a
              INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              INNER JOIN Campanas c ON c.IdCampana = a.IdCampana
@@ -307,6 +326,7 @@ class ModelOperaciones
              INNER JOIN Usuarios u ON u.IdUsuario = t.IdUsuario
              LEFT JOIN InsumosUsados iu ON iu.IdAccion = a.IdAccion
              LEFT JOIN Productos p ON p.IdProducto = iu.IdProducto
+             LEFT JOIN fotostratamiento ft ON ft.IdAccion = a.IdAccion
              WHERE ta.Nombre = 'Aplicación'
              ORDER BY a.FechaHora DESC, a.IdAccion DESC"
         );
@@ -317,16 +337,30 @@ class ModelOperaciones
         $stmt = $this->conexion->prepare(
             "SELECT a.IdAccion, a.IdCampana, a.IdTecnico, a.FechaHora,
                     a.DetallesResultados, a.Observaciones,
-                    iu.IdProducto, iu.CantidadAplicada, iu.UnidadMedida
+                    iu.IdProducto, iu.CantidadAplicada, iu.UnidadMedida, ft.RutaFoto
              FROM AccionesCampana a
              INNER JOIN tipoaccion ta ON ta.idTipoAccion = a.idTipoAccion
              LEFT JOIN InsumosUsados iu ON iu.IdAccion = a.IdAccion
+             LEFT JOIN fotostratamiento ft ON ft.IdAccion = a.IdAccion
              WHERE a.IdAccion = ? AND ta.Nombre = 'Aplicación'
              LIMIT 1"
         );
         $stmt->bind_param('i', $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    // Guarda (o reemplaza) la fotografía de un tratamiento/aplicación.
+    // $rutaFoto es la ruta relativa: resources/uploads/tratamientos/...
+    public function guardarFotoTratamiento($idAccion, $rutaFoto)
+    {
+        $stmt = $this->conexion->prepare(
+            "INSERT INTO fotostratamiento (IdAccion, RutaFoto)
+             VALUES (?, ?)
+             ON DUPLICATE KEY UPDATE RutaFoto = VALUES(RutaFoto), FechaSubida = CURRENT_TIMESTAMP"
+        );
+        $stmt->bind_param('is', $idAccion, $rutaFoto);
+        return $stmt->execute();
     }
 
     public function obtenerProductoPorId($id)

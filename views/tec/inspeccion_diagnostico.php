@@ -35,7 +35,7 @@
                 ? (preg_replace('/^Nivel de infestación: [^\r\n]*\R?/', '', $detalleActual) ?? $detalleActual)
                 : '';
             ?>
-            <form method="POST" action="index.php" class="mb-5">
+            <form method="POST" action="index.php" class="mb-5" enctype="multipart/form-data">
                 <input type="hidden" name="modulo" value="inspeccion_diagnostico">
                 <input type="hidden" name="accion" value="guardar_accion">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
@@ -119,6 +119,20 @@
                     <label class="form-label" for="observaciones">Observaciones</label>
                     <textarea class="form-control" id="observaciones" name="observaciones"><?= $accionEditar ? htmlspecialchars($accionEditar['Observaciones'] ?? '', ENT_QUOTES, 'UTF-8') : '' ?></textarea>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label" for="foto">Fotografía de la inspección o plaga (opcional; JPEG, PNG o WebP; máximo 5 MB)</label>
+                    <?php if ($accionEditar && !empty($accionEditar['RutaFoto'])): ?>
+                        <?php $rutaFotoActual = BASE_URL . ltrim($accionEditar['RutaFoto'], '/\\'); ?>
+                        <div class="form-text mb-2">
+                            Fotografía actual:<br>
+                            <a href="<?= htmlspecialchars($rutaFotoActual, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                <img src="<?= htmlspecialchars($rutaFotoActual, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía actual del registro" class="img-thumbnail my-1" style="max-width: 160px; max-height: 120px;">
+                            </a><br>
+                            Si eliges otro archivo, reemplazará a esta fotografía.
+                        </div>
+                    <?php endif; ?>
+                    <input class="form-control" type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp">
+                </div>
                 <button class="btn btn-primary" type="submit"><?= $accionEditar ? 'Guardar cambios' : 'Registrar' ?></button>
                 <?php if ($accionEditar): ?>
                     <a class="btn btn-outline-secondary" href="index.php?modulo=inspeccion_diagnostico">Cancelar</a>
@@ -130,7 +144,7 @@
         <div class="table-responsive">
             <table class="table table-bordered table-hover bg-white">
                 <thead class="table-dark">
-                    <tr><th>Tipo</th><th>Campaña</th><th>Zona</th><th>Fecha</th><th>Técnico</th><th>Detalle</th><th>Acciones</th></tr>
+                    <tr><th>Tipo</th><th>Campaña</th><th>Zona</th><th>Fecha</th><th>Técnico</th><th>Detalle</th><th>Fotografía</th><th>Acciones</th></tr>
                 </thead>
                 <tbody>
                     <?php if ($resultadoAcciones->num_rows > 0): ?>
@@ -142,6 +156,16 @@
                                 <td><?= htmlspecialchars($accionFila['FechaHora'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td><?= htmlspecialchars($accionFila['NumeroEmpleado'] . ' — ' . $accionFila['Tecnico'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td><?= htmlspecialchars($accionFila['DetallesResultados'] . ($accionFila['Plaga'] ? "\nPlaga: " . $accionFila['Plaga'] . ' — ' . $accionFila['NivelInfestacion'] : '') . ($accionFila['Observaciones'] ? "\n" . $accionFila['Observaciones'] : ''), ENT_QUOTES, 'UTF-8') ?></td>
+                                <td>
+                                    <?php if (!empty($accionFila['RutaFoto'])): ?>
+                                        <?php $rutaFoto = BASE_URL . ltrim($accionFila['RutaFoto'], '/\\'); ?>
+                                        <a href="<?= htmlspecialchars($rutaFoto, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
+                                            <img src="<?= htmlspecialchars($rutaFoto, ENT_QUOTES, 'UTF-8') ?>" alt="Fotografía del registro" class="img-thumbnail" style="max-width: 120px; max-height: 90px;">
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted small">Sin fotografía</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?php if (appCan('inspeccion_diagnostico', 'modificar')): ?>
                                         <a class="btn btn-sm btn-primary" href="index.php?modulo=inspeccion_diagnostico&accion=editar&id=<?= (int)$accionFila['IdAccion'] ?>">Editar</a>
@@ -160,7 +184,7 @@
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <tr><td colspan="7">No hay inspecciones ni diagnósticos registrados.</td></tr>
+                        <tr><td colspan="8">No hay inspecciones ni diagnósticos registrados.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>

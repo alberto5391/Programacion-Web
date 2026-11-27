@@ -129,6 +129,33 @@
                 </div>
 
                 <div class="col">
+                    <a href="index.php?modulo=incidencias" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-exclamation-triangle"></i></div>
+                            <span class="text-dark fw-medium small">Incidencias <span class="text-muted fs-8 d-block">Registrar, modificar y eliminar incidencias con fotografía</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="index.php?modulo=inspeccion_diagnostico" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-search"></i></div>
+                            <span class="text-dark fw-medium small">Inspección y diagnóstico <span class="text-muted fs-8 d-block">Registrar, modificar y eliminar inspecciones con fotografía</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="index.php?modulo=tratamientos" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-box bg-light text-secondary fs-5"><i class="bi bi-droplet-half"></i></div>
+                            <span class="text-dark fw-medium small">Tratamientos <span class="text-muted fs-8 d-block">Registrar, modificar y eliminar aplicaciones con fotografía</span></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
                     <a href="index.php?modulo=estadisticas" class="card nav-card text-decoration-none h-100 bg-white p-3 shadow-sm border-info-subtle">
                         <div class="d-flex align-items-center gap-3">
                             <div class="icon-box bg-info-subtle text-info fs-5"><i class="bi bi-map-fill"></i></div>

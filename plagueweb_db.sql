@@ -245,6 +245,7 @@ CREATE TABLE `incidencias` (
   `Zona` varchar(100) NOT NULL,
   `ActividadRelacionada` enum('Inspección','Aplicación','Seguimiento') NOT NULL,
   `Descripcion` text NOT NULL,
+  `RutaFoto` varchar(255) DEFAULT NULL,
   `FechaRegistro` datetime DEFAULT current_timestamp(),
   `SincronizadoOffline` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`IdIncidencia`),
@@ -295,6 +296,26 @@ CREATE TABLE `plagasidentificadas` (
   KEY `fk_plagasident_plaga_new` (`IdPlaga`),
   CONSTRAINT `fk_plagasident_accion_new` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_plagasident_plaga_new` FOREIGN KEY (`IdPlaga`) REFERENCES `plagas` (`IdPlaga`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `fotosinspeccion` (
+  `IdFotoInspeccion` int(11) NOT NULL AUTO_INCREMENT,
+  `IdAccion` int(11) NOT NULL,
+  `RutaFoto` varchar(255) NOT NULL,
+  `FechaSubida` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`IdFotoInspeccion`),
+  UNIQUE KEY `uk_fotoinspeccion_accion` (`IdAccion`),
+  CONSTRAINT `fk_fotoinspeccion_accion` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `fotostratamiento` (
+  `IdFotoTratamiento` int(11) NOT NULL AUTO_INCREMENT,
+  `IdAccion` int(11) NOT NULL,
+  `RutaFoto` varchar(255) NOT NULL,
+  `FechaSubida` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`IdFotoTratamiento`),
+  UNIQUE KEY `uk_fototratamiento_accion` (`IdAccion`),
+  CONSTRAINT `fk_fototratamiento_accion` FOREIGN KEY (`IdAccion`) REFERENCES `accionescampana` (`IdAccion`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ========================================================
